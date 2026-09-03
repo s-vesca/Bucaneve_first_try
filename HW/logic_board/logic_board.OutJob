@@ -1,0 +1,392 @@
+[OutputJobFile]
+Version=1.0
+Caption=
+Description=
+VaultGUID=
+ItemGUID=
+ItemHRID=
+RevisionGUID=
+RevisionId=
+VaultHRID=
+AutoItemHRID=
+NextRevId=
+FolderGUID=
+LifeCycleDefinitionGUID=
+RevisionNamingSchemeGUID=
+
+[OutputGroup1]
+Name=logic_board.OutJob
+Description=
+TargetOutputMedium=Gerber_w_gnd_plane
+VariantName=Base
+VariantScope=1
+CurrentConfigurationName=
+TargetPrinter=Microsoft Print to PDF
+PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
+OutputMedium1=Print Job
+OutputMedium1_Type=Printer
+OutputMedium1_Printer=
+OutputMedium1_PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
+OutputMedium2=PDF
+OutputMedium2_Type=Publish
+OutputMedium3=Gerber
+OutputMedium3_Type=GeneratedFiles
+OutputMedium4=ODB
+OutputMedium4_Type=GeneratedFiles
+OutputMedium5=BOM e Pick&Place
+OutputMedium5_Type=GeneratedFiles
+OutputMedium6=Gerber_w_gnd_plane
+OutputMedium6_Type=GeneratedFiles
+OutputMedium7=Gerber_wo_gnd_plane
+OutputMedium7_Type=GeneratedFiles
+OutputType1=Assembly
+OutputName1=Assembly Drawings
+OutputCategory1=Assembly
+OutputDocumentPath1=
+OutputVariantName1=
+OutputEnabled1=0
+OutputEnabled1_OutputMedium1=0
+OutputEnabled1_OutputMedium2=1
+OutputEnabled1_OutputMedium3=0
+OutputEnabled1_OutputMedium4=0
+OutputEnabled1_OutputMedium5=0
+OutputEnabled1_OutputMedium6=0
+OutputEnabled1_OutputMedium7=0
+OutputDefault1=0
+PageOptions1=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
+Configuration1_Name1=OutputConfigurationParameter1
+Configuration1_Item1=DesignatorDisplayMode=Physical|PrintArea=DesignExtent|PrintAreaLowerLeftCornerX=0|PrintAreaLowerLeftCornerY=0|PrintAreaUpperRightCornerX=0|PrintAreaUpperRightCornerY=0|Record=PcbPrintView|DocumentPath=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\Z04P24 - PCB.PcbDoc
+Configuration1_Name2=OutputConfigurationParameter2
+Configuration1_Item2=IncludeBottomLayerComponents=True|IncludeMultiLayerComponents=True|IncludeTopLayerComponents=True|IncludeViewports=True|Index=0|Mirror=False|Name=Top LayerAssembly Drawing|PadNumberFontSize=14|Record=PcbPrintOut|ShowHoles=False|ShowPadNets=False|ShowPadNumbers=False|SubstituteFonts=False|DocumentPath=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\Z04P24 - PCB.PcbDoc
+Configuration1_Name3=OutputConfigurationParameter3
+Configuration1_Item3=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=Mechanical1|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer|DocumentPath=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\Z04P24 - PCB.PcbDoc
+Configuration1_Name4=OutputConfigurationParameter4
+Configuration1_Item4=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=Mechanical17|Polygon=Full|PrintOutIndex=0|Record=PcbPrintLayer|DocumentPath=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\Z04P24 - PCB.PcbDoc
+Configuration1_Name5=OutputConfigurationParameter5
+Configuration1_Item5=IncludeBottomLayerComponents=True|IncludeMultiLayerComponents=True|IncludeTopLayerComponents=True|IncludeViewports=True|Index=1|Mirror=False|Name=Bottom LayerAssembly Drawing|PadNumberFontSize=14|Record=PcbPrintOut|ShowHoles=False|ShowPadNets=False|ShowPadNumbers=False|SubstituteFonts=False|DocumentPath=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\Z04P24 - PCB.PcbDoc
+Configuration1_Name6=OutputConfigurationParameter6
+Configuration1_Item6=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=Mechanical1|Polygon=Full|PrintOutIndex=1|Record=PcbPrintLayer|DocumentPath=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\Z04P24 - PCB.PcbDoc
+Configuration1_Name7=OutputConfigurationParameter7
+Configuration1_Item7=CArc=Full|CFill=Full|Comment=Full|Coordinate=Full|CPad=Full|CRegion=Full|CText=Full|CTrack=Full|CVia=Full|Designator=Full|Dimension=Full|DLayer1=TopLayer|DLayer2=BottomLayer|FArc=Full|FFill=Full|FPad=Full|FRegion=Full|FText=Full|FTrack=Full|FVia=Full|Layer=Mechanical18|Polygon=Full|PrintOutIndex=1|Record=PcbPrintLayer|DocumentPath=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\Z04P24 - PCB.PcbDoc
+PcbPrintPreferences1=
+OutputType2=Gerber
+OutputName2=Gerber Files
+OutputCategory2=Fabrication
+OutputDocumentPath2=
+OutputVariantName2=
+OutputEnabled2=0
+OutputEnabled2_OutputMedium1=0
+OutputEnabled2_OutputMedium2=0
+OutputEnabled2_OutputMedium3=1
+OutputEnabled2_OutputMedium4=0
+OutputEnabled2_OutputMedium5=0
+OutputEnabled2_OutputMedium6=0
+OutputEnabled2_OutputMedium7=0
+OutputDefault2=0
+Configuration2_Name1=OutputConfigurationParameter1
+Configuration2_Item1=AddLayersToGroup.Group_0=0|AddLayersToGroup.Group_1=1|AddLayersToGroup.Group_2=2|AddLayersToGroup.Group_3=3|AddLayersToGroup.Group_4=4|AddLayersToGroup.Group_5=5|AddLayersToGroup.Group_6=7|AddLayersToGroup.Group_7=8|AddLayersToGroup.Set_0=16908289|AddLayersToGroup.Set_1= |AddLayersToGroup.Set_2= |AddLayersToGroup.Set_3= |AddLayersToGroup.Set_4= |AddLayersToGroup.Set_5= |AddLayersToGroup.Set_6= |AddLayersToGroup.Set_7=16908289|AddLayersToGroups.Count=8|AddToAllLayerClasses.Set= |AddToAllPlots.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray|BoardID=EDXFSGKY|CentrePlots=False|DrillDrawingSymbol=GraphicsSymbol|DrillDrawingSymbolSize=200000|EmbeddedApertures=True|FilmBorderSize=10000000|FilmXSize=200000000|FilmYSize=160000000|FlashAllFills=False|FlashPadShapes=True|G54OnApertureChange=False|GenerateDRCRulesFile=False|GenerateDRCRulesFile=False|GenerateReliefShapes=True|GenerateReports=False|GerberUnit=Metric|GerberUnit=Metric|IncludeUnconnectedMidLayerPads=False|LayerClassesMirror.Set= |LayerClassesPlot.Set= |LeadingAndTrailingZeroesMode=SuppressLeadingZeroes|MaxApertureSize=2500000|MergePadAndRegion=False|MinusApertureTolerance=39|MinusApertureTolerance=39|Mirror.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray|MirrorDrillDrawingPlots=False|MirrorDrillGuidePlots=False|NoRegularPolygons=False|NumberOfDecimals=4|NumberOfDecimals=4|OptimizeChangeLocationCommands=True|OptimizeChangeLocationCommands=True|OriginPosition=Relative|OutputFormat=Different|Panelize=False|Plot.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray,16973832~1,16973834~1,16973835~1,16973833~1,16777217~1,16842751~1,16973830~1,16973831~1,16908289~1|PlotBoardProfile=False|PlotBoardProfileFileName= |PlotDrillDrawingLayerPair0_Backdrill=False|PlotDrillDrawingLayerPair0_Checked=True|PlotDrillDrawingLayerPair0_DrillType=Regular|PlotDrillDrawingLayerPair0_FileName= |PlotDrillDrawingLayerPair0_HighLayer=Bottom Layer|PlotDrillDrawingLayerPair0_LowLayer=Top Layer|PlotPositivePlaneLayers=False|PlotUsedDrillDrawingLayerPairs=True|PlotUsedDrillGuideLayerPairs=False|PlusApertureTolerance=39|PlusApertureTolerance=39|Record=GerberView|SoftwareArcs=False|Sorted=False|Sorted=False|UncheckPlotDrillGuideLayerPair0_Backdrill=False|UncheckPlotDrillGuideLayerPair0_Checked=False|UncheckPlotDrillGuideLayerPair0_DrillType=Regular|UncheckPlotDrillGuideLayerPair0_FileName= |UncheckPlotDrillGuideLayerPair0_HighLayer=Bottom Layer|UncheckPlotDrillGuideLayerPair0_LowLayer=Top Layer|DocumentPath=C:\Altium\projects\Bucaneve\logic_board\PCB1_w_gnd_plane.PcbDoc
+OutputType3=NC Drill
+OutputName3=NC Drill Files
+OutputCategory3=Fabrication
+OutputDocumentPath3=
+OutputVariantName3=
+OutputEnabled3=0
+OutputEnabled3_OutputMedium1=0
+OutputEnabled3_OutputMedium2=0
+OutputEnabled3_OutputMedium3=2
+OutputEnabled3_OutputMedium4=0
+OutputEnabled3_OutputMedium5=0
+OutputEnabled3_OutputMedium6=0
+OutputEnabled3_OutputMedium7=0
+OutputDefault3=0
+Configuration3_Name1=OutputConfigurationParameter1
+Configuration3_Item1=BoardEdgeRoutToolDia=2000000|GenerateBoardEdgeRout=False|GenerateDrilledSlotsG85=False|GenerateEIADrillFile=False|GenerateSeparatePlatedNonPlatedFiles=False|GenerateSeparateViaTypeFiles=False|GenerateToolsByDrillSymbols=False|NumberOfDecimals=4|NumberOfUnits=4|OptimizeChangeLocationCommands=True|OriginPosition=Relative|Record=DrillView|Units=Metric|ZeroesMode=SuppressTrailingZeroes|DocumentPath=C:\Altium\projects\ips_4pp_1nw_2layer\ips_4pp_1nw_2layer\PCB1.PcbDoc
+OutputType4=ODB
+OutputName4=ODB++ Files
+OutputCategory4=Fabrication
+OutputDocumentPath4=
+OutputVariantName4=
+OutputEnabled4=0
+OutputEnabled4_OutputMedium1=0
+OutputEnabled4_OutputMedium2=0
+OutputEnabled4_OutputMedium3=0
+OutputEnabled4_OutputMedium4=1
+OutputEnabled4_OutputMedium5=0
+OutputEnabled4_OutputMedium6=0
+OutputEnabled4_OutputMedium7=0
+OutputDefault4=0
+Configuration4_Name1=OutputConfigurationParameter1
+Configuration4_Item1=Compression_None=True|Compression_tar_tgz=False|Compression_zip=False|DifferentFootprints=False|ExportPositivePlaneLayers=False|GenerateDRCRulesFile=False|IncludeUnconnectedMidLayerPads=False|IncludeVariantsData=False|MergeNetTieNets=False|ObjsInsideBoardOutlineOnly=False|ODBProfileLayer=-1000|ODBProfileLayerV7=-1|PlotBackDrillingPairs=False|PlotBlindViasPairs=False|PlotBottomLayerPlot=True|PlotBottomOverlayPlot=True|PlotBottomPastePlot=True|PlotBottomSolderPlot=True|PlotCounterHolesPairs=False|PlotDrillDrawingPair0_DrillType=Regular|PlotDrillDrawingPair0_HighLayer=Bottom Layer|PlotDrillDrawingPair0_LowLayer=Top Layer|PlotDrillDrawingPair0_Plot=False|PlotDrillDrawingPairs=False|PlotDrillGuidePair0_DrillType=Regular|PlotDrillGuidePair0_HighLayer=Bottom Layer|PlotDrillGuidePair0_LowLayer=Top Layer|PlotDrillGuidePair0_Plot=False|PlotDrillGuidePairs=False|PlotInternalPlane10Plot=False|PlotInternalPlane11Plot=False|PlotInternalPlane12Plot=False|PlotInternalPlane13Plot=False|PlotInternalPlane14Plot=False|PlotInternalPlane15Plot=False|PlotInternalPlane16Plot=False|PlotInternalPlane1Plot=False|PlotInternalPlane2Plot=True|PlotInternalPlane3Plot=True|PlotInternalPlane4Plot=False|PlotInternalPlane5Plot=False|PlotInternalPlane6Plot=False|PlotInternalPlane7Plot=False|PlotInternalPlane8Plot=False|PlotInternalPlane9Plot=False|PlotKeepOutLayerPlot=False|PlotMechanical10Plot=False|PlotMechanical11Plot=False|PlotMechanical12Plot=False|PlotMechanical13Plot=True|PlotMechanical14Plot=True|PlotMechanical15Plot=True|PlotMechanical16Plot=True|PlotMechanical1Plot=False|PlotMechanical2Plot=True|PlotMechanical3Plot=False|PlotMechanical4Plot=False|PlotMechanical5Plot=False|PlotMechanical6Plot=False|PlotMechanical7Plot=False|PlotMechanical8Plot=False|PlotMechanical9Plot=False|PlotMicroViasPairs=False|PlotMidLayer10Plot=False|PlotMidLayer11Plot=False|PlotMidLayer12Plot=False|PlotMidLayer13Plot=False|PlotMidLayer14Plot=False|PlotMidLayer15Plot=False|PlotMidLayer16Plot=False|PlotMidLayer17Plot=False|PlotMidLayer18Plot=False|PlotMidLayer19Plot=False|PlotMidLayer1Plot=True|PlotMidLayer20Plot=False|PlotMidLayer21Plot=False|PlotMidLayer22Plot=False|PlotMidLayer23Plot=False|PlotMidLayer24Plot=False|PlotMidLayer25Plot=False|PlotMidLayer26Plot=False|PlotMidLayer27Plot=False|PlotMidLayer28Plot=False|PlotMidLayer29Plot=False|PlotMidLayer2Plot=True|PlotMidLayer30Plot=False|PlotMidLayer3Plot=False|PlotMidLayer4Plot=False|PlotMidLayer5Plot=False|PlotMidLayer6Plot=False|PlotMidLayer7Plot=False|PlotMidLayer8Plot=False|PlotMidLayer9Plot=False|PlotNPTHPair0_DrillType=Regular|PlotNPTHPair0_HighLayer=Top Layer|PlotNPTHPair0_LowLayer=Bottom Layer|PlotNPTHPair0_Plot=True|PlotNPTHPairs=False|PlotPTHPair0_DrillType=Regular|PlotPTHPair0_HighLayer=Top Layer|PlotPTHPair0_LowLayer=Bottom Layer|PlotPTHPair0_Plot=True|PlotPTHPairs=False|PlotTopLayerPlot=True|PlotTopOverlayPlot=True|PlotTopPastePlot=True|PlotTopSolderPlot=True|PlotViaTypeDrillDrawingPairs=False|PlotViaTypeDrillGuidePairs=False|PlotViaTypeDrillPairs=False|Record=ODBView|ToolsByDrillSymbols=False|Units=Metric|DocumentPath=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z02P24 - Logic\Sxx\S01\Z02P24-S01-PCB.PcbDoc
+OutputType5=Pick Place
+OutputName5=Generates pick and place files
+OutputCategory5=Assembly
+OutputDocumentPath5=
+OutputVariantName5=
+OutputEnabled5=0
+OutputEnabled5_OutputMedium1=0
+OutputEnabled5_OutputMedium2=0
+OutputEnabled5_OutputMedium3=0
+OutputEnabled5_OutputMedium4=0
+OutputEnabled5_OutputMedium5=1
+OutputEnabled5_OutputMedium6=0
+OutputEnabled5_OutputMedium7=0
+OutputDefault5=0
+Configuration5_Name1=OutputConfigurationParameter1
+Configuration5_Item1=Record=PickPlaceView|Units=Metric|GenerateCSVFormat=True|GenerateTextFormat=False|ShowUnits=False|Separator=,|ExcludeFilterParam=False|IncludeVariations=False|IncludeStandardNoBOM=False|Filter= |FilterActive=False|YFlip=False|DifferentFootprints=False|Column#1=Name:Designator,Fixed:True,Metric:False,Visible:True,Sort:Ascending,SortIndex:0,Position:0|Column#2=Name:Comment,Fixed:True,Metric:False,Visible:False,Sort:None,Position:1|Column#3=Name:Layer,Fixed:True,Metric:False,Visible:True,Sort:None,Position:6|Column#4=Name:Footprint,Fixed:True,Metric:False,Visible:True,Sort:None,Position:7|Column#5=Name:Footprint Description,Fixed:True,Metric:False,Visible:False,Sort:None,Position:8|Column#6=Name:Center-X,Fixed:True,Metric:True,Visible:True,Sort:None,Position:9|Column#7=Name:Center-Y,Fixed:True,Metric:True,Visible:True,Sort:None,Position:10|Column#8=Name:Rotation,Fixed:True,Metric:False,Visible:True,Sort:None,Position:11|Column#9=Name:Description,Fixed:True,Metric:False,Visible:True,Sort:None,Position:2|Column#10=Name:ComponentKind,Fixed:True,Metric:False,Visible:False,Sort:None,Position:12|Column#11=Name:Height,Fixed:True,Metric:True,Visible:False,Sort:None,Position:13|Column#12=Name:Ref-X,Fixed:True,Metric:True,Visible:False,Sort:None,Position:14|Column#13=Name:Ref-Y,Fixed:True,Metric:True,Visible:False,Sort:None,Position:15|Column#14=Name:Pad-X,Fixed:True,Metric:True,Visible:False,Sort:None,Position:16|Column#15=Name:Pad-Y,Fixed:True,Metric:True,Visible:False,Sort:None,Position:17|Column#16=Name:Variation,Fixed:True,Metric:False,Visible:False,Sort:None,Position:18|Column#17=Name:Dielectric,Fixed:False,Metric:False,Visible:False,Sort:None,Position:19,Type:0|Column#18=Name:Manufacturer,Fixed:False,Metric:False,Visible:False,Sort:None,Position:20,Type:0|Column#19=Name:PN,Fixed:False,Metric:False,Visible:False,Sort:None,Position:21,Type:0|Column#20=Name:Value,Fixed:False,Metric:False,Visible:True,Sort:None,Position:3,Type:0|Column#21=Name:Pitch,Fixed:False,Metric:False,Visible:False,Sort:None,Position:31,Type:0|Column#22=Name:MPN1,Fixed:False,Metric:False,Visible:True,Sort:None,Position:5,Type:0|Column#23=Name:Power,Fixed:False,Metric:False,Visible:False,Sort:None,Position:32,Type:0|Column#24=Name:MFG1,Fixed:False,Metric:False,Visible:True,Sort:None,Position:4,Type:0|Column#25=Name:Supplier,Fixed:False,Metric:False,Visible:False,Sort:None,Position:34,Type:0|Column#26=Name:Max Op# temp °C,Fixed:False,Metric:False,Visible:False,Sort:None,Position:25,Type:0|Column#27=Name:Technology,Fixed:False,Metric:False,Visible:False,Sort:None,Position:36,Type:0|Column#28=Name:Mount,Fixed:False,Metric:False,Visible:False,Sort:None,Position:27,Type:0|Column#29=Name:Case/Package,Fixed:False,Metric:False,Visible:False,Sort:None,Position:22,Type:0|Column#30=Name:Pins,Fixed:False,Metric:False,Visible:False,Sort:None,Position:30,Type:0|Column#31=Name:Min Op# Temp °C,Fixed:False,Metric:False,Visible:False,Sort:None,Position:26,Type:0|Column#32=Name:Tolerance,Fixed:False,Metric:False,Visible:False,Sort:None,Position:39,Type:0|Column#33=Name:ConnType,Fixed:False,Metric:False,Visible:False,Sort:None,Position:23,Type:0|Column#34=Name:Orientation,Fixed:False,Metric:False,Visible:False,Sort:None,Position:29,Type:0|Column#35=Name:Op Voltage,Fixed:False,Metric:False,Visible:False,Sort:None,Position:28,Type:0|Column#36=Name:Datasheet URL,Fixed:False,Metric:False,Visible:False,Sort:None,Position:24,Type:0|Column#37=Name:Supplier Part Number,Fixed:False,Metric:False,Visible:False,Sort:None,Position:35,Type:0|Column#38=Name:Termination,Fixed:False,Metric:False,Visible:False,Sort:None,Position:38,Type:0|Column#39=Name:Qualification,Fixed:False,Metric:False,Visible:False,Sort:None,Position:33,Type:0|Column#40=Name:Temp# Coeffiient (PPM/C),Fixed:False,Metric:False,Visible:False,Sort:None,Position:37,Type:0|Column#41=Name:Supplier URL,Fixed:False,Metric:False,Visible:False,Sort:None,Position:40,Type:0|Column#42=Name:MFG2,Fixed:False,Metric:False,Visible:False,Sort:None,Position:62,Type:0|Column#43=Name:Ic (mA),Fixed:False,Metric:False,Visible:False,Sort:None,Position:50,Type:0|Column#44=Name:Quiescent cuttent(uA),Fixed:False,Metric:False,Visible:False,Sort:None,Position:70,Type:0|Column#45=Name:If (A),Fixed:False,Metric:False,Visible:False,Sort:None,Position:51,Type:0|Column#46=Name:Manufacturer URL,Fixed:False,Metric:False,Visible:False,Sort:None,Position:55,Type:0|Column#47=Name:Terminal Type,Fixed:False,Metric:False,Visible:False,Sort:None,Position:79,Type:0|Column#48=Name:Out Voltage Accuracy,Fixed:False,Metric:False,Visible:False,Sort:None,Position:67,Type:0|Column#49=Name:10/1000us Power,Fixed:False,Metric:False,Visible:False,Sort:None,Position:41,Type:0|Column#50=Name:Dropout @ Imax (V),Fixed:False,Metric:False,Visible:False,Sort:None,Position:47,Type:0|Column#51=Name:Vf,Fixed:False,Metric:False,Visible:False,Sort:None,Position:82,Type:0|Column#52=Name:Rated Current (mA),Fixed:False,Metric:False,Visible:False,Sort:None,Position:71,Type:0|Column#53=Name:ComponentType,Fixed:False,Metric:False,Visible:False,Sort:None,Position:44,Type:0|Column#54=Name:Impedence @1GHz,Fixed:False,Metric:False,Visible:False,Sort:None,Position:54,Type:0|Column#55=Name:Vce Max (V),Fixed:False,Metric:False,Visible:False,Sort:None,Position:81,Type:0|Column#56=Name:Fres (MHz),Fixed:False,Metric:False,Visible:False,Sort:None,Position:48,Type:0|Column#57=Name:Mouser Part Number,Fixed:False,Metric:False,Visible:False,Sort:None,Position:64,Type:0|Column#58=Name:Max Supply Voltage (DC),Fixed:False,Metric:False,Visible:False,Sort:None,Position:61,Type:0|Column#59=Name:Power Diss (mW),Fixed:False,Metric:False,Visible:False,Sort:None,Position:69,Type:0|Column#60=Name:Impedence @100MHz,Fixed:False,Metric:False,Visible:False,Sort:None,Position:53,Type:0|Column#61=Name:DCR (mR),Fixed:False,Metric:False,Visible:False,Sort:None,Position:46,Type:0|Column#62=Name:Color,Fixed:False,Metric:False,Visible:False,Sort:None,Position:43,Type:0|Column#63=Name:Stand-Off Voltage,Fixed:False,Metric:False,Visible:False,Sort:None,Position:77,Type:0|Column#64=Name:RefDes,Fixed:False,Metric:False,Visible:False,Sort:None,Position:75,Type:0|Column#65=Name:Vin Min (V),Fixed:False,Metric:False,Visible:False,Sort:None,Position:84,Type:0|Column#66=Name:Vin Max (V),Fixed:False,Metric:False,Visible:False,Sort:None,Position:83,Type:0|Column#67=Name:Rated Voltage,Fixed:False,Metric:False,Visible:False,Sort:None,Position:74,Type:0|Column#68=Name:Vreverse,Fixed:False,Metric:False,Visible:False,Sort:None,Position:85,Type:0|Column#69=Name:Max Duty Cycle,Fixed:False,Metric:False,Visible:False,Sort:None,Position:58,Type:0|Column#70=Name:Max Input Voltage,Fixed:False,Metric:False,Visible:False,Sort:None,Position:59,Type:0|Column#71=Name:MPN2,Fixed:False,Metric:False,Visible:False,Sort:None,Position:66,Type:0|Column#72=Name:Mouser Price/Stock,Fixed:False,Metric:False,Visible:False,Sort:None,Position:65,Type:0|Column#73=Name:Hfe (min),Fixed:False,Metric:False,Visible:False,Sort:None,Position:49,Type:0|Column#74=Name:Rated Current @85°C,Fixed:False,Metric:False,Visible:False,Sort:None,Position:73,Type:0|Column#75=Name:Rated Current @125°C,Fixed:False,Metric:False,Visible:False,Sort:None,Position:72,Type:0|Column#76=Name:Sat Current (mA),Fixed:False,Metric:False,Visible:False,Sort:None,Position:76,Type:0|Column#77=Name:Max Ouput Current,Fixed:False,Metric:False,Visible:False,Sort:None,Position:60,Type:0|Column#78=Name:Min Supply Voltage,Fixed:False,Metric:False,Visible:False,Sort:None,Position:63,Type:0|Column#79=Name:Manufacturer_Part_Number,Fixed:False,Metric:False,Visible:False,Sort:None,Position:56,Type:0|Column#80=Name:Imax (mA),Fixed:False,Metric:False,Visible:False,Sort:None,Position:52,Type:0|Column#81=Name:8/20us Power,Fixed:False,Metric:False,Visible:False,Sort:None,Position:42,Type:0|Column#82=Name:Switching Frequency,Fixed:False,Metric:False,Visible:False,Sort:None,Position:78,Type:0|Column#83=Name:Copyright,Fixed:False,Metric:False,Visible:False,Sort:None,Position:45,Type:0|Column#84=Name:Type,Fixed:False,Metric:False,Visible:False,Sort:None,Position:80,Type:0|Column#85=Name:Max Current@ Tmax,Fixed:False,Metric:False,Visible:False,Sort:None,Position:57,Type:0|Column#86=Name:Output Type,Fixed:False,Metric:False,Visible:False,Sort:None,Position:68,Type:0|Column#87=Name:MP,Fixed:False,Metric:False,Visible:False,Sort:None,Position:93,Type:0|Column#88=Name:Frequency,Fixed:False,Metric:False,Visible:False,Sort:None,Position:88,Type:0|Column#89=Name:Min Input Voltage,Fixed:False,Metric:False,Visible:False,Sort:None,Position:92,Type:0|Column#90=Name:Availability,Fixed:False,Metric:False,Visible:False,Sort:None,Position:86,Type:0|Column#91=Name:MF,Fixed:False,Metric:False,Visible:False,Sort:None,Position:91,Type:0|Column#92=Name:Manufacturer_Name,Fixed:False,Metric:False,Visible:False,Sort:None,Position:90,Type:0|Column#93=Name:Geometry.Height,Fixed:False,Metric:False,Visible:False,Sort:None,Position:89,Type:0|Column#94=Name:Datasheet Link,Fixed:False,Metric:False,Visible:False,Sort:None,Position:87,Type:0|Column#95=Name:Package,Fixed:False,Metric:False,Visible:False,Sort:None,Position:95,Type:0|Column#96=Name:Price,Fixed:False,Metric:False,Visible:False,Sort:None,Position:96,Type:0|Column#97=Name:Nominal Output Voltage,Fixed:False,Metric:False,Visible:False,Sort:None,Position:94,Type:0|DocumentPath=C:\Altium\projects\Bucaneve\logic_board\Panel\PCB1.PcbDoc
+OutputType6=BOM_PartType
+OutputName6=Bill of Materials
+OutputCategory6=Report
+OutputDocumentPath6=
+OutputVariantName6=
+OutputEnabled6=0
+OutputEnabled6_OutputMedium1=0
+OutputEnabled6_OutputMedium2=0
+OutputEnabled6_OutputMedium3=0
+OutputEnabled6_OutputMedium4=0
+OutputEnabled6_OutputMedium5=2
+OutputEnabled6_OutputMedium6=0
+OutputEnabled6_OutputMedium7=0
+OutputDefault6=0
+PageOptions6=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=0|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
+Configuration6_Name1=ColumnNameFormat
+Configuration6_Item1=CaptionAsName
+Configuration6_Name2=General
+Configuration6_Item2=OpenExported=False|AddToProject=False|ReportBOMViolationsInMessages=False|ForceFit=False|NotFitted=True|Database=False|DatabasePriority=False|IncludePcbData=False|IncludeVaultData=False|IncludeCloudData=False|IncludeDocumentData=True|IncludeAlternatives=False|ShowExportOptions=True|TemplateFilename=|TemplateVaultGuid=|TemplateItemGuid=|TemplateRevisionGuid=|BatchMode=5|FormWidth=1925|FormHeight=1143|SupplierProdQty=1|SupplierAutoQty=False|SupplierUseCachedPricing=False|SupplierCurrency=<none>|SolutionsPerItem=1|SuppliersPerSolution=1|ViewType=1|UseDirectApi=False|BomSetName=
+Configuration6_Name3=GroupOrder
+Configuration6_Item3=MPN1=True|Fitted=True
+Configuration6_Name4=OutputConfigurationParameter1
+Configuration6_Item4=Position:1|Column#3=Name:Layer,Fixed:True,Metric:False,Visible:True,Sort:None,Position:2|Column#4=Name:Footprint,Fixed:True,Metric:False,Visible:True,Sort:None,Position:3|Column#5=Name:Footprint Description,Fixed:True,Metric:False,Visible:False,Sort:None,Position:4|Column#6=Name:Center-X,Fixed:True,Metric:True,Visible:True,Sort:None,Position:5|Column#7=Name:Center-Y,Fixed:True,Metric:True,Visible:True,Sort:None,Position:6|Column#8=Name:Rotation,Fixed:True,Metric:False,Visible:True,Sort:None,Position:7|Column#9=Name:Description,Fixed:True,Metric:False,Visible:True,Sort:None,Position:8|Column#10=Name:ComponentKind,Fixed:True,Metric:False,Visible:False,Sort:None,Position:9|Column#11=Name:Height,Fixed:True,Metric:True,Visible:False,Sort:None,Position:10|Column#12=Name:Ref-X,Fixed:True,Metric:True,Visible:False,Sort:None,Position:11|Column#13=Name:Ref-Y,Fixed:True,Metric:True,Visible:False,Sort:None,Position:12|Column#14=Name:Pad-X,Fixed:True,Metric:True,Visible:False,Sort:None,Position:13|Column#15=Name:Pad-Y,Fixed:True,Metric:True,Visible:False,Sort:None,Position:14|Column#16=Name:Variation,Fixed:True,Metric:False,Visible:False,Sort:None,Position:15|Column#17=Name:Tollerance,Fixed:False,Metric:False,Visible:False,Sort:None,Position:19|Column#18=Name:Dielectric,Fixed:False,Metric:False,Visible:False,Sort:None,Position:16|Column#19=Name:Manufacturer,Fixed:False,Metric:False,Visible:False,Sort:None,Position:17|Column#20=Name:PN,Fixed:False,Metric:False,Visible:False,Sort:None,Position:18|Column#21=Name:Voltage,Fixed:False,Metric:False,Visible:False,Sort:None,Position:21|Column#22=Name:Value,Fixed:False,Metric:False,Visible:False,Sort:None,Position:20
+Configuration6_Name5=VisibleOrder
+Configuration6_Item5=Designator=100|Description=100|MFG1=100|MPN1=100|MFG2=100|MPN2=100|Value=100|Tolerance=100|Quantity=100|Dielectric=100|Case/Package=100|Op Voltage=100|Fitted=100
+Configuration6_Name6=VisibleOrder_Flat
+Configuration6_Item6=Designator=100|Description=100|MFG1=100|MPN1=100|MFG2=100|MPN2=100|Value=100|Tolerance=100|Quantity=100|Dielectric=100|Case/Package=100|Op Voltage=100|Fitted=100
+OutputType7=Schematic Print
+OutputName7=Schematic Prints
+OutputCategory7=Documentation
+OutputDocumentPath7=[Project Physical Documents]
+OutputVariantName7=[No Variations]
+OutputEnabled7=0
+OutputEnabled7_OutputMedium1=0
+OutputEnabled7_OutputMedium2=2
+OutputEnabled7_OutputMedium3=0
+OutputEnabled7_OutputMedium4=0
+OutputEnabled7_OutputMedium5=0
+OutputEnabled7_OutputMedium6=0
+OutputEnabled7_OutputMedium7=0
+OutputDefault7=0
+PageOptions7=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=0.73|XCorrection=1.00|YCorrection=1.00|PrintKind=0|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-4|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
+Configuration7_Name1=OutputConfigurationParameter1
+Configuration7_Item1=Record=SchPrintView|ShowNoERC=True|ShowParamSet=True|ShowProbe=True|ShowBlanket=True|NoERCSymbolsToShow="Thin Cross","Thick Cross","Small Cross",Checkbox,Triangle|ShowNote=True|ShowNoteCollapsed=True|ShowOpenEnds=True|ExpandDesignator=False|ExpandNetLabel=False|ExpandPort=False|ExpandSheetNum=True|ExpandDocNum=False|PrintArea=0|PrintAreaRect.X1=0|PrintAreaRect.Y1=0|PrintAreaRect.X2=0|PrintAreaRect.Y2=0|DocumentPath=[Project Physical Documents]
+OutputType8=Gerber
+OutputName8=Gerber Files W gnd_plane
+OutputCategory8=Fabrication
+OutputDocumentPath8=PCB1_w_gnd_plane.PcbDoc
+OutputVariantName8=
+OutputEnabled8=1
+OutputEnabled8_OutputMedium1=0
+OutputEnabled8_OutputMedium2=0
+OutputEnabled8_OutputMedium3=0
+OutputEnabled8_OutputMedium4=0
+OutputEnabled8_OutputMedium5=0
+OutputEnabled8_OutputMedium6=1
+OutputEnabled8_OutputMedium7=0
+OutputDefault8=0
+Configuration8_Name1=OutputConfigurationParameter1
+Configuration8_Item1=AddToAllLayerClasses.Set= |AddToAllPlots.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray|BoardID=EDXFSGKY|CentrePlots=False|DrillDrawingSymbol=GraphicsSymbol|DrillDrawingSymbolSize=500000|EmbeddedApertures=True|FilmBorderSize=10000000|FilmXSize=200000000|FilmYSize=160000000|FlashAllFills=False|FlashPadShapes=True|G54OnApertureChange=False|GenerateDRCRulesFile=False|GenerateDRCRulesFile=False|GenerateReliefShapes=True|GenerateReports=False|GerberUnit=Metric|GerberUnit=Metric|IncludeUnconnectedMidLayerPads=True|LayerClassesMirror.Set= |LayerClassesPlot.Set= |LeadingAndTrailingZeroesMode=SuppressLeadingZeroes|MaxApertureSize=2500000|MergePadAndRegion=False|MinusApertureTolerance=50|MinusApertureTolerance=50|Mirror.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray|MirrorDrillDrawingPlots=False|MirrorDrillGuidePlots=False|NoRegularPolygons=False|NumberOfDecimals=4|NumberOfDecimals=4|OptimizeChangeLocationCommands=True|OptimizeChangeLocationCommands=True|OriginPosition=Relative|OutputFormat=Different|Panelize=False|Plot.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray,16777217~1,16842751~1,16973830~1,16973831~1,16973834~1,16973835~1,16973832~1,16973833~1,16908289~1|PlotBoardProfile=False|PlotBoardProfileFileName= |PlotPositivePlaneLayers=False|PlotUsedDrillDrawingLayerPairs=False|PlotUsedDrillGuideLayerPairs=False|PlusApertureTolerance=50|PlusApertureTolerance=50|Record=GerberView|SoftwareArcs=False|Sorted=False|Sorted=False|UncheckPlotDrillDrawingLayerPair0_Backdrill=False|UncheckPlotDrillDrawingLayerPair0_Checked=False|UncheckPlotDrillDrawingLayerPair0_DrillType=Regular|UncheckPlotDrillDrawingLayerPair0_FileName= |UncheckPlotDrillDrawingLayerPair0_HighLayer=Bottom Layer|UncheckPlotDrillDrawingLayerPair0_LowLayer=Top Layer|UncheckPlotDrillGuideLayerPair0_Backdrill=False|UncheckPlotDrillGuideLayerPair0_Checked=False|UncheckPlotDrillGuideLayerPair0_DrillType=Regular|UncheckPlotDrillGuideLayerPair0_FileName= |UncheckPlotDrillGuideLayerPair0_HighLayer=Bottom Layer|UncheckPlotDrillGuideLayerPair0_LowLayer=Top Layer|DocumentPath=C:\Altium\projects\Bucaneve\logic_board\PCB1_w_gnd_plane.PcbDoc
+OutputType9=NC Drill
+OutputName9=NC Drill Files W gnd_plane
+OutputCategory9=Fabrication
+OutputDocumentPath9=PCB1_w_gnd_plane.PcbDoc
+OutputVariantName9=
+OutputEnabled9=1
+OutputEnabled9_OutputMedium1=0
+OutputEnabled9_OutputMedium2=0
+OutputEnabled9_OutputMedium3=0
+OutputEnabled9_OutputMedium4=0
+OutputEnabled9_OutputMedium5=0
+OutputEnabled9_OutputMedium6=2
+OutputEnabled9_OutputMedium7=0
+OutputDefault9=0
+Configuration9_Name1=OutputConfigurationParameter1
+Configuration9_Item1=BoardEdgeRoutToolDia=2000000|GenerateBoardEdgeRout=False|GenerateDrilledSlotsG85=False|GenerateEIADrillFile=False|GenerateSeparatePlatedNonPlatedFiles=False|GenerateSeparateViaTypeFiles=False|GenerateToolsByDrillSymbols=False|NumberOfDecimals=4|NumberOfUnits=4|OptimizeChangeLocationCommands=True|OriginPosition=Relative|Record=DrillView|Units=Metric|ZeroesMode=SuppressTrailingZeroes|DocumentPath=C:\Altium\projects\Bucaneve\logic_board\PCB1_w_gnd_plane.PcbDoc
+OutputType10=Gerber
+OutputName10=Gerber Files WO gnd_plane
+OutputCategory10=Fabrication
+OutputDocumentPath10=PCB1_wo_gnd_plane.PcbDoc
+OutputVariantName10=
+OutputEnabled10=0
+OutputEnabled10_OutputMedium1=0
+OutputEnabled10_OutputMedium2=0
+OutputEnabled10_OutputMedium3=0
+OutputEnabled10_OutputMedium4=0
+OutputEnabled10_OutputMedium5=0
+OutputEnabled10_OutputMedium6=0
+OutputEnabled10_OutputMedium7=1
+OutputDefault10=0
+Configuration10_Name1=OutputConfigurationParameter1
+Configuration10_Item1=AddToAllLayerClasses.Set= |AddToAllPlots.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray|BoardID=XFXZKCII|CentrePlots=False|DrillDrawingSymbol=GraphicsSymbol|DrillDrawingSymbolSize=500000|EmbeddedApertures=True|FilmBorderSize=10000000|FilmXSize=200000000|FilmYSize=160000000|FlashAllFills=False|FlashPadShapes=True|G54OnApertureChange=False|GenerateDRCRulesFile=False|GenerateDRCRulesFile=False|GenerateReliefShapes=True|GenerateReports=False|GerberUnit=Metric|GerberUnit=Metric|IncludeUnconnectedMidLayerPads=True|LayerClassesMirror.Set= |LayerClassesPlot.Set= |LeadingAndTrailingZeroesMode=SuppressLeadingZeroes|MaxApertureSize=2500000|MergePadAndRegion=False|MinusApertureTolerance=50|MinusApertureTolerance=50|Mirror.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray|MirrorDrillDrawingPlots=False|MirrorDrillGuidePlots=False|NoRegularPolygons=False|NumberOfDecimals=4|NumberOfDecimals=4|OptimizeChangeLocationCommands=True|OptimizeChangeLocationCommands=True|OriginPosition=Relative|OutputFormat=Different|Panelize=False|Plot.Set=SerializeLayerHash.Version~2,ClassName~TPlotLayerStateArray,16777217~1,16842751~1,16973830~1,16973831~1,16973834~1,16973835~1,16973832~1,16973833~1,16908289~1|PlotBoardProfile=False|PlotBoardProfileFileName= |PlotPositivePlaneLayers=False|PlotUsedDrillDrawingLayerPairs=False|PlotUsedDrillGuideLayerPairs=False|PlusApertureTolerance=50|PlusApertureTolerance=50|Record=GerberView|SoftwareArcs=False|Sorted=False|Sorted=False|UncheckPlotDrillDrawingLayerPair0_Backdrill=False|UncheckPlotDrillDrawingLayerPair0_Checked=False|UncheckPlotDrillDrawingLayerPair0_DrillType=Regular|UncheckPlotDrillDrawingLayerPair0_FileName= |UncheckPlotDrillDrawingLayerPair0_HighLayer=Bottom Layer|UncheckPlotDrillDrawingLayerPair0_LowLayer=Top Layer|UncheckPlotDrillGuideLayerPair0_Backdrill=False|UncheckPlotDrillGuideLayerPair0_Checked=False|UncheckPlotDrillGuideLayerPair0_DrillType=Regular|UncheckPlotDrillGuideLayerPair0_FileName= |UncheckPlotDrillGuideLayerPair0_HighLayer=Bottom Layer|UncheckPlotDrillGuideLayerPair0_LowLayer=Top Layer|DocumentPath=C:\Altium\projects\Bucaneve\logic_board\PCB1_wo_gnd_plane.PcbDoc
+OutputType11=NC Drill
+OutputName11=NC Drill Files WO gnd_plane
+OutputCategory11=Fabrication
+OutputDocumentPath11=PCB1_wo_gnd_plane.PcbDoc
+OutputVariantName11=
+OutputEnabled11=0
+OutputEnabled11_OutputMedium1=0
+OutputEnabled11_OutputMedium2=0
+OutputEnabled11_OutputMedium3=0
+OutputEnabled11_OutputMedium4=0
+OutputEnabled11_OutputMedium5=0
+OutputEnabled11_OutputMedium6=0
+OutputEnabled11_OutputMedium7=2
+OutputDefault11=0
+Configuration11_Name1=OutputConfigurationParameter1
+Configuration11_Item1=BoardEdgeRoutToolDia=2000000|GenerateBoardEdgeRout=False|GenerateDrilledSlotsG85=False|GenerateEIADrillFile=False|GenerateSeparatePlatedNonPlatedFiles=False|GenerateSeparateViaTypeFiles=False|GenerateToolsByDrillSymbols=False|NumberOfDecimals=4|NumberOfUnits=4|OptimizeChangeLocationCommands=True|OriginPosition=Relative|Record=DrillView|Units=Metric|ZeroesMode=SuppressTrailingZeroes|DocumentPath=C:\Altium\projects\Bucaneve\logic_board\PCB1_wo_gnd_plane.PcbDoc
+
+[PublishSettings]
+OutputFilePath2=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\.\
+ReleaseManaged2=0
+OutputBasePath2=.\
+OutputPathMedia2==ProjectName+' - PrjOut'
+OutputPathMediaValue2==ProjectName+' - PrjOut'
+OutputPathOutputer2=[Output Custom]
+OutputPathOutputerPrefix2=
+OutputPathOutputerValue2==VariantName
+OutputFileName2=Job1.PDF
+OutputFileNameMulti2==ProjectName+'_'+ProjectRevision+'_'+VariantName+' - '+OutputName
+UseOutputNameForMulti2=0
+OutputFileNameSpecial2=
+OpenOutput2=0
+PromptOverwrite2=0
+PublishMethod2=1
+ZoomLevel2=50
+FitSCHPrintSizeToDoc2=1
+FitPCBPrintSizeToDoc2=1
+GenerateNetsInfo2=0
+MarkPins2=1
+MarkNetLabels2=1
+MarkPortsId2=1
+GenerateTOC2=1
+ShowComponentParameters2=1
+GlobalBookmarks2=0
+PDFACompliance2=Disabled
+PDFVersion2=Default
+OutputFilePath3=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+ReleaseManaged3=0
+OutputBasePath3=.\
+OutputPathMedia3==ProjectName+' - PrjOut'
+OutputPathMediaValue3==ProjectName+' - PrjOut'
+OutputPathOutputer3=[Output Custom]
+OutputPathOutputerPrefix3=
+OutputPathOutputerValue3=Gerber
+OutputFileName3=
+OutputFileNameMulti3==ProjectName+'_'+ProjectRevision+'-'+OutputName
+UseOutputNameForMulti3=0
+OutputFileNameSpecial3=
+OpenOutput3=0
+OutputFilePath4=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+ReleaseManaged4=0
+OutputBasePath4=.\
+OutputPathMedia4==ProjectName+' - PrjOut'
+OutputPathMediaValue4==ProjectName+' - PrjOut'
+OutputPathOutputer4=[Output Custom]
+OutputPathOutputerPrefix4=
+OutputPathOutputerValue4=ODB
+OutputFileName4=
+OutputFileNameMulti4==ProjectName+'_'+ProjectRevision+' - '+OutputName
+UseOutputNameForMulti4=0
+OutputFileNameSpecial4=
+OpenOutput4=0
+OutputFilePath5=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+ReleaseManaged5=0
+OutputBasePath5=.\
+OutputPathMedia5==ProjectName+' - PrjOut'
+OutputPathMediaValue5==ProjectName+' - PrjOut'
+OutputPathOutputer5=[Output Custom]
+OutputPathOutputerPrefix5=
+OutputPathOutputerValue5==VariantName
+OutputFileName5=
+OutputFileNameMulti5==ProjectName+'_'+ProjectRevision+'_'+VariantName+' - '+OutputName
+UseOutputNameForMulti5=0
+OutputFileNameSpecial5=
+OpenOutput5=0
+OutputFilePath6=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+ReleaseManaged6=0
+OutputBasePath6=.\
+OutputPathMedia6==ProjectName+' - PrjOut'
+OutputPathMediaValue6==ProjectName+' - PrjOut'
+OutputPathOutputer6=[Output Custom]
+OutputPathOutputerPrefix6=
+OutputPathOutputerValue6=Gerber_W_GND_plane
+OutputFileName6=
+OutputFileNameMulti6==ProjectName+'_'+ProjectRevision+'-'+OutputName
+UseOutputNameForMulti6=0
+OutputFileNameSpecial6=
+OpenOutput6=0
+OutputFilePath7=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+ReleaseManaged7=0
+OutputBasePath7=.\
+OutputPathMedia7==ProjectName+' - PrjOut'
+OutputPathMediaValue7==ProjectName+' - PrjOut'
+OutputPathOutputer7=[Output Custom]
+OutputPathOutputerPrefix7=
+OutputPathOutputerValue7=Gerber_WO_GND_plane
+OutputFileName7=
+OutputFileNameMulti7==ProjectName+'_'+ProjectRevision+'-'+OutputName
+UseOutputNameForMulti7=0
+OutputFileNameSpecial7=
+OpenOutput7=0
+
+[GeneratedFilesSettings]
+RelativeOutputPath2=C:\Users\decarli\OneDrive - PMP Industries group\PMP-Elettronica\Inverter PMS\Z04P24 - IMS 8 Mosfet\Z04P24\.\
+OpenOutputs2=0
+RelativeOutputPath3=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+OpenOutputs3=0
+AddToProject3=0
+TimestampFolder3=0
+UseOutputName3=0
+OpenODBOutput3=0
+OpenGerberOutput3=0
+OpenNCDrillOutput3=0
+OpenIPCOutput3=0
+EnableReload3=0
+RelativeOutputPath4=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+OpenOutputs4=0
+AddToProject4=0
+TimestampFolder4=0
+UseOutputName4=0
+OpenODBOutput4=0
+OpenGerberOutput4=0
+OpenNCDrillOutput4=0
+OpenIPCOutput4=0
+EnableReload4=0
+RelativeOutputPath5=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+OpenOutputs5=0
+AddToProject5=0
+TimestampFolder5=0
+UseOutputName5=0
+OpenODBOutput5=0
+OpenGerberOutput5=0
+OpenNCDrillOutput5=0
+OpenIPCOutput5=0
+EnableReload5=0
+RelativeOutputPath6=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+OpenOutputs6=0
+AddToProject6=0
+TimestampFolder6=0
+UseOutputName6=0
+OpenODBOutput6=0
+OpenGerberOutput6=0
+OpenNCDrillOutput6=0
+OpenIPCOutput6=0
+EnableReload6=0
+RelativeOutputPath7=C:\Altium\projects\Bucaneve\logic_board\.\logic_board - PrjOut
+OpenOutputs7=0
+AddToProject7=0
+TimestampFolder7=0
+UseOutputName7=0
+OpenODBOutput7=0
+OpenGerberOutput7=0
+OpenNCDrillOutput7=0
+OpenIPCOutput7=0
+EnableReload7=0
+

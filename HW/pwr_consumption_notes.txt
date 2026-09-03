@@ -1,0 +1,12 @@
+MCU (STM32G491)	: 	40mA @170MHz
+LDC5072			: 	20mA
+Output_PU (x2)	:	2 x 20mA = 40mA
+
+Tot				:	100mA
+
+
+Buck options:
+- DCP3603/DCP3601 	(sot23; fixed 5V/3V3; 1A/3A; forced CCM(low noise)/DCM(low consumption))
+- NCV890430		 	(DFN; fixed 5V/3V3; 600mA; AEC-Q100; forced CCM; Pmos HS(100%duty))
+- LMR36503			(DFN; Adj; 300mA; AEC-Q100)
+- TLF50201ELV50		
