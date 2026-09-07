@@ -26,7 +26,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "system_status.h"
+#include "led_handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -98,12 +99,20 @@ int main(void)
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
 
+  led_handler_init(10);
+  TIM7->DIER |= TIM_DIER_UIE_Msk;
+  TIM7->CR1 |= TIM_CR1_CEN_Msk;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    set_system_status(SYSTEM_STATUS_IDLE);
+    HAL_Delay(10000);
+    set_system_status(SYSTEM_STATUS_RUNNING);
+    HAL_Delay(10000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

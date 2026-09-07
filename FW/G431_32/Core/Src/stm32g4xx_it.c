@@ -22,6 +22,9 @@
 #include "stm32g4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "led_handler.h"
+#include "stm32g431xx.h"
+#include "stm32g4xx_ll_tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -204,6 +207,13 @@ void SysTick_Handler(void)
 void TIM7_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM7_IRQn 0 */
+  if(LL_TIM_IsActiveFlag_UPDATE(TIM7))
+  {
+    blink_led();
+    //LL_TIM_ClearFlag_UPDATE(TIM7);
+    TIM7->SR &= ~TIM_SR_UIF_Msk;
+  }
+  
 
   /* USER CODE END TIM7_IRQn 0 */
   /* USER CODE BEGIN TIM7_IRQn 1 */
