@@ -201,39 +201,6 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32g4xx.s).                    */
 /******************************************************************************/
 
-/**
-  * @brief This function handles TIM7 global interrupt.
-  */
-void TIM7_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM7_IRQn 0 */
-  if(LL_TIM_IsActiveFlag_UPDATE(TIM7))
-  {
-    blink_led();
-    //LL_TIM_ClearFlag_UPDATE(TIM7);
-    TIM7->SR &= ~TIM_SR_UIF_Msk;
-  }
-  
-
-  /* USER CODE END TIM7_IRQn 0 */
-  /* USER CODE BEGIN TIM7_IRQn 1 */
-
-  /* USER CODE END TIM7_IRQn 1 */
-}
-
-/**
-  * @brief This function handles CORDIC interrupt.
-  */
-void CORDIC_IRQHandler(void)
-{
-  /* USER CODE BEGIN CORDIC_IRQn 0 */
-
-  /* USER CODE END CORDIC_IRQn 0 */
-  /* USER CODE BEGIN CORDIC_IRQn 1 */
-
-  /* USER CODE END CORDIC_IRQn 1 */
-}
-
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */

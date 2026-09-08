@@ -73,7 +73,7 @@ void Error_Handler(void);
 #define TIM7_PSC 0
 #define TIM7_ARR 16999
 #define ADC_OFFSET_DEFAULT 2048
-#define TIM2_ARR 213
+#define TIM2_ARR 425
 #define COS_P_Pin LL_GPIO_PIN_0
 #define COS_P_GPIO_Port GPIOA
 #define COS_N_Pin LL_GPIO_PIN_1
