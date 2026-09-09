@@ -64,6 +64,7 @@ void blink_led()
                     led_stat = 1;
                 }
                 cnt=0;
+                LL_GPIO_ResetOutputPin(ERR_LED_GPIO_Port, ERR_LED_Pin);
             }
         }
         else 

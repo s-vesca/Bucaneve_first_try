@@ -16,7 +16,7 @@ probe_type = 0
 target_name = 
 probe_mode = 0
 probe_speed_khz = 10000
-probe_sn = 005000453331511534333834
+probe_sn = 001A00283038511834333935
 should_log = false
 log_directory = 
 gdb_command = ./gdb
@@ -176,6 +176,23 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
+[var7]
+name = sys_stat
+tracked_name = sys_stat
+address = 536872417
+type = 1
+color = 575614665
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 3
+value_to_write = 2.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
 [group0]
 name = new group0
 acquisition_type = 0
@@ -185,40 +202,51 @@ override_viewport_width = false
 viewport_width_ms = 500.000000
 
 [group0-plot0]
+name = ctrl
+type = 2
+visibility = false
+secondary_write_enabled = false
+
+[group0-plot0-series0]
+name = sys_stat
+visibility = true
+format = DEC
+
+[group0-plot1]
 name = phase
 type = 0
 visibility = true
 secondary_write_enabled = false
 
-[group0-plot0-series0]
+[group0-plot1-series0]
 name = phase_dbg
 visibility = true
 format = DEC
 
-[group0-plot1]
+[group0-plot2]
 name = sin-cos
 type = 0
 visibility = false
 secondary_write_enabled = false
 
-[group0-plot1-series0]
+[group0-plot2-series0]
 name = adc_cos_dbg
 visibility = true
 format = DEC
 
-[group0-plot1-series1]
+[group0-plot2-series1]
 name = adc_sin_dbg
 visibility = true
 format = DEC
 
-[group0-plot2]
+[group0-plot3]
 name = xy_plot
 type = 3
 visibility = false
 secondary_write_enabled = false
 x_axis_variable = adc_cos_dbg
 
-[group0-plot2-series0]
+[group0-plot3-series0]
 name = adc_sin_dbg
 visibility = true
 format = DEC
