@@ -13,14 +13,14 @@
 //                              Debug Variables
 //------------------------------------------------------------------------------
 
-int8_t dir_dbg;
-int16_t phase_dbg;
-int16_t ph_diff_dbg;
-int16_t speed_dbg;
-int32_t filt_state_dbg;
+volatile int8_t dir_dbg;
+volatile int16_t phase_dbg;
+volatile int16_t ph_diff_dbg;
+volatile int16_t speed_dbg;
+volatile int32_t filt_state_dbg;
 
-int16_t adc_cos_dbg;
-int16_t adc_sin_dbg;
+volatile int16_t adc_cos_dbg;
+volatile int16_t adc_sin_dbg;
 
 //------------------------------------------------------------------------------
 //                              Code Variables
@@ -127,8 +127,8 @@ void calculate_outputs()
             state_tmp = ((phase >> shift_pos) & 0x0003);
 
             // check that direction matches state variaton and add 1/4 step hysteresis 
-            if(((dir == 1) &&  ((state_tmp > state_out) || ((state_tmp == 0x00) && (state_out == 0x03))) && (((phase >> (shift_pos-2)) & 0x0003) > 0x0001)) ||
-               ((dir == 0) &&  ((state_tmp < state_out) || ((state_tmp == 0x03) && (state_out == 0x00))) && (((phase >> (shift_pos-2)) & 0x0003) < 0x0003)))
+            if(((dir ==  1) &&  ((state_tmp > state_out) || ((state_tmp == 0x00) && (state_out == 0x03))) && (((phase >> (shift_pos-2)) & 0x0003) > 0x0001)) ||
+               ((dir == -1) &&  ((state_tmp < state_out) || ((state_tmp == 0x03) && (state_out == 0x00))) && (((phase >> (shift_pos-2)) & 0x0003) < 0x0003)))
             {
                 //update output only if condition matches
                 state_out = state_tmp;

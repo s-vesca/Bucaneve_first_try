@@ -7,7 +7,7 @@ version = 2
 
 [settings]
 sample_frequency_hz = 10000
-max_points = 10000
+max_points = 100000
 max_viewport_points = 5000
 viewport_width_ms = 500.000000
 refresh_on_elf_change = true
@@ -213,40 +213,62 @@ visibility = true
 format = DEC
 
 [group0-plot1]
-name = phase
+name = direction
 type = 0
 visibility = true
 secondary_write_enabled = false
 
 [group0-plot1-series0]
-name = phase_dbg
+name = dir_dbg
 visibility = true
 format = DEC
 
 [group0-plot2]
-name = sin-cos
+name = phase
 type = 0
-visibility = false
+visibility = true
 secondary_write_enabled = false
 
 [group0-plot2-series0]
-name = adc_cos_dbg
-visibility = true
-format = DEC
-
-[group0-plot2-series1]
-name = adc_sin_dbg
+name = phase_dbg
 visibility = true
 format = DEC
 
 [group0-plot3]
+name = sin-cos
+type = 0
+visibility = true
+secondary_write_enabled = false
+
+[group0-plot3-series0]
+name = adc_cos_dbg
+visibility = true
+format = DEC
+
+[group0-plot3-series1]
+name = adc_sin_dbg
+visibility = true
+format = DEC
+
+[group0-plot4]
+name = speed
+type = 0
+visibility = true
+secondary_write_enabled = false
+
+[group0-plot4-series0]
+name = speed_dbg
+visibility = true
+format = DEC
+
+[group0-plot5]
 name = xy_plot
 type = 3
 visibility = false
 secondary_write_enabled = false
 x_axis_variable = adc_cos_dbg
 
-[group0-plot3-series0]
+[group0-plot5-series0]
 name = adc_sin_dbg
 visibility = true
 format = DEC
