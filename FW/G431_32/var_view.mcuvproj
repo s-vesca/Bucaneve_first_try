@@ -16,7 +16,7 @@ probe_type = 0
 target_name = 
 probe_mode = 0
 probe_speed_khz = 2000
-probe_sn = 001A00283038511834333935
+probe_sn = 003D00223433510137363934
 should_log = false
 log_directory = 
 gdb_command = ./gdb
@@ -226,7 +226,7 @@ format = DEC
 [group0-plot2]
 name = phase
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group0-plot2-series0]
@@ -237,7 +237,7 @@ format = DEC
 [group0-plot3]
 name = sin-cos
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group0-plot3-series0]
@@ -264,7 +264,7 @@ format = DEC
 [group0-plot5]
 name = xy_plot
 type = 3
-visibility = false
+visibility = true
 secondary_write_enabled = false
 x_axis_variable = adc_cos_dbg
 
