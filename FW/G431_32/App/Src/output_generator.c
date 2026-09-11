@@ -68,6 +68,8 @@ void calculate_outputs()
     static int16_t  phase_prev = 0;
     static int32_t  filt_state = 0;
 
+    static uint8_t cnt_trace = 0;
+
     //check that isr comes from cordic data ready flag
     if(LL_CORDIC_IsActiveFlag_RRDY(CORDIC))
     {
@@ -118,6 +120,17 @@ void calculate_outputs()
             filt_state_dbg = filt_state;
             speed_dbg = speed;
 
+#if (TRACE_EN == 1)
+            switch(cnt_trace)
+            {
+                case(0): {ITM->PORT[0].u16 = adc_data_reg_cos;break;}
+                case(1): {ITM->PORT[1].u16 = adc_data_reg_sin;break;}
+                case(2): {ITM->PORT[2].u16 = phase;break;}
+                case(3): {ITM->PORT[3].u16 = speed;break;}
+            }
+
+            cnt_trace = ((cnt_trace + 1) > 3) ? (0) : (cnt_trace + 1);
+#endif
             //direcrtion 
             dir = (int8_t)(SIGN(speed));
             dir_dbg = dir;

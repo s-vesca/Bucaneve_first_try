@@ -15,7 +15,7 @@ stop_acq_on_elf_change = true
 probe_type = 0
 target_name = 
 probe_mode = 0
-probe_speed_khz = 10000
+probe_speed_khz = 2000
 probe_sn = 001A00283038511834333935
 should_log = false
 log_directory = 
@@ -42,8 +42,8 @@ timeout_enabled = false
 timeout_seconds = 5
 
 [trace_settings]
-core_frequency = 160000
-trace_prescaler = 10
+core_frequency = 170000
+trace_prescaler = 80
 max_points = 10000
 max_viewport_points_percent = 10
 viewport_width_ms = 5.000000
@@ -215,7 +215,7 @@ format = DEC
 [group0-plot1]
 name = direction
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group0-plot1-series0]
@@ -253,7 +253,7 @@ format = DEC
 [group0-plot4]
 name = speed
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group0-plot4-series0]
@@ -275,60 +275,64 @@ format = DEC
 
 [trace_plot0]
 name = CH0
-alias = CH0
+alias = COS
 visibility = true
-domain = 1
+domain = 0
+type = 3
 
 [trace_plot1]
 name = CH1
-alias = CH1
+alias = SIN
 visibility = true
-domain = 1
+domain = 0
+type = 3
 
 [trace_plot2]
 name = CH2
-alias = CH2
+alias = PHASE
 visibility = true
-domain = 1
+domain = 0
+type = 3
 
 [trace_plot3]
 name = CH3
-alias = CH3
+alias = SPEED
 visibility = true
-domain = 1
+domain = 0
+type = 3
 
 [trace_plot4]
 name = CH4
 alias = CH4
-visibility = true
+visibility = false
 domain = 1
 
 [trace_plot5]
 name = CH5
 alias = CH5
-visibility = true
+visibility = false
 domain = 1
 
 [trace_plot6]
 name = CH6
 alias = CH6
-visibility = true
+visibility = false
 domain = 1
 
 [trace_plot7]
 name = CH7
 alias = CH7
-visibility = true
+visibility = false
 domain = 1
 
 [trace_plot8]
 name = CH8
 alias = CH8
-visibility = true
+visibility = false
 domain = 1
 
 [trace_plot9]
 name = CH9
 alias = CH9
-visibility = true
+visibility = false
 domain = 1
