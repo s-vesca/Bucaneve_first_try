@@ -257,8 +257,15 @@ void relocate_isr_table()
 
 void adcs_init_normal_mode()
 {
-  ADC1->OFR1 -= 802;
-  ADC2->OFR1 -= 8;
+  //offset correction (board with gnd plane)
+  //ADC1->OFR1 -= 818;
+  //ADC2->OFR1 += 132;
+
+  //offset correction (board without gnd plane)
+  ADC1->OFR1 -= 205;
+  //ADC2->OFR1 += 8;  //pulpito
+  ADC2->OFR1 -= 13;   //banchetto
+
   //ADC1
   LL_ADC_ClearFlag_ADRDY(ADC1);
   LL_ADC_Enable(ADC1);

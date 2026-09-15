@@ -17,8 +17,8 @@ target_name =
 probe_mode = 0
 probe_speed_khz = 2000
 probe_sn = 003D00223433510137363934
-should_log = false
-log_directory = 
+should_log = true
+log_directory = C:\Users\S.vesca\Desktop\logs
 gdb_command = ./gdb
 ofd2000_command = 
 elf_parser = gdb
@@ -237,7 +237,7 @@ format = DEC
 [group0-plot3]
 name = sin-cos
 type = 0
-visibility = false
+visibility = true
 secondary_write_enabled = false
 
 [group0-plot3-series0]
@@ -264,7 +264,7 @@ format = DEC
 [group0-plot5]
 name = xy_plot
 type = 3
-visibility = true
+visibility = false
 secondary_write_enabled = false
 x_axis_variable = adc_cos_dbg
 

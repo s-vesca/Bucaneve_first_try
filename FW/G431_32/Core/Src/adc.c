@@ -108,7 +108,7 @@ void MX_ADC1_Init(void)
   ADC_REG_InitStruct.DMATransfer = LL_ADC_REG_DMA_TRANSFER_LIMITED;
   ADC_REG_InitStruct.Overrun = LL_ADC_REG_OVR_DATA_PRESERVED;
   LL_ADC_REG_Init(ADC1, &ADC_REG_InitStruct);
-  LL_ADC_SetGainCompensation(ADC1, 0);
+  LL_ADC_SetGainCompensation(ADC1, 4096);
   LL_ADC_SetOverSamplingScope(ADC1, LL_ADC_OVS_DISABLE);
   ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_SYNC_PCLK_DIV4;
   ADC_CommonInitStruct.Multimode = LL_ADC_MULTI_DUAL_REG_SIMULT;
@@ -204,7 +204,7 @@ void MX_ADC2_Init(void)
   ADC_REG_InitStruct.DMATransfer = LL_ADC_REG_DMA_TRANSFER_NONE;
   ADC_REG_InitStruct.Overrun = LL_ADC_REG_OVR_DATA_PRESERVED;
   LL_ADC_REG_Init(ADC2, &ADC_REG_InitStruct);
-  LL_ADC_SetGainCompensation(ADC2, 0);
+  LL_ADC_SetGainCompensation(ADC2, 4375);
   LL_ADC_SetOverSamplingScope(ADC2, LL_ADC_OVS_DISABLE);
 
   /* Disable ADC deep power down (enabled by default after reset state) */
@@ -233,7 +233,9 @@ void MX_ADC2_Init(void)
   LL_ADC_SetOffsetSign(ADC2, LL_ADC_OFFSET_1, LL_ADC_OFFSET_SIGN_NEGATIVE);
   LL_ADC_SetOffsetSaturation(ADC2, LL_ADC_OFFSET_1, LL_ADC_OFFSET_SATURATION_DISABLE);
   /* USER CODE BEGIN ADC2_Init 2 */
-
+  
+  //LL_ADC_SetGainCompensation(ADC2, 4375); //with gnd plane
+  LL_ADC_SetGainCompensation(ADC2, 4172); //without gnd plane
   /* USER CODE END ADC2_Init 2 */
 
 }
