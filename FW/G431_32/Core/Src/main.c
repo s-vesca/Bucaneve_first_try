@@ -20,7 +20,7 @@
 #include "main.h"
 #include "adc.h"
 #include "cordic.h"
-#include "dma.h"
+#include "stm32g431xx.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -123,12 +123,12 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
   MX_CORDIC_Init();
   MX_TIM2_Init();
   MX_TIM7_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 
   //----------------------------------------------------------------------------
@@ -165,6 +165,8 @@ int main(void)
   adc_sync_timer_start();
   //----------------------------------------------------------------------------
 
+  TIM6->CR1 |= TIM_CR1_CEN_Msk;
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -245,7 +247,8 @@ void relocate_isr_table()
   isr_vec[16 + TIM2_IRQn]      			    = (uint32_t)(TIM2_irq_handler);
   isr_vec[16 + TIM7_IRQn]      			    = (uint32_t)(blink_led);
   isr_vec[16 + CORDIC_IRQn]      			  = (uint32_t)(calculate_outputs);
-
+  isr_vec[16 + ADC1_2_IRQn]      			  = (uint32_t)(read_adcs);
+  
   //relocate interrupt vector table
   SCB->VTOR = (uint32_t)(isr_vec);
 
@@ -289,18 +292,21 @@ void adcs_init_normal_mode()
   //ADC2->ISR |= ADC_ISR_ADRDY;
 
   //clear flags
-  LL_ADC_ClearFlag_EOC(ADC1);
-  LL_ADC_ClearFlag_EOC(ADC2);
-  LL_ADC_ClearFlag_OVR(ADC1);
-  LL_ADC_ClearFlag_OVR(ADC2);
+  LL_ADC_ClearFlag_JEOC(ADC1);
+  LL_ADC_ClearFlag_JEOC(ADC2);
+  //LL_ADC_ClearFlag_OVR(ADC1);
+  //LL_ADC_ClearFlag_OVR(ADC2);
   //ADC1->ISR |= ADC_ISR_EOC_Msk;
   //ADC2->ISR |= ADC_ISR_EOC_Msk;
 
-  //Enable JEOC interrupt for ADC1 (both ADCs will have finished the conversion)
-  //ADC1->IER |= ADC_IER_EOCIE;
+  //Enable EOC interrupt for ADC1 (both ADCs will have finished the conversion)
+  ADC1->IER |= ADC_IER_JEOCIE;
+
+  ADC1->CR |= ADC_CR_JADSTART;
+  ADC2->CR |= ADC_CR_JADSTART;
 
   //Setup adc common to generate dma requests for 32bit-word
-  LL_ADC_SetMultiDMATransfer(ADC12_COMMON, LL_ADC_MULTI_REG_DMA_UNLMT_RES12_10B);
+  //LL_ADC_SetMultiDMATransfer(ADC12_COMMON, LL_ADC_MULTI_REG_DMA_UNLMT_RES12_10B);
 
   return;
 }
@@ -364,7 +370,7 @@ void dma_init()
   //set TO ADDRESS to CORDIC WDATA (Write Data register)
   LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t)&(CORDIC->WDATA));
 
-  LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_1);
+  //LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_1);
 
   return;
 }

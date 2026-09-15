@@ -5,6 +5,7 @@
 #include "defines.h"
 #include "stm32g4xx_ll_gpio.h"
 #include <stdint.h>
+#include "recorder.h"
 
 #define MAX_FACTOR (32767)
 #define MAX_SHIFT  (16)
@@ -21,6 +22,10 @@ volatile int32_t filt_state_dbg;
 
 volatile int16_t adc_cos_dbg;
 volatile int16_t adc_sin_dbg;
+volatile int16_t adc_cos_filt_dbg;
+volatile int16_t adc_sin_filt_dbg;
+
+volatile uint16_t cnt;
 
 //------------------------------------------------------------------------------
 //                              Code Variables
@@ -52,6 +57,54 @@ void output_generator_init(uint16_t _factor)
     }
 }
 
+void read_adcs()
+{
+    int32_t    adc_data_reg_cos;
+    int32_t    adc_data_reg_sin;
+    int32_t    adc_data_reg_cos_filt;
+    int32_t    adc_data_reg_cos_filt2;
+    int32_t    adc_data_reg_sin_filt;
+
+    int32_t    adc_cos_filt_diff;
+    int32_t    adc_cos_filt2_diff;
+    int32_t    adc_sin_filt_diff;
+
+    static int32_t adc_cos_filt_state;
+    static int32_t adc_cos_filt2_state;
+    static int32_t adc_sin_filt_state;
+
+    TIM6->CNT = 0;
+
+    if(LL_ADC_IsActiveFlag_JEOC(ADC1) && LL_ADC_IsActiveFlag_JEOC(ADC2))
+    {
+        adc_data_reg_cos = (int32_t)(ADC1->JDR1) << 16;
+        adc_data_reg_sin = (int32_t)(ADC2->JDR1) << 16;
+
+        adc_cos_filt_diff = (int32_t)(adc_data_reg_cos) - adc_cos_filt_state;
+        adc_cos_filt_state += (adc_cos_filt_diff >> 1) - (adc_cos_filt_diff >> 5) - (adc_cos_filt_diff >> 7);
+        adc_data_reg_cos_filt = (int32_t)(adc_cos_filt_state);
+        
+        adc_cos_filt2_diff = (int32_t)(adc_data_reg_cos_filt) - adc_cos_filt2_state;
+        adc_cos_filt2_state += (adc_cos_filt2_diff >> 1) - (adc_cos_filt2_diff >> 5) - (adc_cos_filt2_diff >> 7);
+        adc_data_reg_cos_filt2 = (int32_t)(adc_cos_filt2_state);
+
+        adc_sin_filt_diff = (int32_t)(adc_data_reg_sin) - adc_sin_filt_state;
+        adc_sin_filt_state += (adc_sin_filt_diff >> 2) + (adc_sin_filt_diff >> 6) + (adc_sin_filt_diff >> 9);
+        adc_data_reg_sin_filt = (int32_t)(adc_sin_filt_state);
+
+        adc_cos_dbg = (int16_t)(adc_data_reg_cos >> 16);
+        adc_sin_dbg = (int16_t)(adc_data_reg_sin >> 16);
+        adc_cos_filt_dbg = (int16_t)(adc_data_reg_cos_filt2 >> 16);
+        adc_sin_filt_dbg = (int16_t)(adc_data_reg_sin_filt >> 16);
+
+        LL_CORDIC_WriteData(CORDIC, ((uint32_t)(uint16_t)adc_data_reg_sin_filt << 16) | (uint32_t)(uint16_t)adc_data_reg_cos_filt);
+
+        //clear flags
+        LL_ADC_ClearFlag_EOC(ADC1);
+        LL_ADC_ClearFlag_EOC(ADC2);
+    }
+}
+
 void calculate_outputs()
 {
     uint32_t    rdata_reg;
@@ -60,25 +113,15 @@ void calculate_outputs()
     int16_t     speed;
     int8_t      dir;
     uint8_t     state_tmp;
-    uint16_t    adc_data_reg_cos;
-    uint16_t    adc_data_reg_sin;
     
     static uint8_t  state_out = 0;
     static uint8_t  first_iteration = 1;
     static int16_t  phase_prev = 0;
     static int32_t  filt_state = 0;
 
-    static uint8_t cnt_trace = 0;
-
     //check that isr comes from cordic data ready flag
     if(LL_CORDIC_IsActiveFlag_RRDY(CORDIC))
-    {
-        adc_data_reg_cos = LL_ADC_REG_ReadMultiConversionData32(ADC12_COMMON, LL_ADC_MULTI_MASTER);
-        adc_data_reg_sin = LL_ADC_REG_ReadMultiConversionData32(ADC12_COMMON, LL_ADC_MULTI_SLAVE);
-
-        adc_cos_dbg = adc_data_reg_cos;
-        adc_sin_dbg = adc_data_reg_sin;
-        
+    {        
         //check that shift_pos variable is initialized
         if(shift_pos < MAX_SHIFT)
         {
@@ -120,17 +163,6 @@ void calculate_outputs()
             filt_state_dbg = filt_state;
             speed_dbg = speed;
 
-#if (TRACE_EN == 1)
-            switch(cnt_trace)
-            {
-                case(0): {ITM->PORT[0].u16 = adc_data_reg_cos;break;}
-                case(1): {ITM->PORT[1].u16 = adc_data_reg_sin;break;}
-                case(2): {ITM->PORT[2].u16 = phase;break;}
-                case(3): {ITM->PORT[3].u16 = speed;break;}
-            }
-
-            cnt_trace = ((cnt_trace + 1) > 3) ? (0) : (cnt_trace + 1);
-#endif
             //direcrtion 
             dir = (int8_t)(SIGN(speed));
             dir_dbg = dir;
@@ -151,8 +183,12 @@ void calculate_outputs()
             LL_GPIO_WriteReg(GPIOA, BSRR , (uint32_t)(gray_lut[state_out]));
 
             phase_prev = phase;
+            cnt = TIM6->CNT;
+            recorderStep();
         }
             //flag is cleared by HW
+
+            
     }
     return;
 }

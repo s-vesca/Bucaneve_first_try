@@ -48,12 +48,14 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/led_handler.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/system_status.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/output_generator.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/recorder.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Middlewares/ST/CMSIS/DSP/Include
 )
 
 # Add project symbols (macros)

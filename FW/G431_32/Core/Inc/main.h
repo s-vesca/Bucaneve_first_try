@@ -31,7 +31,6 @@ extern "C" {
 
 #include "stm32g4xx_ll_adc.h"
 #include "stm32g4xx_ll_cordic.h"
-#include "stm32g4xx_ll_dma.h"
 #include "stm32g4xx_ll_tim.h"
 #include "stm32g4xx_ll_system.h"
 #include "stm32g4xx_ll_gpio.h"
@@ -41,6 +40,7 @@ extern "C" {
 #include "stm32g4xx_ll_rcc.h"
 #include "stm32g4xx_ll_utils.h"
 #include "stm32g4xx_ll_pwr.h"
+#include "stm32g4xx_ll_dma.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -73,7 +73,7 @@ void Error_Handler(void);
 #define TIM7_PSC 0
 #define TIM7_ARR 16999
 #define ADC_OFFSET_DEFAULT 2048
-#define TIM2_ARR 425
+#define TIM2_ARR 1700
 #define COS_P_Pin LL_GPIO_PIN_0
 #define COS_P_GPIO_Port GPIOA
 #define COS_N_Pin LL_GPIO_PIN_1
