@@ -55,12 +55,14 @@ ENTRY(Reset_Handler)
 /* Specify the memory areas */
 MEMORY
 {
-RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 32K
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 64K
+SRAM1 (xrw)      : ORIGIN = 0x20000000, LENGTH = 16K
+SRAM2 (xrw)      : ORIGIN = 0x20004000, LENGTH =  6K
+CCM_SRAM (xrw)   : ORIGIN = 0x10000000, LENGTH = 10K
+FLASH (rx)       : ORIGIN = 0x8000000,  LENGTH = 64K
 }
 
 /* Highest address of the user mode stack */
-_estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
+_estack = ORIGIN(SRAM1) + LENGTH(SRAM1) + LENGTH(SRAM2) + LENGTH(CCM_SRAM);    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0x200;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
@@ -161,7 +163,7 @@ SECTIONS
     *(.RamFunc*)       /* .RamFunc* sections */
 
     . = ALIGN(4);
-  } >RAM AT> FLASH
+  } >SRAM1 AT> FLASH
 
  /* Initialized TLS data section */
   .tdata : ALIGN(4)
@@ -171,7 +173,7 @@ SECTIONS
     _edata = .;        /* define a global symbol at data end */
     PROVIDE(__data_end = .);
     PROVIDE(__tdata_end = .);
-  } >RAM AT> FLASH
+  } >SRAM1 AT> FLASH
 
   PROVIDE( __tdata_start = ADDR(.tdata) );
   PROVIDE( __tdata_size = __tdata_end - __tdata_start );
@@ -187,6 +189,49 @@ SECTIONS
   PROVIDE( __data_source_end = __tdata_source_end );
   PROVIDE( __data_source_size = __data_source_end - __data_source );
   /* Uninitialized data section */
+
+  . = _sidata + (_edata - _sdata);
+
+  _si_ccm_sram_code = .;
+  
+  .ccm_sram_code : AT(_si_ccm_sram_code)
+  {
+  	. = ALIGN(4);
+  	_sccm_sram_code = .;
+  	KEEP(*(.ccm_code))
+  	. = ALIGN(4);
+    _eccm_sram_code = .;  	
+  } >CCM_SRAM
+
+  . = _si_ccm_sram_code + (_eccm_sram_code - _sccm_sram_code);
+
+  _si_ccm_sram_data = .;
+
+  .ccm_sram_data : AT(_si_ccm_sram_data)
+  {
+  	. = ALIGN(4);
+    _sccm_sram_data = .;
+  	KEEP(*(.ccm_data))
+  	. = ALIGN(4);
+    _eccm_sram_data = .;
+  } >CCM_SRAM
+
+  . = _si_ccm_sram_data + (_eccm_sram_data - _sccm_sram_data);
+
+  _si_ccm_sram_rodata = .;
+
+  .ccm_sram_rodata : AT(_si_ccm_sram_rodata)
+  {
+  	. = ALIGN(4);
+    _sccm_sram_rodata = .;
+  	KEEP(*(.ccm_rodata))
+  	. = ALIGN(4);
+    _eccm_sram_rodata = .;
+  	
+  } >CCM_SRAM
+
+  . = _si_ccm_sram_rodata + (_eccm_sram_rodata - _sccm_sram_rodata);
+
   .tbss (NOLOAD) : ALIGN(4)
   {
      /* This is used by the startup in order to initialize the .bss secion */
@@ -195,7 +240,7 @@ SECTIONS
     *(.tbss .tbss.*)
     . = ALIGN(4);
     PROVIDE( __tbss_end = . );
-  } >RAM
+  } >SRAM1
 
   PROVIDE( __tbss_start = ADDR(.tbss) );
   PROVIDE( __tbss_size = __tbss_end - __tbss_start );
@@ -219,7 +264,7 @@ SECTIONS
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
       PROVIDE( __bss_end = .);
-  } >RAM
+  } >SRAM1
   PROVIDE( __non_tls_bss_start = ADDR(.bss) );
 
   PROVIDE( __bss_start = __tbss_start );
@@ -234,7 +279,7 @@ SECTIONS
     . = . + _Min_Heap_Size;
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
-  } >RAM
+  } >SRAM1
 
 
 

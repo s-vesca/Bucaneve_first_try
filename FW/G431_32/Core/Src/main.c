@@ -20,17 +20,17 @@
 #include "main.h"
 #include "adc.h"
 #include "cordic.h"
-#include "stm32g431xx.h"
 #include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdint.h>
+#include <string.h>
 #include "system_status.h"
 #include "led_handler.h"
 #include "output_generator.h"
 #include "stm32g4xx_it.h"
-#include <stdint.h>
 #include "defines.h"
 /* USER CODE END Includes */
 
@@ -52,10 +52,17 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-//extern used because variables are declared in the linker file
-extern uint32_t Reset_Handler;
-extern uint32_t _estack;
+extern uint16_t cnt;
+float exec_time_us;
 
+//extern used because variables are declared in the linker script
+extern uint32_t Reset_Handler;
+extern uint32_t _estack, _sidata, _sdata, _edata, _si_ccm_sram_code, _sccm_sram_code,
+                _eccm_sram_code, _si_ccm_sram_data, _sccm_sram_data, _eccm_sram_data, 
+                _si_ccm_sram_rodata, _sccm_sram_rodata, _eccm_sram_rodata, _sbss, 
+                _ebss;
+
+__attribute__((section(".ccm_data")))
 __attribute__((aligned(0x200)))
 volatile uint32_t isr_vec[NVIC_ISR_NUMBER];
 /* USER CODE END PV */
@@ -63,12 +70,14 @@ volatile uint32_t isr_vec[NVIC_ISR_NUMBER];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+void relocate_isr_table();
+void init_ram();
+
+__attribute__((section(".ccm_code")))
 void TIM2_irq_handler();
 void adc_sync_timer_init(uint8_t _irq_en);
 void adc_sync_timer_start();
 void adc_sync_timer_stop();
-
-void relocate_isr_table();
 
 void adcs_init_normal_mode();
 void adc_en_conv();
@@ -113,6 +122,8 @@ int main(void)
   //                          RAM initialization
   //----------------------------------------------------------------------------
 
+  init_ram();
+
   //----------------------------------------------------------------------------
   //                        ISR functions relocation
   //----------------------------------------------------------------------------
@@ -151,7 +162,7 @@ int main(void)
   dma_init();
 
   //---------------------------- ADC sync timer --------------------------------
-  adc_sync_timer_init(0);
+  adc_sync_timer_init(1);
 
   //----------------------------------------------------------------------------
   //                              Code init
@@ -173,6 +184,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    exec_time_us = (float)(cnt)/(170.0f);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -255,6 +267,19 @@ void relocate_isr_table()
   __DSB();
   __ISB();
 
+  return;
+}
+
+void init_ram()
+{
+  //copy memory regions to RAM
+  memcpy(&_sdata,&_sidata,((void*)(&_edata)-(void*)(&_sdata))); //initialized variables
+  memcpy(&_sccm_sram_code,&_si_ccm_sram_code,((void*)(&_eccm_sram_code)-(void*)(&_sccm_sram_code))); //fast code
+  memcpy(&_sccm_sram_data,&_si_ccm_sram_data,((void*)(&_eccm_sram_data)-(void*)(&_sccm_sram_data))); //fast code variables
+  memcpy(&_sccm_sram_rodata,&_si_ccm_sram_rodata,((void*)(&_eccm_sram_rodata)-(void*)(&_sccm_sram_rodata))); //fast code constants
+
+  //reset uninitialized variables
+  memset(&_sbss,0,((void*)(&_ebss)-(void*)(&_sbss)));
   return;
 }
 
@@ -382,6 +407,7 @@ void adc_sync_timer_init(uint8_t _irq_en)
   if(_irq_en) {LL_TIM_EnableIT_UPDATE(TIM2);}
   else        {LL_TIM_DisableIT_UPDATE(TIM2);}
   
+  LL_TIM_ClearFlag_UPDATE(TIM2);
   return;
 }
 
@@ -399,6 +425,12 @@ void adc_sync_timer_stop()
 
 void TIM2_irq_handler()
 {
+  if(TIM2->SR & TIM_SR_UIF_Msk)
+  {
+    GPIOA->ODR |= GPIO_PIN_10;
+    TIM6->CNT = 0;
+    LL_TIM_ClearFlag_UPDATE(TIM2);
+  }
   return;
 }
 

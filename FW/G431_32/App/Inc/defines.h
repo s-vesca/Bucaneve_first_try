@@ -2,6 +2,7 @@
 #define DEFIENS_H
 
 #define TRACE_EN    (0)
+#define DBG         (0)
 
 #define PPR_OUT     (64)
 #define POLE_PAIRS  (4)
