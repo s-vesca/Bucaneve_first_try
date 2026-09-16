@@ -70,24 +70,27 @@ void calculate_outputs()
 
     static uint8_t cnt_trace = 0;
 
+    GPIOA->ODR |= GPIO_PIN_10;
+
     //check that isr comes from cordic data ready flag
     if(LL_CORDIC_IsActiveFlag_RRDY(CORDIC))
     {
-        adc_data_reg_cos = LL_ADC_REG_ReadMultiConversionData32(ADC12_COMMON, LL_ADC_MULTI_MASTER);
-        adc_data_reg_sin = LL_ADC_REG_ReadMultiConversionData32(ADC12_COMMON, LL_ADC_MULTI_SLAVE);
+        //adc_data_reg_cos = LL_ADC_REG_ReadMultiConversionData32(ADC12_COMMON, LL_ADC_MULTI_MASTER);
+        //adc_data_reg_sin = LL_ADC_REG_ReadMultiConversionData32(ADC12_COMMON, LL_ADC_MULTI_SLAVE);
 
-        adc_cos_dbg = adc_data_reg_cos;
-        adc_sin_dbg = adc_data_reg_sin;
+        //adc_cos_dbg = adc_data_reg_cos;
+        //adc_sin_dbg = adc_data_reg_sin;
         
         //check that shift_pos variable is initialized
         if(shift_pos < MAX_SHIFT)
         {
             //------------------ Read Phase -----------------------
-            rdata_reg = LL_CORDIC_ReadData(CORDIC);
+            //rdata_reg = LL_CORDIC_ReadData(CORDIC);
+            rdata_reg = CORDIC->RDATA;
 
             //keep least significative 16bits
             phase = (int16_t)(rdata_reg & 0xFFFF);
-            phase_dbg = phase;
+            //phase_dbg = phase;
 
             //--------------- Calculate Speed ---------------------
             if(first_iteration)
@@ -98,7 +101,7 @@ void calculate_outputs()
 
             //Fixed Point Subtraction --> Automatic wrapping 
             ph_diff = phase - phase_prev;
-            ph_diff_dbg = ph_diff;
+            //ph_diff_dbg = ph_diff;
 
             //------------------------------------------------------------------
             //                          Filter
@@ -117,8 +120,8 @@ void calculate_outputs()
             filt_state += ph_diff - (filt_state >> 10);
             speed = (int16_t)(filt_state >> 10);
 
-            filt_state_dbg = filt_state;
-            speed_dbg = speed;
+            //filt_state_dbg = filt_state;
+            //speed_dbg = speed;
 
 #if (TRACE_EN == 1)
             switch(cnt_trace)
@@ -133,7 +136,7 @@ void calculate_outputs()
 #endif
             //direcrtion 
             dir = (int8_t)(SIGN(speed));
-            dir_dbg = dir;
+            //dir_dbg = dir;
 
             //state is given by the 2 LSBs of the phase variable after 
             //the correct shift
@@ -148,11 +151,13 @@ void calculate_outputs()
             }
 
             //convert to grey code and write outputs
-            LL_GPIO_WriteReg(GPIOA, BSRR , (uint32_t)(gray_lut[state_out]));
+            //LL_GPIO_WriteReg(GPIOA, BSRR , (uint32_t)(gray_lut[state_out]));
+            GPIOA->BSRR = (uint32_t)(gray_lut[state_out]);
 
             phase_prev = phase;
         }
             //flag is cleared by HW
     }
+    GPIOA->ODR &= ~GPIO_PIN_10;
     return;
 }

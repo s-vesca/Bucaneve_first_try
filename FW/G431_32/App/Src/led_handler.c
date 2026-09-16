@@ -64,14 +64,14 @@ void blink_led()
                     led_stat = 1;
                 }
                 cnt=0;
-                LL_GPIO_ResetOutputPin(ERR_LED_GPIO_Port, ERR_LED_Pin);
+                //LL_GPIO_ResetOutputPin(ERR_LED_GPIO_Port, ERR_LED_Pin);
             }
         }
         else 
         {
             LL_GPIO_ResetOutputPin(DBG_LED1_GPIO_Port, DBG_LED1_Pin);
             LL_GPIO_ResetOutputPin(DBG_LED2_GPIO_Port, DBG_LED2_Pin);
-            LL_GPIO_SetOutputPin(ERR_LED_GPIO_Port, ERR_LED_Pin);
+            //LL_GPIO_SetOutputPin(ERR_LED_GPIO_Port, ERR_LED_Pin);
         }
          
 
