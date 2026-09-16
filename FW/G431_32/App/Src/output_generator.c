@@ -28,6 +28,7 @@ volatile int16_t adc_sin_dbg;
 
 uint8_t shift_pos = 0xFF;
 
+__attribute__((section(".ccm_rodata")))
 uint32_t gray_lut[4] = 
 {
   GPIO_BSRR_BR12_Msk | GPIO_BSRR_BR11_Msk,
@@ -60,20 +61,27 @@ void calculate_outputs()
     int16_t     speed;
     int8_t      dir;
     uint8_t     state_tmp;
-    uint16_t    adc_data_reg_cos;
-    uint16_t    adc_data_reg_sin;
+    float       phase_float;
+    //uint16_t    adc_data_reg_cos;
+    //uint16_t    adc_data_reg_sin;
     
+    //__attribute__((section(".ccm_data"),aligned(32)))
     static uint8_t  state_out = 0;
+    //__attribute__((section(".ccm_data"),aligned(32)))
     static uint8_t  first_iteration = 1;
+    //__attribute__((section(".ccm_data"),aligned(32)))
     static int16_t  phase_prev = 0;
+    //__attribute__((section(".ccm_data"),aligned(32)))
     static int32_t  filt_state = 0;
 
-    static uint8_t cnt_trace = 0;
+    //__attribute__((section(".ccm_data"),aligned(32)))
+    //static uint8_t cnt_trace = 0;
 
     GPIOA->ODR |= GPIO_PIN_10;
 
     //check that isr comes from cordic data ready flag
-    if(LL_CORDIC_IsActiveFlag_RRDY(CORDIC))
+    //if(LL_CORDIC_IsActiveFlag_RRDY(CORDIC))
+    if(CORDIC->CSR & CORDIC_CSR_RRDY_Msk)
     {
         //adc_data_reg_cos = LL_ADC_REG_ReadMultiConversionData32(ADC12_COMMON, LL_ADC_MULTI_MASTER);
         //adc_data_reg_sin = LL_ADC_REG_ReadMultiConversionData32(ADC12_COMMON, LL_ADC_MULTI_SLAVE);
@@ -143,8 +151,8 @@ void calculate_outputs()
             state_tmp = ((phase >> shift_pos) & 0x0003);
 
             // check that direction matches state variaton and add 1/4 step hysteresis 
-            if(((dir ==  1) &&  ((state_tmp > state_out) || ((state_tmp == 0x00) && (state_out == 0x03))) && (((phase >> (shift_pos-2)) & 0x0003) > 0x0001)) ||
-               ((dir == -1) &&  ((state_tmp < state_out) || ((state_tmp == 0x03) && (state_out == 0x00))) && (((phase >> (shift_pos-2)) & 0x0003) < 0x0003)))
+            if(((dir ==  1) &&  ((state_tmp > state_out) || ((state_tmp == 0x00) && (state_out == 0x03))) && (((phase >> (shift_pos-2)) & 0x0003) > 0x0002)) ||
+               ((dir == -1) &&  ((state_tmp < state_out) || ((state_tmp == 0x03) && (state_out == 0x00))) && (((phase >> (shift_pos-2)) & 0x0003) < 0x0001)))
             {
                 //update output only if condition matches
                 state_out = state_tmp;

@@ -31,6 +31,7 @@
 #include "output_generator.h"
 #include "stm32g4xx_it.h"
 #include <stdint.h>
+#include <string.h>
 #include "defines.h"
 /* USER CODE END Includes */
 
@@ -54,8 +55,12 @@
 /* USER CODE BEGIN PV */
 //extern used because variables are declared in the linker file
 extern uint32_t Reset_Handler;
-extern uint32_t _estack;
+extern uint32_t _estack, _sidata, _sdata, _edata, _si_ccm_sram_code, _sccm_sram_code,
+                _eccm_sram_code, _si_ccm_sram_data, _sccm_sram_data, _eccm_sram_data, 
+                _si_ccm_sram_rodata, _sccm_sram_rodata, _eccm_sram_rodata, _sbss, 
+                _ebss;
 
+//__attribute__((section(".ccm_data")))
 __attribute__((aligned(0x200)))
 volatile uint32_t isr_vec[NVIC_ISR_NUMBER];
 /* USER CODE END PV */
@@ -69,6 +74,7 @@ void adc_sync_timer_start();
 void adc_sync_timer_stop();
 
 void relocate_isr_table();
+void init_ram();
 
 void adcs_init_normal_mode();
 void adc_en_conv();
@@ -98,7 +104,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  HAL_Init(); 
 
   /* USER CODE BEGIN Init */
 
@@ -112,6 +118,8 @@ int main(void)
   //----------------------------------------------------------------------------
   //                          RAM initialization
   //----------------------------------------------------------------------------
+
+  init_ram();
 
   //----------------------------------------------------------------------------
   //                        ISR functions relocation
@@ -128,7 +136,7 @@ int main(void)
   MX_ADC2_Init();
   MX_CORDIC_Init();
   MX_TIM2_Init();
-  MX_TIM7_Init();
+  MX_TIM7_Init(); 
   /* USER CODE BEGIN 2 */
 
   //----------------------------------------------------------------------------
@@ -252,6 +260,19 @@ void relocate_isr_table()
   __DSB();
   __ISB();
 
+  return;
+}
+
+void init_ram()
+{
+  //copy memory regions to RAM
+  memcpy(&_sdata,&_sidata,((void*)(&_edata)-(void*)(&_sdata))); //initialized variables
+  memcpy(&_sccm_sram_code,&_si_ccm_sram_code,((void*)(&_eccm_sram_code)-(void*)(&_sccm_sram_code))); //fast code
+  memcpy(&_sccm_sram_data,&_si_ccm_sram_data,((void*)(&_eccm_sram_data)-(void*)(&_sccm_sram_data))); //fast code variables
+  memcpy(&_sccm_sram_rodata,&_si_ccm_sram_rodata,((void*)(&_eccm_sram_rodata)-(void*)(&_sccm_sram_rodata))); //fast code constants
+
+  //reset uninitialized variables
+  memset(&_sbss,0,((void*)(&_ebss)-(void*)(&_sbss)));
   return;
 }
 
