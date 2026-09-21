@@ -22,7 +22,7 @@ log_directory = C:\Users\S.vesca\Desktop\logs
 gdb_command = ./gdb
 ofd2000_command = 
 elf_parser = gdb
-recorder_enabled = false
+recorder_enabled = true
 restart_on_group_change = true
 keep_connection = false
 ip_address = 127.0.0.1
@@ -75,6 +75,23 @@ write_limit_min = -1.000000
 write_limit_max = 1.000000
 
 [var1]
+name = adc_cos_filt_dbg
+tracked_name = adc_cos_filt_dbg
+address = 268437184
+type = 4
+color = 2909728921
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var2]
 name = adc_sin_dbg
 tracked_name = adc_sin_dbg
 address = 536872434
@@ -91,7 +108,41 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var2]
+[var3]
+name = adc_sin_filt_dbg
+tracked_name = adc_sin_filt_dbg
+address = 268437216
+type = 4
+color = 1049943011
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var4]
+name = cnt
+tracked_name = cnt
+address = 268437248
+type = 3
+color = 1196750454
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var5]
 name = dir_dbg
 tracked_name = dir_dbg
 address = 536872418
@@ -108,7 +159,24 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var3]
+[var6]
+name = exec_time_us
+tracked_name = exec_time_us
+address = 536870992
+type = 7
+color = 2888494243
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var7]
 name = filt_state_dbg
 tracked_name = filt_state_dbg
 address = 536872428
@@ -125,7 +193,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var4]
+[var8]
 name = ph_diff_dbg
 tracked_name = ph_diff_dbg
 address = 536872422
@@ -142,7 +210,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var5]
+[var9]
 name = phase_dbg
 tracked_name = phase_dbg
 address = 536872420
@@ -159,7 +227,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var6]
+[var10]
 name = speed_dbg
 tracked_name = speed_dbg
 address = 536872424
@@ -176,7 +244,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var7]
+[var11]
 name = sys_stat
 tracked_name = sys_stat
 address = 536872417
@@ -194,81 +262,132 @@ write_limit_min = -1.000000
 write_limit_max = 1.000000
 
 [group0]
-name = new group0
-acquisition_type = 0
+name = recorder
+acquisition_type = 1
+mode = 0
+skipped_samples = 0
+trigger_enabled = false
+trigger_source_var = adc_cos_dbg
+trigger_edge = 0
+trigger_value = 0.000000
+trigger_pretrigger_samples = 0
 override_sample_rate = false
 sample_frequency_hz = 100
 override_viewport_width = false
 viewport_width_ms = 500.000000
 
 [group0-plot0]
-name = ctrl
-type = 2
-visibility = false
+name = sincos
+type = 0
+visibility = true
 secondary_write_enabled = false
 
 [group0-plot0-series0]
-name = sys_stat
+name = adc_cos_dbg
 visibility = true
 format = DEC
 
-[group0-plot1]
+[group0-plot0-series1]
+name = adc_cos_filt_dbg
+visibility = true
+format = DEC
+
+[group1]
+name = var_viewer
+acquisition_type = 0
+override_sample_rate = false
+sample_frequency_hz = 100
+override_viewport_width = false
+viewport_width_ms = 500.000000
+
+[group1-plot0]
+name = ctrl
+type = 0
+visibility = false
+secondary_write_enabled = false
+
+[group1-plot0-series0]
+name = cnt
+visibility = false
+format = DEC
+
+[group1-plot0-series1]
+name = exec_time_us
+visibility = true
+format = DEC
+
+[group1-plot0-series2]
+name = sys_stat
+visibility = false
+format = DEC
+
+[group1-plot1]
 name = direction
 type = 0
 visibility = false
 secondary_write_enabled = false
 
-[group0-plot1-series0]
+[group1-plot1-series0]
 name = dir_dbg
 visibility = true
 format = DEC
 
-[group0-plot2]
+[group1-plot2]
 name = phase
 type = 0
 visibility = false
 secondary_write_enabled = false
 
-[group0-plot2-series0]
+[group1-plot2-series0]
 name = phase_dbg
 visibility = true
 format = DEC
 
-[group0-plot3]
+[group1-plot3]
 name = sin-cos
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
-[group0-plot3-series0]
+[group1-plot3-series0]
 name = adc_cos_dbg
 visibility = true
 format = DEC
 
-[group0-plot3-series1]
+[group1-plot3-series1]
+name = adc_cos_filt_dbg
+visibility = false
+format = DEC
+
+[group1-plot3-series2]
 name = adc_sin_dbg
 visibility = true
 format = DEC
 
-[group0-plot4]
+[group1-plot3-series3]
+name = adc_sin_filt_dbg
+visibility = false
+format = DEC
+
+[group1-plot4]
 name = speed
 type = 0
 visibility = false
 secondary_write_enabled = false
 
-[group0-plot4-series0]
+[group1-plot4-series0]
 name = speed_dbg
 visibility = true
 format = DEC
 
-[group0-plot5]
+[group1-plot5]
 name = xy_plot
 type = 3
-visibility = false
+visibility = true
 secondary_write_enabled = false
 x_axis_variable = adc_cos_dbg
 
-[group0-plot5-series0]
+[group1-plot5-series0]
 name = adc_sin_dbg
 visibility = true
 format = DEC
