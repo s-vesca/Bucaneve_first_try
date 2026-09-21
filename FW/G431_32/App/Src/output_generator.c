@@ -51,23 +51,31 @@ uint32_t gray_lut[4] =
   GPIO_BSRR_BS12_Msk | GPIO_BSRR_BR11_Msk
 };
 
-__attribute__((section(".ccm_rodata")))
-uint32_t state_thr_up[4] = 
+//next_state[actual_dir][actual_state][proposed_next_state]
+const uint8_t next_state_lut[3][4][4] = 
 {
-  0b0101,
-  0b1001,
-  0b1101,
-  0b0001
-};
-
-__attribute__((section(".ccm_rodata")))
-uint32_t state_thr_dwn[4] = 
-{
-  0b1110,
-  0b0010,
-  0b0110,
-  0b1010
-};
+    //negative dir
+    {  
+        {0,0,0,3},
+        {0,1,1,1},
+        {2,1,2,2},
+        {3,3,2,3}
+    },
+    //0 speed
+    {
+        {0,0,0,0},
+        {1,1,1,1},
+        {2,2,2,2},
+        {3,3,3,3}
+    },
+    //positive dir
+    {
+        {0,1,0,0},
+        {1,1,2,1},
+        {2,2,2,3},
+        {0,3,3,3}
+    },
+}; 
 
 void output_generator_init(uint16_t _factor)
 {
@@ -222,19 +230,10 @@ void calculate_outputs()
 
             //state is given by the 2 LSBs of the phase variable after 
             //the correct shift
-            //state_tmp = ((phase >> shift_pos) & 0x0003);
-            state4b_tmp = ((phase >> (shift_pos - 2)) & 0x000F);
+            state_tmp = ((phase >> shift_pos) & 0x0003);
 
             // check that direction matches state variaton and add 1/4 step hysteresis 
-            //if(((dir ==  1) && ((state_tmp > state_out) || ((state_tmp == 0x00) && (state_out == 0x03))) && (((phase >> (shift_pos-2)) & 0x0003) > 0x0001)) ||
-            //   ((dir == -1) && ((state_tmp < state_out) || ((state_tmp == 0x03) && (state_out == 0x00))) && (((phase >> (shift_pos-2)) & 0x0003) < 0x0003)))
-            if(((dir ==  1) && (state4b_tmp == state_thr_up [state_out])) ||
-               ((dir == -1) && (state4b_tmp == state_thr_dwn[state_out])))
-            {
-                //update output only if condition matches
-                state_out = (state4b_tmp >> 2) & 0x03;
-                //state_out = state_tmp;
-            }
+            state_out = next_state_lut[dir][state_out][state_tmp];
 
             //convert to grey code and write outputs
             //LL_GPIO_WriteReg(GPIOA, BSRR , (uint32_t)(gray_lut[state_out]));
