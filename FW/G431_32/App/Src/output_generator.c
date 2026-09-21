@@ -93,7 +93,7 @@ void output_generator_init(uint16_t _factor)
     }
 }
 
-void read_adcs()
+void read_adcs_output()
 {
     int32_t    adc_data_reg_cos;
     int32_t    adc_data_reg_sin;
@@ -246,6 +246,6 @@ void calculate_outputs()
         //RRDY flag is cleared by HW when reading RDATA register     
     }
 
-    GPIOA->ODR &= ~GPIO_PIN_10;
+    //GPIOA->ODR &= ~GPIO_PIN_10;
     return;
 }

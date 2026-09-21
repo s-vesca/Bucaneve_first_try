@@ -20,6 +20,10 @@
 #include "main.h"
 #include "adc.h"
 #include "cordic.h"
+#include "stm32g431xx.h"
+#include "stm32g4xx.h"
+#include "stm32g4xx_hal.h"
+#include "stm32g4xx_ll_adc.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -30,6 +34,7 @@
 #include "system_status.h"
 #include "led_handler.h"
 #include "output_generator.h"
+#include "input_calibration.h"
 #include "stm32g4xx_it.h"
 #include "defines.h"
 /* USER CODE END Includes */
@@ -65,12 +70,18 @@ extern uint32_t _estack, _sidata, _sdata, _edata, _si_ccm_sram_code, _sccm_sram_
 __attribute__((section(".ccm_data")))
 __attribute__((aligned(0x200)))
 volatile uint32_t isr_vec[NVIC_ISR_NUMBER];
+
+uint16_t adc_vcc_val;
+uint16_t adc_vcc_cnt;
+uint32_t adc_vcc_acc;
+float vcc;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void relocate_isr_table();
+void set_adc_irq_ptr(uint8_t calibration);
 void init_ram();
 
 __attribute__((section(".ccm_code")))
@@ -101,7 +112,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  uint16_t ii;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -148,12 +159,10 @@ int main(void)
   
   //led handler timer
   led_handler_init(10);
-  TIM7->DIER |= TIM_DIER_UIE_Msk;
-  TIM7->CR1  |= TIM_CR1_CEN_Msk;
 
   //-------------------------------- ADCs --------------------------------------
   adcs_init_normal_mode();
-  adc_en_conv();
+  //adc_en_conv();
 
   //------------------------------- CORDIC -------------------------------------
   cordic_init();
@@ -168,12 +177,66 @@ int main(void)
   //                              Code init
   //----------------------------------------------------------------------------
   output_generator_init(PPR_OUT/POLE_PAIRS);
+  struct input_calibration_private_vars_init_s input_calibration_private_vars_init_v = 
+  {
+    .n_pts_per_turn = 100,
+    .n_turns = 10
+  };
 
   //----------------------------------------------------------------------------
-  //                             Start Counting
+  //                          Read supply voltage
   //----------------------------------------------------------------------------
-  set_system_status(SYSTEM_STATUS_RUNNING);
-  adc_sync_timer_start();
+
+  //wait for voltage to settle (2s)
+  HAL_Delay(100);
+
+  adc_vcc_acc = 0;
+  for(ii = 0; ii < VCC_ADC_N_AVG; ii++)
+  {
+    ADC1->CR |= ADC_CR_ADEN_Msk;
+    ADC1->CR |= ADC_CR_ADSTART_Msk;
+    while(!(ADC1->ISR & ADC_ISR_EOC_Msk));
+    adc_vcc_acc += (uint16_t)(ADC1->DR & 0x0FFF);
+    HAL_Delay(1);
+  }
+
+  adc_vcc_cnt = (uint16_t)(adc_vcc_acc / VCC_ADC_N_AVG);
+  vcc = (float)adc_vcc_cnt * 3.3f / 4096.0f / 0.0909f;
+
+  //if supply voltage under the threshold
+  if(vcc < VCC_CAL_THR)
+  {
+    //--------------------- begin normal operation -----------------------------
+
+    set_system_status(SYSTEM_STATUS_RUNNING);
+    
+    //point ADC_IRQ to "read_adcs_output" function
+    set_adc_irq_ptr(0);
+
+    //start sampling
+    adc_sync_timer_start();
+  }
+  else 
+  {
+    //-------------------- begin calibration operation -------------------------
+
+    set_system_status(SYSTEM_STATUS_CALIBRATION);
+
+    input_calibration_init(input_calibration_private_vars_init_v);
+    
+    //point ADC_IRQ to "read_adcs_calibration" function
+    set_adc_irq_ptr(1);
+
+    //start sampling
+    adc_sync_timer_start();
+  }
+
+  //----------------------------------------------------------------------------
+  //                            Enable Led Timer
+  //----------------------------------------------------------------------------
+  TIM7->DIER |= TIM_DIER_UIE_Msk;
+  TIM7->CR1  |= TIM_CR1_CEN_Msk;
+  
   //----------------------------------------------------------------------------
 
   TIM6->CR1 |= TIM_CR1_CEN_Msk;
@@ -242,6 +305,9 @@ void SystemClock_Config(void)
 
 void relocate_isr_table()
 {
+
+  __disable_irq();
+
   //cortex-M4 IRQs
   isr_vec[0] 							              = (uint32_t)(&_estack);       	//address -16 to end of stack
   isr_vec[1] 							              = (uint32_t)(&Reset_Handler); 	//address -15 to end of stack
@@ -259,13 +325,15 @@ void relocate_isr_table()
   isr_vec[16 + TIM2_IRQn]      			    = (uint32_t)(TIM2_irq_handler);
   isr_vec[16 + TIM7_IRQn]      			    = (uint32_t)(blink_led);
   isr_vec[16 + CORDIC_IRQn]      			  = (uint32_t)(calculate_outputs);
-  isr_vec[16 + ADC1_2_IRQn]      			  = (uint32_t)(read_adcs);
+  isr_vec[16 + ADC1_2_IRQn]      			  = (uint32_t)(read_adcs_output);
   
   //relocate interrupt vector table
   SCB->VTOR = (uint32_t)(isr_vec);
 
   __DSB();
   __ISB();
+
+  __enable_irq();
 
   return;
 }
@@ -283,6 +351,33 @@ void init_ram()
   return;
 }
 
+void set_adc_irq_ptr(uint8_t calibration)
+{
+  if(calibration)
+  {
+    __disable_irq();
+
+    isr_vec[16 + ADC1_2_IRQn] = (uint32_t)(read_adcs_calibration);
+    
+    __DSB();
+    __ISB();
+
+    __enable_irq();
+  }
+  else 
+  {
+    __disable_irq();
+
+    isr_vec[16 + ADC1_2_IRQn] = (uint32_t)(read_adcs_output);
+    
+    __DSB();
+    __ISB();
+
+    __enable_irq();
+  }
+  return;
+}
+
 void adcs_init_normal_mode()
 {
   //offset correction (board with gnd plane)
@@ -294,7 +389,32 @@ void adcs_init_normal_mode()
   //ADC2->OFR1 += 8;  //pulpito
   ADC2->OFR1 -= 13;   //banchetto
 
-  //ADC1
+  //calibrate ADC1
+  if(LL_ADC_IsEnabled(ADC1) != RESET)
+  {
+    LL_ADC_Disable(ADC1);
+    while(LL_ADC_IsEnabled(ADC1) != RESET);
+  }
+
+  LL_ADC_EnableInternalRegulator(ADC1);
+  HAL_Delay(10);
+  LL_ADC_StartCalibration(ADC1, LL_ADC_SINGLE_ENDED);
+  while (LL_ADC_IsCalibrationOnGoing(ADC1));
+
+  //calibrate ADC2
+  if(LL_ADC_IsEnabled(ADC2) != RESET)
+  {
+    LL_ADC_Disable(ADC2);
+    while(LL_ADC_IsEnabled(ADC2) != RESET);
+  }
+
+  LL_ADC_EnableInternalRegulator(ADC2);
+  HAL_Delay(10);
+  LL_ADC_StartCalibration(ADC2, LL_ADC_SINGLE_ENDED);
+  while (LL_ADC_IsCalibrationOnGoing(ADC2));
+
+
+  //Enable ADC1
   LL_ADC_ClearFlag_ADRDY(ADC1);
   LL_ADC_Enable(ADC1);
   while(!LL_ADC_IsActiveFlag_ADRDY(ADC1));
@@ -305,7 +425,7 @@ void adcs_init_normal_mode()
   //while(!ADC1->ISR & ADC_ISR_ADRDY);
   //ADC1->ISR |= ADC_ISR_ADRDY;
 
-  //ADC2
+  //Enable ADC2
   LL_ADC_ClearFlag_ADRDY(ADC2);
   LL_ADC_Enable(ADC2);
   while(!LL_ADC_IsActiveFlag_ADRDY(ADC2));
@@ -427,7 +547,7 @@ void TIM2_irq_handler()
 {
   if(TIM2->SR & TIM_SR_UIF_Msk)
   {
-    GPIOA->ODR |= GPIO_PIN_10;
+    //GPIOA->ODR |= GPIO_PIN_10;
     TIM6->CNT = 0;
     LL_TIM_ClearFlag_UPDATE(TIM2);
   }

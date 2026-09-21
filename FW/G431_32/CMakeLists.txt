@@ -48,6 +48,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/led_handler.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/system_status.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/output_generator.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/input_calibration.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/recorder.c
 )
 

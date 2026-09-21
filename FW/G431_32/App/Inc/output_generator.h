@@ -4,7 +4,7 @@
 
 void output_generator_init(uint16_t _factor);
 __attribute__((section(".ccm_code")))
-void read_adcs();
+void read_adcs_output();
 __attribute__((section(".ccm_code")))
 void calculate_outputs();
 
