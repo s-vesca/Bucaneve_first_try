@@ -126,7 +126,7 @@ int main(void)
   /* USER CODE BEGIN SysInit */
 
   //----------------------------------------------------------------------------
-  //                          RAM initialization
+  //                          RAM initialization5
   //----------------------------------------------------------------------------
 
   init_ram();
@@ -175,8 +175,7 @@ int main(void)
   output_generator_init(PPR_OUT/POLE_PAIRS);
   struct input_calibration_private_vars_init_s input_calibration_private_vars_init_v = 
   {
-    .n_pts_per_turn = 100,
-    .n_turns = 10
+    .revolutions_todo = 10
   };
 
   //----------------------------------------------------------------------------
@@ -227,6 +226,9 @@ int main(void)
     adc_sync_timer_start();
   }
 
+  ADC1->CR |= ADC_CR_JADSTART_Msk;
+  ADC2->CR |= ADC_CR_JADSTART_Msk;
+
   //----------------------------------------------------------------------------
   //                            Enable Led Timer
   //----------------------------------------------------------------------------
@@ -244,6 +246,11 @@ int main(void)
   while (1)
   {
     exec_time_us = (float)(cnt)/(170.0f);
+
+    if(input_calibration_get_calibration_done())
+    {
+      set_system_status(SYSTEM_STATUS_CALIBRATION_DONE);
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -349,28 +356,20 @@ void init_ram()
 
 void set_adc_irq_ptr(uint8_t calibration)
 {
+  __disable_irq();
   if(calibration)
   {
-    __disable_irq();
-
     isr_vec[16 + ADC1_2_IRQn] = (uint32_t)(read_adcs_calibration);
-    
-    __DSB();
-    __ISB();
-
-    __enable_irq();
   }
   else 
   {
-    __disable_irq();
-
     isr_vec[16 + ADC1_2_IRQn] = (uint32_t)(read_adcs_output);
-    
-    __DSB();
-    __ISB();
-
-    __enable_irq();
   }
+
+  ADC1->CR |= ADC_CR_JADSTART;
+  ADC2->CR |= ADC_CR_JADSTART;
+
+  __enable_irq();
   return;
 }
 
@@ -442,6 +441,7 @@ void adcs_init_normal_mode()
 
   //Enable EOC interrupt for ADC1 (both ADCs will have finished the conversion)
   ADC1->IER |= ADC_IER_JEOCIE;
+  ADC2->IER |= ADC_IER_JEOCIE;
 
   ADC1->CR |= ADC_CR_JADSTART;
   ADC2->CR |= ADC_CR_JADSTART;
@@ -473,6 +473,8 @@ void cordic_init()
   
   //OPERATION: PHASE
   LL_CORDIC_SetFunction(CORDIC, LL_CORDIC_FUNCTION_PHASE);
+
+  uint32_t rdata = CORDIC->RDATA;
 
   LL_CORDIC_EnableIT(CORDIC);
   

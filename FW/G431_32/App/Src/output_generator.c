@@ -34,6 +34,11 @@ __attribute__((section(".ccm_data"),aligned(32)))
 volatile int16_t adc_sin_filt_dbg;
 
 __attribute__((section(".ccm_data"),aligned(32)))
+volatile int16_t cos_comp_dbg;
+__attribute__((section(".ccm_data"),aligned(32)))
+volatile int16_t sin_comp_dbg;
+
+__attribute__((section(".ccm_data"),aligned(32)))
 volatile uint16_t cnt;
 
 //------------------------------------------------------------------------------
@@ -104,6 +109,8 @@ void read_adcs_output()
     int32_t    adc_cos_filt_diff;
     //int32_t    adc_cos_filt2_diff;
     int32_t    adc_sin_filt_diff;
+    int32_t    cos_comp;
+    int32_t    sin_comp;
 
     __attribute__((section(".ccm_data"),aligned(32)))
     static int32_t adc_cos_filt_state;
@@ -118,8 +125,8 @@ void read_adcs_output()
     //Check that both ADCs have finished their injected conversion
     if((ADC1->ISR & ADC_ISR_JEOC_Msk) && (ADC2->ISR & ADC_ISR_JEOC_Msk))
     {
-        adc_data_reg_cos = (int32_t)(ADC1->JDR1) << 16;
-        adc_data_reg_sin = (int32_t)(ADC2->JDR1) << 16;
+        adc_data_reg_cos = (int32_t)(ADC1->JDR1 -10) << 16;
+        adc_data_reg_sin = (int32_t)(ADC2->JDR1 -8) << 16;
 
         adc_cos_filt_diff = (int32_t)(adc_data_reg_cos) - adc_cos_filt_state;
         adc_cos_filt_state += (adc_cos_filt_diff >> 4) - (adc_cos_filt_diff >> 9) + (adc_cos_filt_diff >> 11);
@@ -132,15 +139,26 @@ void read_adcs_output()
         adc_sin_filt_diff = (int32_t)(adc_data_reg_sin) - adc_sin_filt_state;
         adc_sin_filt_state += (adc_sin_filt_diff >> 4) - (adc_sin_filt_diff >> 9) + (adc_sin_filt_diff >> 11);
         adc_data_reg_sin_filt = (int32_t)(adc_sin_filt_state);
-
+        
+        cos_comp = ((adc_data_reg_cos_filt>>10) * ELLIPSE_CAL_T00 + (adc_data_reg_sin_filt>>10) * ELLIPSE_CAL_T01);
+        sin_comp = ((adc_data_reg_cos_filt>>10) * ELLIPSE_CAL_T10 + (adc_data_reg_sin_filt>>10) * ELLIPSE_CAL_T11);
+        
         #if DBG == 1
         adc_cos_dbg = (int16_t)(adc_data_reg_cos >> 16);
         adc_sin_dbg = (int16_t)(adc_data_reg_sin >> 16);
         adc_cos_filt_dbg = (int16_t)(adc_data_reg_cos_filt >> 16);
         adc_sin_filt_dbg = (int16_t)(adc_data_reg_sin_filt >> 16);
+        cos_comp_dbg = (int16_t)(cos_comp >> 16);
+        sin_comp_dbg = (int16_t)(sin_comp >> 16);
         #endif
 
-        CORDIC->WDATA = ((uint32_t)(uint16_t)((int16_t)(adc_data_reg_sin_filt >> 16) << 4) << 16) | (uint32_t)(uint16_t)((int16_t)(adc_data_reg_cos_filt >> 16) << 4);
+        cos_comp_dbg = (int16_t)(cos_comp >> 16);
+        sin_comp_dbg = (int16_t)(sin_comp >> 16);
+
+        ITM->PORT[0].u32 = *(uint32_t*)&cos_comp_dbg;
+
+        //CORDIC->WDATA = ((uint32_t)(uint16_t)((int16_t)(adc_data_reg_sin_filt >> 16) << 4) << 16) | (uint32_t)(uint16_t)((int16_t)(adc_data_reg_cos_filt >> 16) << 4);
+        CORDIC->WDATA = ((uint32_t)(uint16_t)((int16_t)(sin_comp >> 16)) << 16) | (uint32_t)(uint16_t)((int16_t)(cos_comp >> 16));
 
         //JEOC flags are cleared by reading JDRx data registers
     }
@@ -241,7 +259,8 @@ void calculate_outputs()
 
             phase_prev = phase;
             cnt = TIM6->CNT;
-            recorderStep();
+            //recorderStep();
+            ITM->PORT[1].u32 = *(uint32_t*)&sin_comp_dbg;
         }
         //RRDY flag is cleared by HW when reading RDATA register     
     }
