@@ -9,7 +9,7 @@ version = 2
 sample_frequency_hz = 9000
 max_points = 100000
 max_viewport_points = 5000
-viewport_width_ms = 500.000000
+viewport_width_ms = 5000.000000
 refresh_on_elf_change = true
 stop_acq_on_elf_change = true
 probe_type = 0
@@ -506,7 +506,7 @@ format = DEC
 
 [group1-plot4-series1]
 name = adc_cos_filt_dbg
-visibility = true
+visibility = false
 format = DEC
 
 [group1-plot4-series2]
@@ -516,7 +516,7 @@ format = DEC
 
 [group1-plot4-series3]
 name = adc_sin_filt_dbg
-visibility = true
+visibility = false
 format = DEC
 
 [group1-plot4-series4]

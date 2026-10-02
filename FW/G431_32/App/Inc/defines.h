@@ -12,10 +12,15 @@
 
 #define SIGN(x)         ((x > 0) ? (2) : ((x < 0) ? (0) : 1))
 
-#define ELLIPSE_CAL_T00 (8843)
-#define ELLIPSE_CAL_T01 (-50)
-#define ELLIPSE_CAL_T10 (-50)
-#define ELLIPSE_CAL_T11 (8670)
+//#define ELLIPSE_CAL_T00 (8843)
+//#define ELLIPSE_CAL_T01 (-50)
+//#define ELLIPSE_CAL_T10 (-50)
+//#define ELLIPSE_CAL_T11 (8670)
+
+#define ELLIPSE_CAL_T00 (8895)
+#define ELLIPSE_CAL_T01 (80)
+#define ELLIPSE_CAL_T10 (80)
+#define ELLIPSE_CAL_T11 (8733)
 
 
 #endif //DEFINES_H

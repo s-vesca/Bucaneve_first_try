@@ -125,11 +125,12 @@ void read_adcs_output()
     //Check that both ADCs have finished their injected conversion
     if((ADC1->ISR & ADC_ISR_JEOC_Msk) && (ADC2->ISR & ADC_ISR_JEOC_Msk))
     {
-        adc_data_reg_cos = (int32_t)(ADC1->JDR1 -10) << 16;
-        adc_data_reg_sin = (int32_t)(ADC2->JDR1 -8) << 16;
+        adc_data_reg_cos = (int32_t)(ADC1->JDR1+18) << 16;
+        adc_data_reg_sin = (int32_t)(ADC2->JDR1-7) << 16;
 
         adc_cos_filt_diff = (int32_t)(adc_data_reg_cos) - adc_cos_filt_state;
         adc_cos_filt_state += (adc_cos_filt_diff >> 4) - (adc_cos_filt_diff >> 9) + (adc_cos_filt_diff >> 11);
+        //adc_cos_filt_state += (adc_cos_filt_diff >> 1) - (adc_cos_filt_diff >> 5) - (adc_cos_filt_diff >> 7);
         adc_data_reg_cos_filt = (int32_t)(adc_cos_filt_state);
         
         //adc_cos_filt2_diff = (int32_t)(adc_data_reg_cos_filt) - adc_cos_filt2_state;
@@ -138,6 +139,7 @@ void read_adcs_output()
 
         adc_sin_filt_diff = (int32_t)(adc_data_reg_sin) - adc_sin_filt_state;
         adc_sin_filt_state += (adc_sin_filt_diff >> 4) - (adc_sin_filt_diff >> 9) + (adc_sin_filt_diff >> 11);
+        //adc_sin_filt_state += (adc_sin_filt_diff >> 1) - (adc_sin_filt_diff >> 5) - (adc_sin_filt_diff >> 7);
         adc_data_reg_sin_filt = (int32_t)(adc_sin_filt_state);
         
         cos_comp = ((adc_data_reg_cos_filt>>10) * ELLIPSE_CAL_T00 + (adc_data_reg_sin_filt>>10) * ELLIPSE_CAL_T01);
