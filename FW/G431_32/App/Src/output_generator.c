@@ -44,11 +44,21 @@ volatile uint16_t cnt;
 //------------------------------------------------------------------------------
 //                              Code Variables
 //------------------------------------------------------------------------------
-
+__attribute__((section(".ccm_data"),aligned(32)))
 uint8_t shift_pos = 0xFF;
 
+__attribute__((section(".ccm_data"),aligned(32)))
+cal_coeff_t cal_coeff_v = {
+    .t00    = ELLIPSE_CAL_T00_DEFAULT,
+    .t01    = ELLIPSE_CAL_T01_DEFAULT,
+    .t10    = ELLIPSE_CAL_T10_DEFAULT,
+    .t11    = ELLIPSE_CAL_T11_DEFAULT,
+    .x0     = ELLIPSE_CAL_X0_DEFAULT,
+    .y0     = ELLIPSE_CAL_Y0_DEFAULT,
+};
+
 __attribute__((section(".ccm_rodata")))
-uint32_t gray_lut[4] = 
+const uint32_t gray_lut[4] = 
 {
   GPIO_BSRR_BR12_Msk | GPIO_BSRR_BR11_Msk,
   GPIO_BSRR_BR12_Msk | GPIO_BSRR_BS11_Msk,
@@ -57,6 +67,7 @@ uint32_t gray_lut[4] =
 };
 
 //next_state[actual_dir][actual_state][proposed_next_state]
+__attribute__((section(".ccm_rodata")))
 const uint8_t next_state_lut[3][4][4] = 
 {
     //negative dir
@@ -125,10 +136,16 @@ void read_adcs_output()
     //Check that both ADCs have finished their injected conversion
     if((ADC1->ISR & ADC_ISR_JEOC_Msk) && (ADC2->ISR & ADC_ISR_JEOC_Msk))
     {
-        adc_data_reg_cos = (int32_t)(ADC1->JDR1+18) << 16;
-        adc_data_reg_sin = (int32_t)(ADC2->JDR1-7) << 16;
+        adc_data_reg_cos = (int32_t)(ADC1->JDR1 - cal_coeff_v.x0) << 16;
+        adc_data_reg_sin = (int32_t)(ADC2->JDR1 - cal_coeff_v.y0) << 16;
 
-        adc_cos_filt_diff = (int32_t)(adc_data_reg_cos) - adc_cos_filt_state;
+        cos_comp = ((adc_data_reg_cos>>10) * cal_coeff_v.t00 + (adc_data_reg_sin>>10) * cal_coeff_v.t01);
+        sin_comp = ((adc_data_reg_cos>>10) * cal_coeff_v.t10 + (adc_data_reg_sin>>10) * cal_coeff_v.t11);
+
+        cos_comp_dbg = (int16_t)(cos_comp >> 16);
+        sin_comp_dbg = (int16_t)(sin_comp >> 16);
+
+        adc_cos_filt_diff = (int32_t)(cos_comp) - adc_cos_filt_state;
         adc_cos_filt_state += (adc_cos_filt_diff >> 4) - (adc_cos_filt_diff >> 9) + (adc_cos_filt_diff >> 11);
         //adc_cos_filt_state += (adc_cos_filt_diff >> 1) - (adc_cos_filt_diff >> 5) - (adc_cos_filt_diff >> 7);
         adc_data_reg_cos_filt = (int32_t)(adc_cos_filt_state);
@@ -137,13 +154,10 @@ void read_adcs_output()
         //adc_cos_filt2_state += (adc_cos_filt2_diff >> 1) - (adc_cos_filt2_diff >> 5) - (adc_cos_filt2_diff >> 7);
         //adc_data_reg_cos_filt2 = (int32_t)(adc_cos_filt2_state);
 
-        adc_sin_filt_diff = (int32_t)(adc_data_reg_sin) - adc_sin_filt_state;
+        adc_sin_filt_diff = (int32_t)(sin_comp) - adc_sin_filt_state;
         adc_sin_filt_state += (adc_sin_filt_diff >> 4) - (adc_sin_filt_diff >> 9) + (adc_sin_filt_diff >> 11);
         //adc_sin_filt_state += (adc_sin_filt_diff >> 1) - (adc_sin_filt_diff >> 5) - (adc_sin_filt_diff >> 7);
         adc_data_reg_sin_filt = (int32_t)(adc_sin_filt_state);
-        
-        cos_comp = ((adc_data_reg_cos_filt>>10) * ELLIPSE_CAL_T00 + (adc_data_reg_sin_filt>>10) * ELLIPSE_CAL_T01);
-        sin_comp = ((adc_data_reg_cos_filt>>10) * ELLIPSE_CAL_T10 + (adc_data_reg_sin_filt>>10) * ELLIPSE_CAL_T11);
         
         #if DBG == 1
         adc_cos_dbg = (int16_t)(adc_data_reg_cos >> 16);
@@ -154,13 +168,10 @@ void read_adcs_output()
         sin_comp_dbg = (int16_t)(sin_comp >> 16);
         #endif
 
-        cos_comp_dbg = (int16_t)(cos_comp >> 16);
-        sin_comp_dbg = (int16_t)(sin_comp >> 16);
-
         ITM->PORT[0].u32 = *(uint32_t*)&cos_comp_dbg;
 
         //CORDIC->WDATA = ((uint32_t)(uint16_t)((int16_t)(adc_data_reg_sin_filt >> 16) << 4) << 16) | (uint32_t)(uint16_t)((int16_t)(adc_data_reg_cos_filt >> 16) << 4);
-        CORDIC->WDATA = ((uint32_t)(uint16_t)((int16_t)(sin_comp >> 16)) << 16) | (uint32_t)(uint16_t)((int16_t)(cos_comp >> 16));
+        CORDIC->WDATA = ((uint32_t)(uint16_t)((int16_t)(adc_data_reg_sin_filt >> 16)) << 16) | (uint32_t)(uint16_t)((int16_t)(adc_data_reg_cos_filt >> 16));
 
         //JEOC flags are cleared by reading JDRx data registers
     }
@@ -178,7 +189,6 @@ void calculate_outputs()
     int16_t     speed;
     int8_t      dir;
     uint8_t     state_tmp;
-    uint8_t     state4b_tmp;
     
     __attribute__((section(".ccm_data"),aligned(32)))
     static uint8_t  state_out = 0;
@@ -262,11 +272,18 @@ void calculate_outputs()
             phase_prev = phase;
             cnt = TIM6->CNT;
             //recorderStep();
+
             ITM->PORT[1].u32 = *(uint32_t*)&sin_comp_dbg;
         }
         //RRDY flag is cleared by HW when reading RDATA register     
     }
 
     //GPIOA->ODR &= ~GPIO_PIN_10;
+    return;
+}
+
+void output_generator_set_cal_coeff(cal_coeff_t _cal_coeff)
+{
+    cal_coeff_v = _cal_coeff;
     return;
 }

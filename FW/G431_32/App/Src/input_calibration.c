@@ -3,8 +3,14 @@
 #include "stm32g431xx.h"
 #include "input_calibration.h"
 #include "system_status.h"
+#include "defines.h"
 
 #define     ARRAY_SIZE      (1000)
+
+__attribute__((section(".ccm_data"),aligned(32)))
+volatile int16_t adc_cos_dbg_cal;
+__attribute__((section(".ccm_data"),aligned(32)))
+volatile int16_t adc_sin_dbg_cal;
 
 struct input_calibration_private_vars_s
 {
@@ -33,6 +39,9 @@ struct input_calibration_private_vars_s
         int64_t xy2;
         int64_t xy;
     }acc;
+
+    //calibration coefficients
+    cal_coeff_t cal_coeff;
 
     struct
     {
@@ -93,6 +102,11 @@ void read_adcs_calibration()
         adc_data_reg_cos = (int16_t)((ADC1->JDR1));
         adc_data_reg_sin = (int16_t)((ADC2->JDR1));
 
+        #if DBG == 1
+        adc_cos_dbg_cal = (int16_t)(adc_data_reg_cos);
+        adc_sin_dbg_cal = (int16_t)(adc_data_reg_sin);
+        #endif
+
         //update data accumulators
         input_calibration_private_vars_v.acc.x4   += adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_cos;
         input_calibration_private_vars_v.acc.x3   += adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_cos;
@@ -129,12 +143,12 @@ void read_adcs_calibration()
 
         //count turns
         if(input_calibration_private_vars_v.quadrant.current == 0 && 
-           input_calibration_private_vars_v.quadrant.current == 3)
+           input_calibration_private_vars_v.quadrant.prev == 3)
         {
             input_calibration_private_vars_v.turns_cnt++;
         }
         else if(input_calibration_private_vars_v.quadrant.current == 3 && 
-                input_calibration_private_vars_v.quadrant.current == 0)
+                input_calibration_private_vars_v.quadrant.prev == 0)
         {
             input_calibration_private_vars_v.turns_cnt--;
         }
@@ -154,4 +168,20 @@ void read_adcs_calibration()
         //JEOC flag is cleared by Hardware when data is read
     }
     return;
+}
+
+void input_calibration_calculate_coefficients()
+{
+    input_calibration_private_vars_v.cal_coeff.t00  = 1;
+    input_calibration_private_vars_v.cal_coeff.t01  = 2;
+    input_calibration_private_vars_v.cal_coeff.t10  = 3;
+    input_calibration_private_vars_v.cal_coeff.t11  = 4;
+    input_calibration_private_vars_v.cal_coeff.x0   = 5;
+    input_calibration_private_vars_v.cal_coeff.y0   = 6;
+    return;
+}
+
+cal_coeff_t input_calibration_get_cal_coeff()
+{
+    return input_calibration_private_vars_v.cal_coeff;
 }

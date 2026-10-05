@@ -58,7 +58,7 @@ MEMORY
 SRAM1 (xrw)      : ORIGIN = 0x20000000, LENGTH = 16K
 SRAM2 (xrw)      : ORIGIN = 0x20004000, LENGTH =  6K
 CCM_SRAM (xrw)   : ORIGIN = 0x10000000, LENGTH = 10K
-FLASH (rx)       : ORIGIN = 0x8000000,  LENGTH = 64K
+FLASH (rx)       : ORIGIN = 0x8000000,  LENGTH = 60K
 }
 
 /* Highest address of the user mode stack */

@@ -20,6 +20,8 @@
 #include "main.h"
 #include "adc.h"
 #include "cordic.h"
+#include "crc.h"
+#include "eeprom_emul_types.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -33,6 +35,7 @@
 #include "input_calibration.h"
 #include "stm32g4xx_it.h"
 #include "defines.h"
+#include "eeprom_emul.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -71,6 +74,8 @@ uint16_t adc_vcc_val;
 uint16_t adc_vcc_cnt;
 uint32_t adc_vcc_acc;
 float vcc;
+
+uint32_t eeprom_init_vals[6];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -126,7 +131,7 @@ int main(void)
   /* USER CODE BEGIN SysInit */
 
   //----------------------------------------------------------------------------
-  //                          RAM initialization5
+  //                          RAM initialization
   //----------------------------------------------------------------------------
 
   init_ram();
@@ -147,8 +152,81 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM7_Init();
   MX_TIM6_Init();
+  MX_CRC_Init();
   /* USER CODE BEGIN 2 */
 
+  //----------------------------------------------------------------------------
+  //                             EEPROM init
+  //----------------------------------------------------------------------------
+  HAL_FLASH_Unlock();
+
+  #if 0
+  EE_Status status = EE_Init(EE_FORCED_ERASE);
+  if (status != EE_OK)
+  {
+  	Error_Handler();
+  }
+  
+  //write default values to NVM variables
+  status = EE_WriteVariable32bits(ELLIPSE_CAL_T00_ADDR, ELLIPSE_CAL_T00_DEFAULT);
+  if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+  {
+    Error_Handler();
+  }
+  status = EE_WriteVariable32bits(ELLIPSE_CAL_T01_ADDR, ELLIPSE_CAL_T01_DEFAULT);
+  if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+  {
+    Error_Handler();
+  }
+  status = EE_WriteVariable32bits(ELLIPSE_CAL_T10_ADDR, ELLIPSE_CAL_T10_DEFAULT);
+  if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+  {
+    Error_Handler();
+  }
+  status = EE_WriteVariable32bits(ELLIPSE_CAL_T11_ADDR, ELLIPSE_CAL_T11_DEFAULT);
+  if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+  {
+    Error_Handler();
+  }
+  status = EE_WriteVariable32bits(ELLIPSE_CAL_X0_ADDR, ELLIPSE_CAL_X0_DEFAULT);
+  if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+  {
+    Error_Handler();
+  }
+  status = EE_WriteVariable32bits(ELLIPSE_CAL_Y0_ADDR, ELLIPSE_CAL_Y0_DEFAULT);
+  if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+  {
+    Error_Handler();
+  }
+
+  if(EE_CLEANUP_REQUIRED == status)
+  {
+    status = EE_CleanUp();
+    if(EE_OK != status)
+    {
+      Error_Handler();
+    }
+  }
+
+  #else
+
+  EE_Status status = EE_Init(EE_CONDITIONAL_ERASE);
+  if (status != EE_OK)
+  {
+  	Error_Handler();
+  }
+
+  for(ii = 0; ii < 6; ii++)
+  {
+    status = EE_ReadVariable32bits(ELLIPSE_CAL_T00_ADDR + ii, &eeprom_init_vals[ii]);
+    if(EE_OK != status)
+    {
+      Error_Handler();
+    }
+  }
+
+  #endif
+  
   //----------------------------------------------------------------------------
   //                          Peripherals init
   //----------------------------------------------------------------------------
@@ -202,6 +280,17 @@ int main(void)
   if(vcc < VCC_CAL_THR)
   {
     //--------------------- begin normal operation -----------------------------
+    cal_coeff_t tmp =
+    {
+      eeprom_init_vals[0],
+      eeprom_init_vals[1],
+      eeprom_init_vals[2],
+      eeprom_init_vals[3],
+      eeprom_init_vals[4],
+      eeprom_init_vals[5],
+    };
+
+    output_generator_set_cal_coeff(tmp);
 
     set_system_status(SYSTEM_STATUS_RUNNING);
     
@@ -247,8 +336,52 @@ int main(void)
   {
     exec_time_us = (float)(cnt)/(170.0f);
 
-    if(input_calibration_get_calibration_done())
+    if(SYSTEM_STATUS_CALIBRATION == get_system_status() && input_calibration_get_calibration_done())
     {
+      //calculate compensation coefficients
+      input_calibration_calculate_coefficients();
+
+      //store coefficients inside NVM parameters
+      status = EE_WriteVariable32bits(ELLIPSE_CAL_T00_ADDR, input_calibration_get_cal_coeff().t00);
+      if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+      {
+        Error_Handler();
+      }
+      status = EE_WriteVariable32bits(ELLIPSE_CAL_T01_ADDR, input_calibration_get_cal_coeff().t01);
+      if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+      {
+        Error_Handler();
+      }
+      status = EE_WriteVariable32bits(ELLIPSE_CAL_T10_ADDR, input_calibration_get_cal_coeff().t10);
+      if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+      {
+        Error_Handler();
+      }
+      status = EE_WriteVariable32bits(ELLIPSE_CAL_T11_ADDR, input_calibration_get_cal_coeff().t11);
+      if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+      {
+        Error_Handler();
+      }
+      status = EE_WriteVariable32bits(ELLIPSE_CAL_X0_ADDR, input_calibration_get_cal_coeff().x0);
+      if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+      {
+        Error_Handler();
+      }
+      status = EE_WriteVariable32bits(ELLIPSE_CAL_Y0_ADDR, input_calibration_get_cal_coeff().y0);
+      if(EE_OK != status  && EE_CLEANUP_REQUIRED != status)
+      {
+        Error_Handler();
+      }
+    
+      if(EE_CLEANUP_REQUIRED == status)
+      {
+        status = EE_CleanUp();
+        if(EE_OK != status)
+        {
+          Error_Handler();
+        }
+      }
+
       set_system_status(SYSTEM_STATUS_CALIBRATION_DONE);
     }
     /* USER CODE END WHILE */
