@@ -50,6 +50,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/output_generator.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/input_calibration.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/recorder.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/lin_sys5_solver.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Mid/Src/eeprom_emul.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Mid/Src/flash_interface.c
 )

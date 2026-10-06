@@ -12,7 +12,8 @@
 #define VCC_ADC_N_AVG   (100)       //number of averaged samples
 #define VCC_CAL_THR     (30.0f)//(30.0f)     //Threshold for entering calibration mode
 
-#define SIGN(x)         ((x > 0) ? (2) : ((x < 0) ? (0) : 1))
+#define SIGN(x)         ((x >  0) ? (2) : ((x < 0) ? (0) : 1))
+#define ABS(x)          ((x >= 0) ? (x) : (-x))
 
 //#define ELLIPSE_CAL_T00 (8843)
 //#define ELLIPSE_CAL_T01 (-50)

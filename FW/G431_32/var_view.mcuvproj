@@ -264,8 +264,8 @@ write_limit_max = 1.000000
 [var12]
 name = input_calibration_private_vars_v.turns_cnt
 tracked_name = input_calibration_private_vars_v.turns_cnt
-address = 536871178
-type = 3
+address = 536871180
+type = 4
 color = 1543850543
 should_update_from_elf = true
 shift = 0
@@ -389,7 +389,7 @@ trigger_enabled = true
 trigger_source_var = cos_comp_dbg
 trigger_edge = 0
 trigger_value = 0.000000
-trigger_pretrigger_samples = 111
+trigger_pretrigger_samples = 0
 override_sample_rate = false
 sample_frequency_hz = 100
 override_viewport_width = false
@@ -444,7 +444,7 @@ viewport_width_ms = 500.000000
 [group1-plot0]
 name = ctrl
 type = 2
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group1-plot0-series0]
@@ -486,7 +486,7 @@ format = DEC
 [group1-plot2]
 name = new plot0
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group1-plot2-series0]
@@ -544,7 +544,7 @@ format = DEC
 
 [group1-plot5-series1]
 name = adc_cos_dbg_cal
-visibility = true
+visibility = false
 format = DEC
 
 [group1-plot5-series2]
@@ -559,17 +559,17 @@ format = DEC
 
 [group1-plot5-series4]
 name = adc_sin_dbg_cal
-visibility = true
+visibility = false
 format = DEC
 
 [group1-plot5-series5]
 name = cos_comp_dbg
-visibility = false
+visibility = true
 format = DEC
 
 [group1-plot5-series6]
 name = sin_comp_dbg
-visibility = false
+visibility = true
 format = DEC
 
 [group1-plot6]
