@@ -3,6 +3,17 @@
 
 #include <stdint.h>
 #include "defines.h"
+
+typedef enum ellipse_par_e
+{
+    ELLIPSE_PAR_A = 0,
+    ELLIPSE_PAR_B,
+    ELLIPSE_PAR_C,
+    ELLIPSE_PAR_D,
+    ELLIPSE_PAR_E,
+    ELLIPSE_PAR_MAX_NUM
+}ellipse_par_t;
+
 struct input_calibration_private_vars_init_s
 {
     //parameters

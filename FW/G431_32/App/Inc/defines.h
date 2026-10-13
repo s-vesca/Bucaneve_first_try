@@ -20,10 +20,12 @@
 //#define ELLIPSE_CAL_T10 (-50)
 //#define ELLIPSE_CAL_T11 (8670)
 
-#define ELLIPSE_CAL_T00 (4438)
-#define ELLIPSE_CAL_T01 (-55)
-#define ELLIPSE_CAL_T10 (-55)
-#define ELLIPSE_CAL_T11 (4352)
+#define CAL_CIRCLE_R    (5120000.0f)
+
+#define ELLIPSE_CAL_T00 (4060)
+#define ELLIPSE_CAL_T01 (-355)
+#define ELLIPSE_CAL_T10 (349)
+#define ELLIPSE_CAL_T11 (3985)
 
 #define ELLIPSE_CAL_T00_ADDR    (0x0001)
 #define ELLIPSE_CAL_T01_ADDR    (0x0002)

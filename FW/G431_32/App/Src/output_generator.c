@@ -133,6 +133,13 @@ void read_adcs_output()
     //TIM6->CNT = 0;
     //GPIOA->ODR |= GPIO_PIN_10;
 
+    cal_coeff_v.x0 = -133;
+    cal_coeff_v.y0 = -21;
+    cal_coeff_v.t00 = ELLIPSE_CAL_T00;
+    cal_coeff_v.t01 = ELLIPSE_CAL_T01;
+    cal_coeff_v.t10 = ELLIPSE_CAL_T10;
+    cal_coeff_v.t11 = ELLIPSE_CAL_T11;
+
     //Check that both ADCs have finished their injected conversion
     if((ADC1->ISR & ADC_ISR_JEOC_Msk) && (ADC2->ISR & ADC_ISR_JEOC_Msk))
     {

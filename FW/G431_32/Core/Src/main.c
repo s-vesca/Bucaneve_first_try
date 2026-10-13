@@ -541,9 +541,9 @@ void adcs_init_normal_mode()
   //ADC2->OFR1 += 132;
 
   //offset correction (board without gnd plane)
-  ADC1->OFR1 -= 205;
+  //ADC1->OFR1 -= 205;
   //ADC2->OFR1 += 8;  //pulpito
-  ADC2->OFR1 -= 13;   //banchetto
+  //ADC2->OFR1 -= 13;   //banchetto
 
   //calibrate ADC1
   if(LL_ADC_IsEnabled(ADC1) != RESET)
