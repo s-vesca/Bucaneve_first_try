@@ -699,8 +699,13 @@ void adc_sync_timer_start(uint8_t _calibration)
   }
   else 
   {
+    #if (DBG)
+    //100kHz
+    LL_TIM_SetAutoReload(TIM2, 1700);
+    #else
     //300kHz
     LL_TIM_SetAutoReload(TIM2, 566);
+    #endif
   }
   LL_TIM_EnableCounter(TIM2);
   return;

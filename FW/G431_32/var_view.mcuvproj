@@ -330,6 +330,108 @@ write_limit_min = -1.000000
 write_limit_max = 1.000000
 
 [var16]
+name = input_calibration_private_vars_v.cal_coeff.t00
+tracked_name = input_calibration_private_vars_v.cal_coeff.t00
+address = 536871376
+type = 6
+color = 17718581
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var17]
+name = input_calibration_private_vars_v.cal_coeff.t01
+tracked_name = input_calibration_private_vars_v.cal_coeff.t01
+address = 536871380
+type = 6
+color = 258411783
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var18]
+name = input_calibration_private_vars_v.cal_coeff.t10
+tracked_name = input_calibration_private_vars_v.cal_coeff.t10
+address = 536871384
+type = 6
+color = 2139348330
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var19]
+name = input_calibration_private_vars_v.cal_coeff.t11
+tracked_name = input_calibration_private_vars_v.cal_coeff.t11
+address = 536871388
+type = 6
+color = 2916089370
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var20]
+name = input_calibration_private_vars_v.cal_coeff.x0
+tracked_name = input_calibration_private_vars_v.cal_coeff.x0
+address = 536871392
+type = 6
+color = 3728109845
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var21]
+name = input_calibration_private_vars_v.cal_coeff.y0
+tracked_name = input_calibration_private_vars_v.cal_coeff.y0
+address = 536871396
+type = 6
+color = 3543893284
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var22]
 name = input_calibration_private_vars_v.quadrant.current
 tracked_name = input_calibration_private_vars_v.quadrant.current
 address = 536871400
@@ -346,7 +448,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var17]
+[var23]
 name = input_calibration_private_vars_v.quadrant.prev
 tracked_name = input_calibration_private_vars_v.quadrant.prev
 address = 536871401
@@ -363,7 +465,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var18]
+[var24]
 name = input_calibration_private_vars_v.turns_cnt
 tracked_name = input_calibration_private_vars_v.turns_cnt
 address = 536871260
@@ -380,7 +482,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var19]
+[var25]
 name = ph_diff_dbg
 tracked_name = ph_diff_dbg
 address = 268436512
@@ -397,7 +499,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var20]
+[var26]
 name = phase_dbg
 tracked_name = phase_dbg
 address = 268436480
@@ -414,7 +516,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var21]
+[var27]
 name = sin_comp_dbg
 tracked_name = sin_comp_dbg
 address = 268436768
@@ -431,7 +533,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var22]
+[var28]
 name = speed_dbg
 tracked_name = speed_dbg
 address = 268436544
@@ -448,7 +550,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var23]
+[var29]
 name = sys_stat
 tracked_name = sys_stat
 address = 536871249
@@ -465,7 +567,7 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var24]
+[var30]
 name = vcc
 tracked_name = vcc
 address = 536871100
@@ -483,60 +585,115 @@ write_limit_min = -1.000000
 write_limit_max = 1.000000
 
 [group0]
-name = recorder
-acquisition_type = 1
-mode = 1
-skipped_samples = 0
-trigger_enabled = true
-trigger_source_var = cos_comp_dbg
-trigger_edge = 0
-trigger_value = 0.000000
-trigger_pretrigger_samples = 0
+name = input_cal
+acquisition_type = 0
 override_sample_rate = false
 sample_frequency_hz = 100
 override_viewport_width = false
 viewport_width_ms = 500.000000
 
 [group0-plot0]
-name = new plot0
-type = 3
+name = cal_params
+type = 2
 visibility = true
 secondary_write_enabled = false
-x_axis_variable = cos_comp_dbg
 
 [group0-plot0-series0]
-name = sin_comp_dbg
+name = input_calibration_private_vars_v.cal_coeff.t00
+visibility = true
+format = DEC
+
+[group0-plot0-series1]
+name = input_calibration_private_vars_v.cal_coeff.t01
+visibility = true
+format = DEC
+
+[group0-plot0-series2]
+name = input_calibration_private_vars_v.cal_coeff.t10
+visibility = true
+format = DEC
+
+[group0-plot0-series3]
+name = input_calibration_private_vars_v.cal_coeff.t11
+visibility = true
+format = DEC
+
+[group0-plot0-series4]
+name = input_calibration_private_vars_v.cal_coeff.x0
+visibility = true
+format = DEC
+
+[group0-plot0-series5]
+name = input_calibration_private_vars_v.cal_coeff.y0
 visibility = true
 format = DEC
 
 [group0-plot1]
+name = ctrl
+type = 2
+visibility = true
+secondary_write_enabled = false
+
+[group0-plot1-series0]
+name = exec_time_us
+visibility = true
+format = DEC
+
+[group0-plot1-series1]
+name = sys_stat
+visibility = true
+format = DEC
+
+[group0-plot1-series2]
+name = vcc
+visibility = true
+format = DEC
+
+[group0-plot2]
+name = quadrant
+type = 0
+visibility = true
+secondary_write_enabled = false
+
+[group0-plot2-series0]
+name = input_calibration_private_vars_v.quadrant.current
+visibility = true
+format = DEC
+
+[group0-plot2-series1]
+name = input_calibration_private_vars_v.quadrant.prev
+visibility = true
+format = DEC
+
+[group0-plot3]
 name = sincos
 type = 0
 visibility = true
 secondary_write_enabled = false
 
-[group0-plot1-series0]
-name = adc_cos_dbg
-visibility = false
-format = DEC
-
-[group0-plot1-series1]
-name = adc_cos_filt_dbg
-visibility = false
-format = DEC
-
-[group0-plot1-series2]
-name = cos_comp_dbg
+[group0-plot3-series0]
+name = adc_cos_dbg_cal
 visibility = true
 format = DEC
 
-[group0-plot1-series3]
-name = sin_comp_dbg
+[group0-plot3-series1]
+name = adc_sin_dbg_cal
+visibility = true
+format = DEC
+
+[group0-plot4]
+name = turns
+type = 0
+visibility = true
+secondary_write_enabled = false
+
+[group0-plot4-series0]
+name = input_calibration_private_vars_v.turns_cnt
 visibility = true
 format = DEC
 
 [group1]
-name = var_viewer
+name = output_gen
 acquisition_type = 0
 override_sample_rate = false
 sample_frequency_hz = 100
@@ -544,9 +701,9 @@ override_viewport_width = false
 viewport_width_ms = 500.000000
 
 [group1-plot0]
-name = cal_coeff
+name = calibration_coeff
 type = 2
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group1-plot0-series0]
@@ -582,12 +739,12 @@ format = DEC
 [group1-plot1]
 name = ctrl
 type = 2
-visibility = false
+visibility = true
 secondary_write_enabled = false
 
 [group1-plot1-series0]
 name = cnt
-visibility = true
+visibility = false
 format = DEC
 
 [group1-plot1-series1]
@@ -622,136 +779,119 @@ visibility = true
 format = DEC
 
 [group1-plot3]
-name = new plot0
-type = 0
-visibility = false
-secondary_write_enabled = false
-
-[group1-plot3-series0]
-name = input_calibration_private_vars_v.quadrant.current
-visibility = true
-format = DEC
-
-[group1-plot3-series1]
-name = input_calibration_private_vars_v.quadrant.prev
-visibility = true
-format = DEC
-
-[group1-plot3-series2]
-name = input_calibration_private_vars_v.turns_cnt
-visibility = true
-format = DEC
-
-[group1-plot4]
-name = new plot1
-type = 2
-visibility = false
-secondary_write_enabled = false
-
-[group1-plot5]
 name = phase
 type = 0
 visibility = false
 secondary_write_enabled = false
 
-[group1-plot5-series0]
+[group1-plot3-series0]
 name = phase_dbg
 visibility = true
 format = DEC
 
-[group1-plot6]
-name = q
-type = 0
-visibility = false
-secondary_write_enabled = false
-
-[group1-plot6-series0]
-name = input_calibration_private_vars_v.quadrant.current
-visibility = true
-format = DEC
-
-[group1-plot6-series1]
-name = input_calibration_private_vars_v.quadrant.prev
-visibility = true
-format = DEC
-
-[group1-plot7]
+[group1-plot4]
 name = sin-cos
 type = 0
 visibility = false
 secondary_write_enabled = false
 
-[group1-plot7-series0]
+[group1-plot4-series0]
 name = adc_cos_dbg
 visibility = false
 format = DEC
 
-[group1-plot7-series1]
-name = adc_cos_dbg_cal
-visibility = false
-format = DEC
-
-[group1-plot7-series2]
+[group1-plot4-series1]
 name = adc_cos_filt_dbg
 visibility = false
 format = DEC
 
-[group1-plot7-series3]
+[group1-plot4-series2]
 name = adc_sin_dbg
 visibility = false
 format = DEC
 
-[group1-plot7-series4]
-name = adc_sin_dbg_cal
-visibility = false
-format = DEC
-
-[group1-plot7-series5]
+[group1-plot4-series3]
 name = cos_comp_dbg
 visibility = true
 format = DEC
 
-[group1-plot7-series6]
+[group1-plot4-series4]
 name = sin_comp_dbg
 visibility = true
 format = DEC
 
-[group1-plot8]
+[group1-plot5]
 name = speed
 type = 0
 visibility = false
 secondary_write_enabled = false
 
-[group1-plot8-series0]
+[group1-plot5-series0]
 name = speed_dbg
 visibility = true
 format = DEC
 
-[group1-plot9]
-name = xy_filtered
+[group1-plot6]
+name = xy_plot
 type = 3
 visibility = false
 secondary_write_enabled = false
-x_axis_variable = adc_cos_dbg_cal
+x_axis_variable = cos_comp_dbg
 
-[group1-plot9-series0]
-name = adc_sin_dbg_cal
+[group1-plot6-series0]
+name = sin_comp_dbg
 visibility = true
 format = DEC
 
-[group1-plot9-series1]
-name = sin_comp_dbg
-visibility = false
-format = DEC
+[group2]
+name = recorder
+acquisition_type = 1
+mode = 1
+skipped_samples = 0
+trigger_enabled = true
+trigger_source_var = cos_comp_dbg
+trigger_edge = 0
+trigger_value = 0.000000
+trigger_pretrigger_samples = 0
+override_sample_rate = false
+sample_frequency_hz = 100
+override_viewport_width = false
+viewport_width_ms = 500.000000
 
-[group1-plot10]
-name = xy_plot
+[group2-plot0]
+name = new plot0
 type = 3
 visibility = true
 secondary_write_enabled = false
 x_axis_variable = cos_comp_dbg
 
-[group1-plot10-series0]
+[group2-plot0-series0]
+name = sin_comp_dbg
+visibility = true
+format = DEC
+
+[group2-plot1]
+name = sincos
+type = 0
+visibility = true
+secondary_write_enabled = false
+
+[group2-plot1-series0]
+name = adc_cos_dbg
+visibility = false
+format = DEC
+
+[group2-plot1-series1]
+name = adc_cos_filt_dbg
+visibility = false
+format = DEC
+
+[group2-plot1-series2]
+name = cos_comp_dbg
+visibility = true
+format = DEC
+
+[group2-plot1-series3]
 name = sin_comp_dbg
 visibility = true
 format = DEC

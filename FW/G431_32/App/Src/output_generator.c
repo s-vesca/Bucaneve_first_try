@@ -144,9 +144,6 @@ void read_adcs_output()
         cos_comp = ((adc_data_reg_cos>>10) * cal_coeff_v.t00 + (adc_data_reg_sin>>10) * cal_coeff_v.t01);
         sin_comp = ((adc_data_reg_cos>>10) * cal_coeff_v.t10 + (adc_data_reg_sin>>10) * cal_coeff_v.t11);
 
-        cos_comp_dbg = (int16_t)(cos_comp >> 16);
-        sin_comp_dbg = (int16_t)(sin_comp >> 16);
-
         adc_cos_filt_diff = (int32_t)(cos_comp) - adc_cos_filt_state;
         adc_cos_filt_state += (adc_cos_filt_diff >> 4) - (adc_cos_filt_diff >> 9) + (adc_cos_filt_diff >> 11);
         //adc_cos_filt_state += (adc_cos_filt_diff >> 1) - (adc_cos_filt_diff >> 5) - (adc_cos_filt_diff >> 7);
