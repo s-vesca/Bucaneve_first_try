@@ -21,8 +21,6 @@
 #include "adc.h"
 #include "cordic.h"
 #include "crc.h"
-#include "eeprom_emul_types.h"
-#include "stm32g4xx_ll_tim.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -163,7 +161,7 @@ int main(void)
   //----------------------------------------------------------------------------
   HAL_FLASH_Unlock();
 
-  #if 0
+  #if EEPROM_ERASE
   EE_Status eeprom_status = EE_Init(EE_FORCED_ERASE);
   if (eeprom_status != EE_OK)
   {
@@ -257,7 +255,7 @@ int main(void)
   struct input_calibration_private_vars_init_s input_calibration_private_vars_init_v = 
   {
     .revolutions_pre_acq = 10,
-    .revolutions_todo = 10
+    .revolutions_todo = 100
   };
 
   //----------------------------------------------------------------------------
@@ -265,7 +263,7 @@ int main(void)
   //----------------------------------------------------------------------------
 
   //wait for voltage to settle (2s)
-  HAL_Delay(100);
+  HAL_Delay(200);
 
   adc_vcc_acc = 0;
   for(ii = 0; ii < VCC_ADC_N_AVG; ii++)
@@ -363,7 +361,7 @@ int main(void)
       cal_status = input_calibration_calculate_coefficients();
       if(cal_status)
       {
-#if 0
+#if (EEPROM_WRITE && EEPROM_ERASE == 0)
         //store coefficients inside NVM parameters
         eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T00_ADDR, input_calibration_get_cal_coeff().t00);
         if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
@@ -544,6 +542,8 @@ void adcs_init_normal_mode()
   //ADC1->OFR1 -= 205;
   //ADC2->OFR1 += 8;  //pulpito
   //ADC2->OFR1 -= 13;   //banchetto
+
+  //0 center offset
 
   //calibrate ADC1
   if(LL_ADC_IsEnabled(ADC1) != RESET)

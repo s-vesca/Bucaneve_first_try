@@ -95,7 +95,7 @@ void MX_ADC1_Init(void)
   ADC_REG_InitStruct.Overrun = LL_ADC_REG_OVR_DATA_PRESERVED;
   LL_ADC_REG_Init(ADC1, &ADC_REG_InitStruct);
   LL_ADC_SetGainCompensation(ADC1, 4096);
-  LL_ADC_SetOverSamplingScope(ADC1, LL_ADC_OVS_DISABLE);
+  LL_ADC_SetOverSamplingScope(ADC1, LL_ADC_OVS_GRP_INJECTED);
   ADC_CommonInitStruct.CommonClock = LL_ADC_CLOCK_SYNC_PCLK_DIV4;
   ADC_CommonInitStruct.Multimode = LL_ADC_MULTI_INDEPENDENT;
   LL_ADC_CommonInit(__LL_ADC_COMMON_INSTANCE(ADC1), &ADC_CommonInitStruct);
@@ -105,6 +105,7 @@ void MX_ADC1_Init(void)
   ADC_INJ_InitStruct.TrigAuto = LL_ADC_INJ_TRIG_INDEPENDENT;
   LL_ADC_INJ_Init(ADC1, &ADC_INJ_InitStruct);
   LL_ADC_INJ_SetQueueMode(ADC1, LL_ADC_INJ_QUEUE_DISABLE);
+  LL_ADC_ConfigOverSamplingRatioShift(ADC1, LL_ADC_OVS_RATIO_4, LL_ADC_OVS_SHIFT_RIGHT_2);
   LL_ADC_INJ_SetTriggerEdge(ADC1, LL_ADC_INJ_TRIG_EXT_RISING);
 
   /* Disable ADC deep power down (enabled by default after reset state) */
@@ -138,9 +139,6 @@ void MX_ADC1_Init(void)
   LL_ADC_INJ_SetSequencerRanks(ADC1, LL_ADC_INJ_RANK_1, LL_ADC_CHANNEL_1);
   LL_ADC_SetChannelSamplingTime(ADC1, LL_ADC_CHANNEL_1, LL_ADC_SAMPLINGTIME_12CYCLES_5);
   LL_ADC_SetChannelSingleDiff(ADC1, LL_ADC_CHANNEL_1, LL_ADC_DIFFERENTIAL_ENDED);
-  LL_ADC_SetOffset(ADC1, LL_ADC_OFFSET_1, LL_ADC_CHANNEL_1, 2048);
-  LL_ADC_SetOffsetSign(ADC1, LL_ADC_OFFSET_1, LL_ADC_OFFSET_SIGN_NEGATIVE);
-  LL_ADC_SetOffsetSaturation(ADC1, LL_ADC_OFFSET_1, LL_ADC_OFFSET_SATURATION_DISABLE);
   /* USER CODE BEGIN ADC1_Init 2 */
 
   /* USER CODE END ADC1_Init 2 */
@@ -209,13 +207,14 @@ void MX_ADC2_Init(void)
   ADC_REG_InitStruct.Overrun = LL_ADC_REG_OVR_DATA_PRESERVED;
   LL_ADC_REG_Init(ADC2, &ADC_REG_InitStruct);
   LL_ADC_SetGainCompensation(ADC2, 4375);
-  LL_ADC_SetOverSamplingScope(ADC2, LL_ADC_OVS_DISABLE);
+  LL_ADC_SetOverSamplingScope(ADC2, LL_ADC_OVS_GRP_INJECTED);
   ADC_INJ_InitStruct.TriggerSource = LL_ADC_INJ_TRIG_EXT_TIM2_TRGO;
   ADC_INJ_InitStruct.SequencerLength = LL_ADC_INJ_SEQ_SCAN_DISABLE;
   ADC_INJ_InitStruct.SequencerDiscont = LL_ADC_INJ_SEQ_DISCONT_DISABLE;
   ADC_INJ_InitStruct.TrigAuto = LL_ADC_INJ_TRIG_INDEPENDENT;
   LL_ADC_INJ_Init(ADC2, &ADC_INJ_InitStruct);
   LL_ADC_INJ_SetQueueMode(ADC2, LL_ADC_INJ_QUEUE_DISABLE);
+  LL_ADC_ConfigOverSamplingRatioShift(ADC2, LL_ADC_OVS_RATIO_4, LL_ADC_OVS_SHIFT_RIGHT_2);
   LL_ADC_INJ_SetTriggerEdge(ADC2, LL_ADC_INJ_TRIG_EXT_RISING);
 
   /* Disable ADC deep power down (enabled by default after reset state) */
@@ -240,9 +239,6 @@ void MX_ADC2_Init(void)
   LL_ADC_INJ_SetSequencerRanks(ADC2, LL_ADC_INJ_RANK_1, LL_ADC_CHANNEL_3);
   LL_ADC_SetChannelSamplingTime(ADC2, LL_ADC_CHANNEL_3, LL_ADC_SAMPLINGTIME_12CYCLES_5);
   LL_ADC_SetChannelSingleDiff(ADC2, LL_ADC_CHANNEL_3, LL_ADC_DIFFERENTIAL_ENDED);
-  LL_ADC_SetOffset(ADC2, LL_ADC_OFFSET_1, LL_ADC_CHANNEL_3, 2048);
-  LL_ADC_SetOffsetSign(ADC2, LL_ADC_OFFSET_1, LL_ADC_OFFSET_SIGN_NEGATIVE);
-  LL_ADC_SetOffsetSaturation(ADC2, LL_ADC_OFFSET_1, LL_ADC_OFFSET_SATURATION_DISABLE);
   /* USER CODE BEGIN ADC2_Init 2 */
   
   //LL_ADC_SetGainCompensation(ADC2, 4375); //with gnd plane
