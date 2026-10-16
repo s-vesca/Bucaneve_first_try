@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define DBG             (0)
+#define DBG             (1)
 #define EEPROM_WRITE    (1)
 #define EEPROM_ERASE    (0)
 

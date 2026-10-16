@@ -23,6 +23,8 @@ __attribute__((section(".ccm_data"),aligned(32)))
 volatile int16_t speed_dbg;
 __attribute__((section(".ccm_data"),aligned(32)))
 volatile int32_t filt_state_dbg;
+__attribute__((section(".ccm_data"),aligned(32)))
+volatile uint32_t time_to_next_state_dbg;
 
 __attribute__((section(".ccm_data"),aligned(32)))
 volatile int16_t adc_cos_dbg;
@@ -145,7 +147,8 @@ void read_adcs_output()
         sin_comp = ((adc_data_reg_cos>>10) * cal_coeff_v.t10 + (adc_data_reg_sin>>10) * cal_coeff_v.t11);
 
         adc_cos_filt_diff = (int32_t)(cos_comp) - adc_cos_filt_state;
-        adc_cos_filt_state += (adc_cos_filt_diff >> 4) - (adc_cos_filt_diff >> 9) + (adc_cos_filt_diff >> 11);
+        adc_cos_filt_state += (adc_cos_filt_diff >> 6) - (adc_cos_filt_diff >> 8) + (adc_cos_filt_diff >> 10); //fc = 600Hz @ 300kHz Fs
+        //adc_cos_filt_state += (adc_cos_filt_diff >> 4) - (adc_cos_filt_diff >> 9) + (adc_cos_filt_diff >> 11); //fc = 3kHz @ 300kHz Fs
         //adc_cos_filt_state += (adc_cos_filt_diff >> 1) - (adc_cos_filt_diff >> 5) - (adc_cos_filt_diff >> 7);
         adc_data_reg_cos_filt = (int32_t)(adc_cos_filt_state);
         
@@ -154,7 +157,8 @@ void read_adcs_output()
         //adc_data_reg_cos_filt2 = (int32_t)(adc_cos_filt2_state);
 
         adc_sin_filt_diff = (int32_t)(sin_comp) - adc_sin_filt_state;
-        adc_sin_filt_state += (adc_sin_filt_diff >> 4) - (adc_sin_filt_diff >> 9) + (adc_sin_filt_diff >> 11);
+        adc_sin_filt_state += (adc_sin_filt_diff >> 6) - (adc_sin_filt_diff >> 8) + (adc_sin_filt_diff >> 10); //fc = 600Hz @ 300kHz Fs
+        //adc_sin_filt_state += (adc_sin_filt_diff >> 4) - (adc_sin_filt_diff >> 9) + (adc_sin_filt_diff >> 11); //fc = 3kHz @ 300kHz Fs
         //adc_sin_filt_state += (adc_sin_filt_diff >> 1) - (adc_sin_filt_diff >> 5) - (adc_sin_filt_diff >> 7);
         adc_data_reg_sin_filt = (int32_t)(adc_sin_filt_state);
         
@@ -188,6 +192,9 @@ void calculate_outputs()
     int16_t     speed;
     int8_t      dir;
     uint8_t     state_tmp;
+    int16_t     delta_next_state;
+    uint32_t    time_to_next_state;
+    
     
     __attribute__((section(".ccm_data"),aligned(32)))
     static uint8_t  state_out = 0;
@@ -197,6 +204,8 @@ void calculate_outputs()
     static int16_t  phase_prev = 0;
     __attribute__((section(".ccm_data"),aligned(32)))
     static int32_t  filt_state = 0;
+    __attribute__((section(".ccm_data"),aligned(32)))
+    static uint16_t mask;
 
     //GPIOA->ODR |= GPIO_PIN_10;
 
@@ -219,6 +228,12 @@ void calculate_outputs()
             if(first_iteration)
             {
               phase_prev = phase; //avoid speed glitches at startup
+              mask = 1;
+              for(uint8_t ii = 0; ii < shift_pos-1; ii++)
+              {
+                mask <<= 1;
+                mask |= 0x0001;
+              }
               first_iteration = 0;
             }
 
@@ -257,6 +272,30 @@ void calculate_outputs()
             dir_dbg = dir;
             #endif
 
+            //if negative speed
+            if(0 == dir)
+            {
+                delta_next_state = -(phase & mask);
+            }
+            else 
+            {
+                delta_next_state = (1 << shift_pos) - (phase & mask);
+            }
+
+            if(0 != speed)
+            {
+                //time, measured as counts of the HW timer
+                time_to_next_state = (uint32_t)(((int32_t)delta_next_state * 566) / (int32_t)speed);
+            }
+            else 
+            {
+                time_to_next_state = 0;
+            }  
+            
+            #if DBG == 1
+            time_to_next_state_dbg = time_to_next_state;
+            #endif
+
             //state is given by the 2 LSBs of the phase variable after 
             //the correct shift
             state_tmp = ((phase >> shift_pos) & 0x0003);
@@ -270,8 +309,9 @@ void calculate_outputs()
 
             phase_prev = phase;
             cnt = TIM6->CNT;
-            //recorderStep();
-
+#if DBG
+            recorderStep();
+#endif
             ITM->PORT[1].u32 = *(uint32_t*)&sin_comp_dbg;
         }
         //RRDY flag is cleared by HW when reading RDATA register     
@@ -284,13 +324,5 @@ void calculate_outputs()
 void output_generator_set_cal_coeff(cal_coeff_t _cal_coeff)
 {
     cal_coeff_v = _cal_coeff;
-
-    //cal_coeff_v.x0 = ELLIPSE_CAL_X0;
-    //cal_coeff_v.y0 = ELLIPSE_CAL_Y0;
-    //cal_coeff_v.t00 = ELLIPSE_CAL_T00;
-    //cal_coeff_v.t01 = ELLIPSE_CAL_T01;
-    //cal_coeff_v.t10 = ELLIPSE_CAL_T10;
-    //cal_coeff_v.t11 = ELLIPSE_CAL_T11;
-
     return;
 }
