@@ -36,7 +36,7 @@ void MX_CORDIC_Init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_CORDIC);
 
   /* CORDIC interrupt Init */
-  NVIC_SetPriority(CORDIC_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),1, 0));
+  NVIC_SetPriority(CORDIC_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),3, 0));
   NVIC_EnableIRQ(CORDIC_IRQn);
 
   /* USER CODE BEGIN CORDIC_Init 1 */

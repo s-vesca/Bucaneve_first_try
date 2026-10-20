@@ -43,7 +43,7 @@ timeout_seconds = 5
 
 [trace_settings]
 core_frequency = 170000
-trace_prescaler = 100
+trace_prescaler = 1000
 max_points = 10000
 max_viewport_points_percent = 10
 viewport_width_ms = 5.000000
@@ -60,7 +60,7 @@ log_directory = C:\Users\S.vesca\Desktop
 [var0]
 name = adc_cos_dbg
 tracked_name = adc_cos_dbg
-address = 268436640
+address = 268437664
 type = 4
 color = 352346367
 should_update_from_elf = true
@@ -77,7 +77,7 @@ write_limit_max = 1.000000
 [var1]
 name = adc_cos_dbg_cal
 tracked_name = adc_cos_dbg_cal
-address = 268437184
+address = 268438464
 type = 4
 color = 4087510069
 should_update_from_elf = true
@@ -94,7 +94,7 @@ write_limit_max = 1.000000
 [var2]
 name = adc_cos_filt_dbg
 tracked_name = adc_cos_filt_dbg
-address = 268436704
+address = 268437728
 type = 4
 color = 2909728921
 should_update_from_elf = true
@@ -111,7 +111,7 @@ write_limit_max = 1.000000
 [var3]
 name = adc_sin_dbg
 tracked_name = adc_sin_dbg
-address = 268436672
+address = 268437696
 type = 4
 color = 2063591424
 should_update_from_elf = true
@@ -128,7 +128,7 @@ write_limit_max = 1.000000
 [var4]
 name = adc_sin_dbg_cal
 tracked_name = adc_sin_dbg_cal
-address = 268437216
+address = 268438496
 type = 4
 color = 1143453931
 should_update_from_elf = true
@@ -145,7 +145,7 @@ write_limit_max = 1.000000
 [var5]
 name = adc_sin_filt_dbg
 tracked_name = adc_sin_filt_dbg
-address = 268436736
+address = 268437760
 type = 4
 color = 894991319
 should_update_from_elf = true
@@ -162,7 +162,7 @@ write_limit_max = 1.000000
 [var6]
 name = cal_coeff_v.t00
 tracked_name = cal_coeff_v.t00
-address = 268436896
+address = 268438048
 type = 6
 color = 3265198717
 should_update_from_elf = true
@@ -179,7 +179,7 @@ write_limit_max = 1.000000
 [var7]
 name = cal_coeff_v.t01
 tracked_name = cal_coeff_v.t01
-address = 268436900
+address = 268438052
 type = 6
 color = 413517790
 should_update_from_elf = true
@@ -196,7 +196,7 @@ write_limit_max = 1.000000
 [var8]
 name = cal_coeff_v.t10
 tracked_name = cal_coeff_v.t10
-address = 268436904
+address = 268438056
 type = 6
 color = 2575641039
 should_update_from_elf = true
@@ -213,7 +213,7 @@ write_limit_max = 1.000000
 [var9]
 name = cal_coeff_v.t11
 tracked_name = cal_coeff_v.t11
-address = 268436908
+address = 268438060
 type = 6
 color = 896219346
 should_update_from_elf = true
@@ -230,7 +230,7 @@ write_limit_max = 1.000000
 [var10]
 name = cal_coeff_v.x0
 tracked_name = cal_coeff_v.x0
-address = 268436912
+address = 268438064
 type = 6
 color = 4054089050
 should_update_from_elf = true
@@ -247,7 +247,7 @@ write_limit_max = 1.000000
 [var11]
 name = cal_coeff_v.y0
 tracked_name = cal_coeff_v.y0
-address = 268436916
+address = 268438068
 type = 6
 color = 3853699564
 should_update_from_elf = true
@@ -264,7 +264,7 @@ write_limit_max = 1.000000
 [var12]
 name = cnt
 tracked_name = cnt
-address = 268436832
+address = 268437856
 type = 3
 color = 1196750454
 should_update_from_elf = true
@@ -281,7 +281,7 @@ write_limit_max = 1.000000
 [var13]
 name = cos_comp_dbg
 tracked_name = cos_comp_dbg
-address = 268436768
+address = 268437792
 type = 4
 color = 2654445509
 should_update_from_elf = true
@@ -298,7 +298,7 @@ write_limit_max = 1.000000
 [var14]
 name = dir_dbg
 tracked_name = dir_dbg
-address = 268436448
+address = 268437472
 type = 2
 color = 843618215
 should_update_from_elf = true
@@ -315,7 +315,7 @@ write_limit_max = 1.000000
 [var15]
 name = exec_time_us
 tracked_name = exec_time_us
-address = 536871112
+address = 536871088
 type = 7
 color = 2888494243
 should_update_from_elf = true
@@ -332,7 +332,7 @@ write_limit_max = 1.000000
 [var16]
 name = filt_state_dbg
 tracked_name = filt_state_dbg
-address = 268436576
+address = 268437600
 type = 6
 color = 3586556252
 should_update_from_elf = true
@@ -349,7 +349,7 @@ write_limit_max = 1.000000
 [var17]
 name = input_calibration_private_vars_v.cal_coeff.t00
 tracked_name = input_calibration_private_vars_v.cal_coeff.t00
-address = 536871400
+address = 536871448
 type = 6
 color = 17718581
 should_update_from_elf = true
@@ -366,7 +366,7 @@ write_limit_max = 1.000000
 [var18]
 name = input_calibration_private_vars_v.cal_coeff.t01
 tracked_name = input_calibration_private_vars_v.cal_coeff.t01
-address = 536871404
+address = 536871452
 type = 6
 color = 258411783
 should_update_from_elf = true
@@ -383,7 +383,7 @@ write_limit_max = 1.000000
 [var19]
 name = input_calibration_private_vars_v.cal_coeff.t10
 tracked_name = input_calibration_private_vars_v.cal_coeff.t10
-address = 536871408
+address = 536871456
 type = 6
 color = 2139348330
 should_update_from_elf = true
@@ -400,7 +400,7 @@ write_limit_max = 1.000000
 [var20]
 name = input_calibration_private_vars_v.cal_coeff.t11
 tracked_name = input_calibration_private_vars_v.cal_coeff.t11
-address = 536871412
+address = 536871460
 type = 6
 color = 2916089370
 should_update_from_elf = true
@@ -417,7 +417,7 @@ write_limit_max = 1.000000
 [var21]
 name = input_calibration_private_vars_v.cal_coeff.x0
 tracked_name = input_calibration_private_vars_v.cal_coeff.x0
-address = 536871416
+address = 536871464
 type = 6
 color = 3728109845
 should_update_from_elf = true
@@ -434,7 +434,7 @@ write_limit_max = 1.000000
 [var22]
 name = input_calibration_private_vars_v.cal_coeff.y0
 tracked_name = input_calibration_private_vars_v.cal_coeff.y0
-address = 536871420
+address = 536871468
 type = 6
 color = 3543893284
 should_update_from_elf = true
@@ -451,7 +451,7 @@ write_limit_max = 1.000000
 [var23]
 name = input_calibration_private_vars_v.quadrant.current
 tracked_name = input_calibration_private_vars_v.quadrant.current
-address = 536871424
+address = 536871472
 type = 1
 color = 2874825903
 should_update_from_elf = true
@@ -468,7 +468,7 @@ write_limit_max = 1.000000
 [var24]
 name = input_calibration_private_vars_v.quadrant.prev
 tracked_name = input_calibration_private_vars_v.quadrant.prev
-address = 536871425
+address = 536871473
 type = 1
 color = 3598573541
 should_update_from_elf = true
@@ -485,7 +485,7 @@ write_limit_max = 1.000000
 [var25]
 name = input_calibration_private_vars_v.turns_cnt
 tracked_name = input_calibration_private_vars_v.turns_cnt
-address = 536871284
+address = 536871332
 type = 4
 color = 1543850543
 should_update_from_elf = true
@@ -502,8 +502,8 @@ write_limit_max = 1.000000
 [var26]
 name = ph_diff_dbg
 tracked_name = ph_diff_dbg
-address = 268436512
-type = 4
+address = 268437536
+type = 6
 color = 3184653574
 should_update_from_elf = true
 shift = 0
@@ -519,7 +519,7 @@ write_limit_max = 1.000000
 [var27]
 name = phase_dbg
 tracked_name = phase_dbg
-address = 268436480
+address = 268437504
 type = 4
 color = 2721790912
 should_update_from_elf = true
@@ -534,9 +534,26 @@ write_limit_min = -1.000000
 write_limit_max = 1.000000
 
 [var28]
+name = pulse_fired
+tracked_name = pulse_fired
+address = 268437952
+type = 1
+color = 3785835849
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var29]
 name = sin_comp_dbg
 tracked_name = sin_comp_dbg
-address = 268436800
+address = 268437824
 type = 4
 color = 1016531349
 should_update_from_elf = true
@@ -550,10 +567,27 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var29]
+[var30]
+name = speed
+tracked_name = speed
+address = 268438016
+type = 4
+color = 3531950568
+should_update_from_elf = true
+shift = 0
+mask = 4294967295
+high_level_type = 0
+value_to_write = 0.000000
+secondary_value_to_write = 0.000000
+do_not_interpret_as_enum = false
+write_limits_enabled = false
+write_limit_min = -1.000000
+write_limit_max = 1.000000
+
+[var31]
 name = speed_dbg
 tracked_name = speed_dbg
-address = 268436544
+address = 268437568
 type = 4
 color = 59994315
 should_update_from_elf = true
@@ -567,10 +601,10 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var30]
+[var32]
 name = sys_stat
 tracked_name = sys_stat
-address = 536871273
+address = 536871325
 type = 1
 color = 575614665
 should_update_from_elf = true
@@ -584,10 +618,10 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var31]
+[var33]
 name = time_to_next_state_dbg
 tracked_name = time_to_next_state_dbg
-address = 268436608
+address = 268437632
 type = 5
 color = 701731938
 should_update_from_elf = true
@@ -601,10 +635,10 @@ write_limits_enabled = false
 write_limit_min = -1.000000
 write_limit_max = 1.000000
 
-[var32]
+[var34]
 name = vcc
 tracked_name = vcc
-address = 536871124
+address = 536871100
 type = 7
 color = 1106341982
 should_update_from_elf = true
@@ -792,11 +826,16 @@ visibility = false
 format = DEC
 
 [group1-plot1-series3]
-name = sys_stat
+name = pulse_fired
 visibility = true
 format = DEC
 
 [group1-plot1-series4]
+name = sys_stat
+visibility = true
+format = DEC
+
+[group1-plot1-series5]
 name = vcc
 visibility = true
 format = DEC
@@ -819,6 +858,11 @@ visibility = false
 secondary_write_enabled = false
 
 [group1-plot3-series0]
+name = ph_diff_dbg
+visibility = true
+format = DEC
+
+[group1-plot3-series1]
 name = phase_dbg
 visibility = true
 format = DEC
@@ -862,10 +906,15 @@ format = DEC
 [group1-plot5]
 name = speed
 type = 0
-visibility = false
+visibility = true
 secondary_write_enabled = false
 
 [group1-plot5-series0]
+name = speed
+visibility = true
+format = DEC
+
+[group1-plot5-series1]
 name = speed_dbg
 visibility = true
 format = DEC
@@ -896,12 +945,12 @@ format = DEC
 [group2]
 name = recorder
 acquisition_type = 1
-mode = 0
+mode = 1
 skipped_samples = 0
-trigger_enabled = false
+trigger_enabled = true
 trigger_source_var = time_to_next_state_dbg
 trigger_edge = 1
-trigger_value = 28273.000000
+trigger_value = 1996.000000
 trigger_pretrigger_samples = 0
 override_sample_rate = false
 sample_frequency_hz = 100
@@ -954,7 +1003,7 @@ format = DEC
 [group2-plot2]
 name = speed
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group2-plot2-series0]
@@ -976,14 +1025,14 @@ format = DEC
 [trace_plot0]
 name = CH0
 alias = COS
-visibility = true
+visibility = false
 domain = 0
 type = 3
 
 [trace_plot1]
 name = CH1
 alias = SIN
-visibility = true
+visibility = false
 domain = 0
 type = 3
 
@@ -997,7 +1046,7 @@ type = 3
 [trace_plot3]
 name = CH3
 alias = SPEED
-visibility = false
+visibility = true
 domain = 0
 type = 3
 

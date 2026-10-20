@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define DBG             (1)
+#define DBG             (0)
 #define EEPROM_WRITE    (1)
 #define EEPROM_ERASE    (0)
 
@@ -17,6 +17,7 @@
 #define ANALOG_MID_VAL  (2048)      //DC component of sinewave 
 
 #define SIGN(x)         ((x >  0) ? (2) : ((x < 0) ? (0) : 1))
+#define SIGN_NOZ(x,y)   ((x >  0) ? (2) : ((x < 0) ? (0) : y))
 #define ABS(x)          ((x >= 0) ? (x) : (-x))
 
 //#define ELLIPSE_CAL_T00 (8843)

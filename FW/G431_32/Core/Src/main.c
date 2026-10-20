@@ -141,7 +141,7 @@ int main(void)
   //                        ISR functions relocation
   //----------------------------------------------------------------------------
 
-  relocate_isr_table();
+  relocate_isr_table(); 
 
   /* USER CODE END SysInit */
 
@@ -154,6 +154,7 @@ int main(void)
   MX_TIM7_Init();
   MX_TIM6_Init();
   MX_CRC_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
   //----------------------------------------------------------------------------
@@ -301,6 +302,12 @@ int main(void)
 
     //start sampling
     adc_sync_timer_start(0);
+
+    //enable TIM4 CH1
+    TIM4->CCER |= TIM_CCER_CC1E;
+
+    //enable TIM4 CH1 ISR
+    TIM4->DIER |= TIM_DIER_CC1IE_Msk;
   }
   else 
   {
@@ -329,6 +336,8 @@ int main(void)
   //----------------------------------------------------------------------------
 
   TIM6->CR1 |= TIM_CR1_CEN_Msk;
+
+  //----------------------------------------------------------------------------
   
   /* USER CODE END 2 */
 
@@ -488,6 +497,7 @@ void relocate_isr_table()
   isr_vec[16 + TIM7_IRQn]      			    = (uint32_t)(blink_led);
   isr_vec[16 + CORDIC_IRQn]      			  = (uint32_t)(calculate_outputs);
   isr_vec[16 + ADC1_2_IRQn]      			  = (uint32_t)(read_adcs_output);
+  isr_vec[16 + TIM4_IRQn]      			    = (uint32_t)(update_out_pins);
   
   //relocate interrupt vector table
   SCB->VTOR = (uint32_t)(isr_vec);
@@ -703,8 +713,9 @@ void adc_sync_timer_start(uint8_t _calibration)
     //50kHz
     LL_TIM_SetAutoReload(TIM2, 3400);
     #else
-    //300kHz
-    LL_TIM_SetAutoReload(TIM2, 566);
+    //150kHz
+    LL_TIM_SetAutoReload(TIM2, 1132);
+    LL_TIM_SetAutoReload(TIM2, 1700);
     #endif
   }
   LL_TIM_EnableCounter(TIM2);
