@@ -22,7 +22,7 @@ struct input_calibration_private_vars_init_s
 };
 
 void input_calibration_init();
-uint8_t input_calibration_get_calibration_done();
+uint8_t input_calibration_get_acquisition_done();
 void read_adcs_calibration();
 uint8_t input_calibration_calculate_coefficients();
 cal_coeff_t input_calibration_get_cal_coeff();

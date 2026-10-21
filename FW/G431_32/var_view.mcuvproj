@@ -843,7 +843,7 @@ format = DEC
 [group1-plot2]
 name = direction
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group1-plot2-series0]
@@ -854,7 +854,7 @@ format = DEC
 [group1-plot3]
 name = phase
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group1-plot3-series0]
@@ -906,7 +906,7 @@ format = DEC
 [group1-plot5]
 name = speed
 type = 0
-visibility = true
+visibility = false
 secondary_write_enabled = false
 
 [group1-plot5-series0]

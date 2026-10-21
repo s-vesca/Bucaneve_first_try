@@ -62,7 +62,8 @@
 //------------------------------------------------------------------------------
 //                            CALIBRATION PARAMETERS
 //------------------------------------------------------------------------------
-
+#define N_TURNS_WAIT_CAL            (10)        //shaft turns before starting measures acquisition
+#define N_TURNS_CAL                 (100)       //shaft turns for measures acquisition
 #define CAL_CIRCLE_R                (10000.0f)  //circle radius
 
 //calibration parameters used during debug for manual calibration

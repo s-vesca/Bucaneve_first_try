@@ -6,6 +6,7 @@
 #include "system_status.h"
 #include "defines.h"
 #include "lin_sys5_solver.h"
+#include "sync_timer.h"
 
 #define     ARRAY_SIZE      (1000)        
 
@@ -53,7 +54,7 @@ struct input_calibration_private_vars_s
     } quadrant;
     
     //flags
-    uint8_t  calibration_done;
+    uint8_t  acquisition_done;
 };
 
 struct input_calibration_private_vars_s input_calibration_private_vars_v;
@@ -72,7 +73,7 @@ void input_calibration_init(struct input_calibration_private_vars_init_s input_c
 
     input_calibration_private_vars_v.turns_cnt              = 0;
 
-    input_calibration_private_vars_v.calibration_done       = 0;
+    input_calibration_private_vars_v.acquisition_done       = 0;
 
     //reset accumulators
     input_calibration_private_vars_v.acc.x4                 = 0;
@@ -93,12 +94,20 @@ void input_calibration_init(struct input_calibration_private_vars_init_s input_c
     input_calibration_private_vars_v.quadrant.current       = 0;
     input_calibration_private_vars_v.quadrant.prev          = 0;
 
+    input_calibration_private_vars_v.cal_coeff.t00          = ELLIPSE_CAL_T00_DEFAULT;
+    input_calibration_private_vars_v.cal_coeff.t01          = ELLIPSE_CAL_T01_DEFAULT;
+    input_calibration_private_vars_v.cal_coeff.t10          = ELLIPSE_CAL_T10_DEFAULT;
+    input_calibration_private_vars_v.cal_coeff.t11          = ELLIPSE_CAL_T11_DEFAULT;
+
+    input_calibration_private_vars_v.cal_coeff.x0           = ELLIPSE_CAL_X0_DEFAULT;
+    input_calibration_private_vars_v.cal_coeff.y0           = ELLIPSE_CAL_Y0_DEFAULT;
+
     return;
 }
 
-uint8_t input_calibration_get_calibration_done()
+uint8_t input_calibration_get_acquisition_done()
 {
-    return input_calibration_private_vars_v.calibration_done;
+    return input_calibration_private_vars_v.acquisition_done;
 }
 
 void read_adcs_calibration()
@@ -133,7 +142,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -148,7 +157,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -163,7 +172,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -178,7 +187,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -193,7 +202,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -208,7 +217,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -223,7 +232,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -238,7 +247,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -253,7 +262,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -268,7 +277,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -283,7 +292,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -298,7 +307,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -313,7 +322,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -328,7 +337,7 @@ void read_adcs_calibration()
                 //overflow occurred
                 
                 //stop_sampling
-                TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+                sync_timer_stop();
 
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
@@ -372,10 +381,10 @@ void read_adcs_calibration()
         if(ABS(input_calibration_private_vars_v.turns_cnt) >= input_calibration_private_vars_v.revolutions_todo + input_calibration_private_vars_v.revolutions_pre_acq)
         {
             //stop sampling timer
-            TIM2->CR1 &= ~TIM_CR1_CEN_Msk;
+            sync_timer_stop();
 
             //cal_data_ready_flag = 1
-            input_calibration_private_vars_v.calibration_done = 1;
+            input_calibration_private_vars_v.acquisition_done = 1;
         }
 
         //JEOC flag is cleared by Hardware when data is read

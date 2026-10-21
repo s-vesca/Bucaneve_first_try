@@ -28,14 +28,19 @@
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
 #include <string.h>
+#include "stm32g4xx_it.h"
+
+#include "defines.h"
+#include "eeprom_emul.h"
+
+#include "sync_timer.h"
+#include "cordic_fcns.h"
+#include "adc_fcns.h"
+
 #include "system_status.h"
 #include "led_handler.h"
 #include "output_generator.h"
 #include "input_calibration.h"
-#include "stm32g4xx_it.h"
-#include "defines.h"
-#include "eeprom_emul.h"
-#include "lin_sys5_solver.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -84,19 +89,6 @@ void SystemClock_Config(void);
 void relocate_isr_table();
 void set_adc_irq_ptr(uint8_t calibration);
 void init_ram();
-
-__attribute__((section(".ccm_code")))
-void TIM2_irq_handler();
-void adc_sync_timer_init(uint8_t _irq_en);
-void adc_sync_timer_start(uint8_t _calibration);
-void adc_sync_timer_stop();
-
-void adcs_init_normal_mode();
-void adc_en_conv();
-
-void cordic_init();
-
-void dma_init();
 
 /* USER CODE END PFP */
 
@@ -237,33 +229,32 @@ int main(void)
   led_handler_init(10);
 
   //-------------------------------- ADCs --------------------------------------
-  adcs_init_normal_mode();
-  //adc_en_conv();
+  adcs_init();
 
   //------------------------------- CORDIC -------------------------------------
   cordic_init();
 
-  //-------------------------------- DMA ---------------------------------------
-  dma_init();
-
   //---------------------------- ADC sync timer --------------------------------
-  adc_sync_timer_init(1);
+  sync_timer_init(1);
 
   //----------------------------------------------------------------------------
   //                              Code init
   //----------------------------------------------------------------------------
   output_generator_init(PPR_OUT/POLE_PAIRS);
+  
   struct input_calibration_private_vars_init_s input_calibration_private_vars_init_v = 
   {
-    .revolutions_pre_acq = 10,
-    .revolutions_todo = 100
+    .revolutions_pre_acq  = N_TURNS_WAIT_CAL,
+    .revolutions_todo     = N_TURNS_CAL
   };
+
+  input_calibration_init(input_calibration_private_vars_init_v);
 
   //----------------------------------------------------------------------------
   //                          Read supply voltage
   //----------------------------------------------------------------------------
 
-  //wait for voltage to settle (2s)
+  //wait for voltage to settle (200ms)
   HAL_Delay(200);
 
   adc_vcc_acc = 0;
@@ -301,7 +292,7 @@ int main(void)
     set_adc_irq_ptr(0);
 
     //start sampling
-    adc_sync_timer_start(0);
+    sync_timer_start(0);
 
     //enable TIM4 CH1
     TIM4->CCER |= TIM_CCER_CC1E;
@@ -315,17 +306,14 @@ int main(void)
 
     set_system_status(SYSTEM_STATUS_CALIBRATION);
 
-    input_calibration_init(input_calibration_private_vars_init_v);
-    
     //point ADC_IRQ to "read_adcs_calibration" function
     set_adc_irq_ptr(1);
 
     //start sampling
-    adc_sync_timer_start(1);
+    sync_timer_start(1);
   }
 
-  ADC1->CR |= ADC_CR_JADSTART_Msk;
-  ADC2->CR |= ADC_CR_JADSTART_Msk;
+  adcs_en_injected_conversion();
 
   //----------------------------------------------------------------------------
   //                            Enable Led Timer
@@ -343,28 +331,12 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  //int64_t test_mat[5][5] = 
-  //{
-  //  {1,2,3,4,6},
-  //  {5,6,7,8,8},
-  //  {11,-5,63,2,-1},
-  //  {-1,-2,-4,66,0},
-  //  {1,1,1,2,3}
-  //  //{1,2,3,4,6}
-  //};
-  //
-  //int64_t test_k[5] = {1,2,3,4,5};
-  ////int64_t test_k[5] = {1,2,3,4,1};
-  //
-  //float solutions[5] = {0,0,0,0,0};
-  //
-  //lin_sys5_solve(test_mat, test_k,solutions);
-
+  
   while (1)
   {
     exec_time_us = (float)(cnt)/(170.0f);
 
-    if(SYSTEM_STATUS_CALIBRATION == get_system_status() && input_calibration_get_calibration_done())
+    if(SYSTEM_STATUS_CALIBRATION == get_system_status() && input_calibration_get_acquisition_done())
     {
       //calculate compensation coefficients
       cal_status = input_calibration_calculate_coefficients();
@@ -535,195 +507,7 @@ void set_adc_irq_ptr(uint8_t calibration)
     isr_vec[16 + ADC1_2_IRQn] = (uint32_t)(read_adcs_output);
   }
 
-  ADC1->CR |= ADC_CR_JADSTART;
-  ADC2->CR |= ADC_CR_JADSTART;
-
   __enable_irq();
-  return;
-}
-
-void adcs_init_normal_mode()
-{
-  //calibrate ADC1
-  if(LL_ADC_IsEnabled(ADC1) != RESET)
-  {
-    LL_ADC_Disable(ADC1);
-    while(LL_ADC_IsEnabled(ADC1) != RESET);
-  }
-
-  LL_ADC_EnableInternalRegulator(ADC1);
-  HAL_Delay(10);
-  LL_ADC_StartCalibration(ADC1, LL_ADC_SINGLE_ENDED);
-  while (LL_ADC_IsCalibrationOnGoing(ADC1));
-
-  //calibrate ADC2
-  if(LL_ADC_IsEnabled(ADC2) != RESET)
-  {
-    LL_ADC_Disable(ADC2);
-    while(LL_ADC_IsEnabled(ADC2) != RESET);
-  }
-
-  LL_ADC_EnableInternalRegulator(ADC2);
-  HAL_Delay(10);
-  LL_ADC_StartCalibration(ADC2, LL_ADC_SINGLE_ENDED);
-  while (LL_ADC_IsCalibrationOnGoing(ADC2));
-
-
-  //Enable ADC1
-  LL_ADC_ClearFlag_ADRDY(ADC1);
-  LL_ADC_Enable(ADC1);
-  while(!LL_ADC_IsActiveFlag_ADRDY(ADC1));
-  LL_ADC_ClearFlag_ADRDY(ADC1);
-
-  //ADC1->ISR |= ADC_ISR_ADRDY;
-  //ADC1->CR  |= ADC_CR_ADEN;
-  //while(!ADC1->ISR & ADC_ISR_ADRDY);
-  //ADC1->ISR |= ADC_ISR_ADRDY;
-
-  //Enable ADC2
-  LL_ADC_ClearFlag_ADRDY(ADC2);
-  LL_ADC_Enable(ADC2);
-  while(!LL_ADC_IsActiveFlag_ADRDY(ADC2));
-  LL_ADC_ClearFlag_ADRDY(ADC2);
-  
-  //ADC2->ISR |= ADC_ISR_ADRDY;
-  //ADC2->CR  |= ADC_CR_ADEN;
-  //while(!ADC2->ISR & ADC_ISR_ADRDY);
-  //ADC2->ISR |= ADC_ISR_ADRDY;
-
-  //clear flags
-  LL_ADC_ClearFlag_JEOC(ADC1);
-  LL_ADC_ClearFlag_JEOC(ADC2);
-  //LL_ADC_ClearFlag_OVR(ADC1);
-  //LL_ADC_ClearFlag_OVR(ADC2);
-  //ADC1->ISR |= ADC_ISR_EOC_Msk;
-  //ADC2->ISR |= ADC_ISR_EOC_Msk;
-
-  //Enable EOC interrupt for ADC1 (both ADCs will have finished the conversion)
-  ADC1->IER |= ADC_IER_JEOCIE;
-  ADC2->IER |= ADC_IER_JEOCIE;
-
-  ADC1->CR |= ADC_CR_JADSTART;
-  ADC2->CR |= ADC_CR_JADSTART;
-
-  //Setup adc common to generate dma requests for 32bit-word
-  //LL_ADC_SetMultiDMATransfer(ADC12_COMMON, LL_ADC_MULTI_REG_DMA_UNLMT_RES12_10B);
-
-  return;
-}
-
-void adc_en_conv()
-{
-  ADC1->CR |= ADC_CR_ADSTART_Msk;
-  return;
-}
-
-void cordic_init()
-{
-  //1 32bit Write OP with (16bit ARG1 | 16bit ARG2) 
-  LL_CORDIC_SetInSize(CORDIC, LL_CORDIC_INSIZE_16BITS);
-  LL_CORDIC_SetNbWrite(CORDIC, LL_CORDIC_NBWRITE_1);
-
-  //1 32bit Read OP with (16bit MOD | 16bit PHASE)
-  LL_CORDIC_SetOutSize(CORDIC, LL_CORDIC_OUTSIZE_16BITS);
-  LL_CORDIC_SetNbRead(CORDIC, LL_CORDIC_NBREAD_1);
-
-  //24 Approximation cycles
-  LL_CORDIC_SetPrecision(CORDIC, LL_CORDIC_PRECISION_6CYCLES);
-  
-  //OPERATION: PHASE
-  LL_CORDIC_SetFunction(CORDIC, LL_CORDIC_FUNCTION_PHASE);
-
-  uint32_t rdata = CORDIC->RDATA;
-
-  LL_CORDIC_EnableIT(CORDIC);
-  
-  return;
-}
-
-void dma_init()
-{
-  //Set DMA MUX request channel to ADC1
-  LL_DMAMUX_SetRequestID(DMAMUX1, LL_DMAMUX_CHANNEL_0, LL_DMAMUX_REQ_ADC1);
-
-  // From 32bit to 32bit transfer
-  LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MDATAALIGN_WORD);
-  LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PDATAALIGN_WORD);
-
-  //disable pointers increment
-  LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MEMORY_NOINCREMENT);
-  LL_DMA_SetPeriphIncMode(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PERIPH_NOINCREMENT);
-
-  //Peripheral (ADCs) to Memory (CORDIC memory mapped address)
-  LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_1, LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
-
-  //Circular mode for continuous transfer
-  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MODE_CIRCULAR);
-
-  //Very High priority (not needed, only 1 transfer)
-  LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PRIORITY_VERYHIGH);
-
-  //Number of data to transfer. In circular mode it is auto-reloaded after counter reaches zero.
-  //It has to be NOT 0 to allow DMA transfers
-  LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_1, 1);
-
-  //set FROM ADDRESS to ADC12_COMMON CDR(Common Data Register)
-  LL_DMA_SetPeriphAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t)&(ADC12_COMMON->CDR));
-
-  //set TO ADDRESS to CORDIC WDATA (Write Data register)
-  LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_1, (uint32_t)&(CORDIC->WDATA));
-
-  //LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_1);
-
-  return;
-}
-
-void adc_sync_timer_init(uint8_t _irq_en)
-{
-  LL_TIM_SetCounter(TIM2, 0);
-
-  if(_irq_en) {LL_TIM_EnableIT_UPDATE(TIM2);}
-  else        {LL_TIM_DisableIT_UPDATE(TIM2);}
-  
-  LL_TIM_ClearFlag_UPDATE(TIM2);
-  return;
-}
-
-void adc_sync_timer_start(uint8_t _calibration)
-{
-  if(_calibration)
-  {
-    //10kHz
-    LL_TIM_SetAutoReload(TIM2, SYNC_TIM_ARR_CAL);
-  }
-  else 
-  {
-    #if (DBG)
-    //50kHz
-    LL_TIM_SetAutoReload(TIM2, 3400);
-    #else
-    //300kHz
-    LL_TIM_SetAutoReload(TIM2, SYNC_TIM_ARR_RUN);
-    #endif
-  }
-  LL_TIM_EnableCounter(TIM2);
-  return;
-}
-
-void adc_sync_timer_stop()
-{
-  LL_TIM_DisableCounter(TIM2);
-  return;
-}
-
-void TIM2_irq_handler()
-{
-  if(TIM2->SR & TIM_SR_UIF_Msk)
-  {
-    //GPIOA->ODR |= GPIO_PIN_10;
-    TIM6->CNT = 0;
-    LL_TIM_ClearFlag_UPDATE(TIM2);
-  }
   return;
 }
 
