@@ -172,11 +172,12 @@ void read_adcs_output()
     static int32_t  speed_filt_state = 0;
     
     //TIM6->CNT = 0;
-    //GPIOA->ODR |= GPIO_PIN_10;
+    //GPIOA->BSRR |= GPIO_PIN_10;
 
     //Check that both ADCs have finished their injected conversion
     if((ADC1->ISR & ADC_ISR_JEOC_Msk) && (ADC2->ISR & ADC_ISR_JEOC_Msk))
     {
+        //GPIOA->BSRR |= GPIO_PIN_10; 
         adc_data_reg_cos = (int32_t)(ADC1->JDR1 - cal_coeff_v.x0) << 16;
         adc_data_reg_sin = (int32_t)(ADC2->JDR1 - cal_coeff_v.y0) << 16;
 
@@ -224,6 +225,19 @@ void read_adcs_output()
         ph_diff_dbg = ph_diff;
         #endif
 
+            //------------------------------------------------------------------
+            //                          Filter
+            //------------------------------------------------------------------
+            //
+            //                        1 - 1023/1024
+            //           H(z) = ------------------------------
+            //                     1  -  (1023/1024) z^-1
+            //
+            // alpha = 1023/1024
+            // tau = Ts/(1-alpha) = 5.12ms approx
+            // fs = 31 Hz approx
+            //------------------------------------------------------------------
+
         //speed, measured as a fraction of the sampling frequency (Q1.15 format)
         speed_filt_state += ph_diff - (speed_filt_state >> 10);
         speed = (int16_t)(speed_filt_state >> 10);
@@ -233,10 +247,19 @@ void read_adcs_output()
 
         dir = SIGN_NOZ(speed, dir_prev);
 
+        dir_prev = dir;
+
+        #if DBG == 1
+        dir_dbg = dir;
+        #endif
+        ITM->PORT[3].u16 = *(uint16_t*)&speed;
+
+        ITM->PORT[4].u8 = *(uint8_t*)&dir;
+
         //JEOC flags are cleared by reading JDRx data registers
     }
 
-    //GPIOA->ODR &= ~GPIO_PIN_10;
+    //GPIOA->BSRR |= GPIO_PIN_10 << 16;
     return;
     
 }
@@ -250,27 +273,28 @@ void calculate_outputs()
     //int16_t     delta_next_state;
     int16_t     delta_next_state_pos;
     int16_t     delta_next_state_neg;
-    uint8_t     oneshot_mode;
+    
+    __attribute__((section(".ccm_data"),aligned(32)))
+    static uint8_t     oneshot_mode = 0;
     
     __attribute__((section(".ccm_data"),aligned(32)))
     static uint8_t  state_out = 0;
     __attribute__((section(".ccm_data"),aligned(32)))
     static uint8_t  first_iteration = 1;
-    __attribute__((section(".ccm_data"),aligned(32)))
-    static int32_t  filt_state = 0;
+    //__attribute__((section(".ccm_data"),aligned(32)))
+    //static int32_t  filt_state = 0;
     __attribute__((section(".ccm_data"),aligned(32)))
     static uint16_t mask;
     __attribute__((section(".ccm_data"),aligned(32)))
     static uint32_t time_to_next_state = 0;
-    __attribute__((section(".ccm_data"),aligned(32)))
-    static int8_t  dir_prev = 0;
+    //__attribute__((section(".ccm_data"),aligned(32)))
+    //static int8_t  dir_prev = 0;
 
-    //GPIOA->ODR |= GPIO_PIN_10;
+    //GPIOA->BSRR |= GPIO_PIN_10;
 
     //check that isr comes from cordic data ready flag
     if(CORDIC->CSR & CORDIC_CSR_RRDY_Msk)
-    {      
-          
+    {       
         //check that shift_pos variable is initialized
         if(shift_pos < MAX_SHIFT)
         {
@@ -298,33 +322,7 @@ void calculate_outputs()
               
             }
 
-            //Fixed Point Subtraction --> Automatic wrapping 
-            //ph_diff1 = phase - phase_prev;
-            #if DBG == 1
-            ph_diff_dbg = ph_diff1;
-            #endif
-
-            //------------------------------------------------------------------
-            //                          Filter
-            //------------------------------------------------------------------
-            //
-            //                        1 - 1023/1024
-            //           H(z) = ------------------------------
-            //                     1  -  (1023/1024) z^-1
-            //
-            // alpha = 1023/1024
-            // tau = Ts/(1-alpha) = 5.12ms approx
-            // fs = 31 Hz approx
-            //------------------------------------------------------------------
-
-            //sign(sin(Delta_theta))
-            
-
-            #if DBG == 1
-            dir_dbg = dir;
-            #endif
-
-            delta_next_state_pos = (1 << shift_pos) - (phase & mask);
+            delta_next_state_pos = (1 << shift_pos) - (phase & mask); 
             delta_next_state_neg = -(phase & mask);
 
             next_state = next_state_lut[dir][state_out];
@@ -336,17 +334,17 @@ void calculate_outputs()
             // check that direction matches state variaton 
             state_out = state_lut[dir][state_out][state_tmp];
 
-            if(10 <= speed)
+            if(SPEED_THR_HI_ONESHOT_MODE <= speed)
             {
-                time_to_next_state = (uint32_t)((int32_t)(delta_next_state_pos * 1700) / (int32_t)speed);
+                time_to_next_state = (uint32_t)((int32_t)(delta_next_state_pos * (SYNC_TIM_ARR_RUN+1)) / (int32_t)speed);
                 oneshot_mode = 1;
             }
-            else if(-10 >= speed) 
+            else if(-SPEED_THR_HI_ONESHOT_MODE >= speed) 
             {
-                time_to_next_state = (uint32_t)((int32_t)(delta_next_state_neg * 1700) / (int32_t)speed);
+                time_to_next_state = (uint32_t)((int32_t)(delta_next_state_neg * (SYNC_TIM_ARR_RUN+1)) / (int32_t)speed);
                 oneshot_mode = 1;
             }
-            else if((-5 < speed) && (5 > speed))
+            else if((-SPEED_THR_LO_ONESHOT_MODE < speed) && (SPEED_THR_LO_ONESHOT_MODE > speed))
             {
                 time_to_next_state = 0;
                 oneshot_mode = 0;
@@ -356,7 +354,7 @@ void calculate_outputs()
             time_to_next_state_dbg = time_to_next_state;
             #endif
 
-            if(time_to_next_state && (time_to_next_state < 2100) && !pulse_fired)
+            if(time_to_next_state && (time_to_next_state < CNT_THR_ONESHOT) && !pulse_fired)
             {
                 //start oneshot timer
                 TIM4->CCR1 = time_to_next_state;
@@ -371,21 +369,18 @@ void calculate_outputs()
             {
                 GPIOA->BSRR = (uint32_t)(gray_lut[state_out]);
             } 
-
-            //phase_prev = phase;
-            dir_prev = dir;
             
             #if DBG
             recorderStep();
             #endif
             //ITM->PORT[1].u32 = *(uint32_t*)&sin_comp_dbg;
-            //ITM->PORT[3].u16 = *(uint16_t*)&speed;
-            cnt = TIM6->CNT;
+            ITM->PORT[2].u16 = *(uint16_t*)&phase;
+            //ITM->PORT[5].u8 = *(uint8_t*)&state_out;
+            //cnt = TIM6->CNT;
         }
         //RRDY flag is cleared by HW when reading RDATA register     
     }
-
-    //GPIOA->ODR &= ~GPIO_PIN_10;
+    //GPIOA->BSRR |= GPIO_PIN_10 << 16;
     return;
 }
 

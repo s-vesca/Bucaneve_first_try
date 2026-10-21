@@ -3,51 +3,97 @@
 
 #include <stdint.h>
 
-#define DBG             (0)
-#define EEPROM_WRITE    (1)
-#define EEPROM_ERASE    (0)
+//------------------------------------------------------------------------------
+//                             COMPILE OPTIONS
+//------------------------------------------------------------------------------
 
-#define PPR_OUT         (64)
-#define POLE_PAIRS      (4)
+#define DBG                         (0)
+#define EEPROM_WRITE                (1)
+#define EEPROM_ERASE                (0)
+//------------------------------------------------------------------------------
 
-//parameters for initial measure of supply voltage
-#define VCC_ADC_N_AVG   (100)       //number of averaged samples
-#define VCC_CAL_THR     (30.0f)//(30.0f)     //Threshold for entering calibration mode
+//------------------------------------------------------------------------------
+//                       SENSOR GEOMETRY PARAMETERS
+//------------------------------------------------------------------------------
+#define PPR_OUT                     (64)
+#define POLE_PAIRS                  (4)
+//------------------------------------------------------------------------------
 
-#define ANALOG_MID_VAL  (2048)      //DC component of sinewave 
+//------------------------------------------------------------------------------
+//                                  MACROS
+//------------------------------------------------------------------------------
 
-#define SIGN(x)         ((x >  0) ? (2) : ((x < 0) ? (0) : 1))
-#define SIGN_NOZ(x,y)   ((x >  0) ? (2) : ((x < 0) ? (0) : y))
-#define ABS(x)          ((x >= 0) ? (x) : (-x))
+#define SIGN(x)                     ((x >  0) ? (2) : ((x < 0) ? (0) : 1))
+#define SIGN_NOZ(x,y)               ((x >  0) ? (2) : ((x < 0) ? (0) : y))
+#define ABS(x)                      ((x >= 0) ? (x) : (-x))
+//------------------------------------------------------------------------------
 
-//#define ELLIPSE_CAL_T00 (8843)
-//#define ELLIPSE_CAL_T01 (-50)
-//#define ELLIPSE_CAL_T10 (-50)
-//#define ELLIPSE_CAL_T11 (8670)
+//------------------------------------------------------------------------------
+//                         SUPPLY VOLTAGE MEASURE
+//------------------------------------------------------------------------------
+#define VCC_ADC_N_AVG               (100)       //number of averaged samples
+#define VCC_CAL_THR                 (30.0f)     //Threshold for calibration mode
+//------------------------------------------------------------------------------
 
-#define CAL_CIRCLE_R    (5120000.0f)
+//------------------------------------------------------------------------------
+//                            ANALOG PARAMETERS
+//------------------------------------------------------------------------------
+#define SINEWAVE_MID_VAL            (2048)      //DC component of sinewave 
 
-#define ELLIPSE_CAL_X0 (ANALOG_MID_VAL -219)
-#define ELLIPSE_CAL_Y0 (ANALOG_MID_VAL -11) 
-#define ELLIPSE_CAL_T00 (4355)
-#define ELLIPSE_CAL_T01 (-375)
-#define ELLIPSE_CAL_T10 (368)
-#define ELLIPSE_CAL_T11 (4277)
+//------------------------------------------------------------------------------
 
-#define ELLIPSE_CAL_T00_ADDR    (0x0001)
-#define ELLIPSE_CAL_T01_ADDR    (0x0002)
-#define ELLIPSE_CAL_T10_ADDR    (0x0003)
-#define ELLIPSE_CAL_T11_ADDR    (0x0004)
-#define ELLIPSE_CAL_X0_ADDR     (0x0005)
-#define ELLIPSE_CAL_Y0_ADDR     (0x0006)
+//------------------------------------------------------------------------------
+//                           SAMPLING FREQUENCY
+//------------------------------------------------------------------------------
+#define SYNC_TIM_ARR_CAL            (17000 - 1) //10kHz for calibration
+#define SYNC_TIM_ARR_RUN            (567 - 1)   //300kHz for normal operation
 
-#define ELLIPSE_CAL_T00_DEFAULT (1024)
-#define ELLIPSE_CAL_T01_DEFAULT (0)
-#define ELLIPSE_CAL_T10_DEFAULT (0)
-#define ELLIPSE_CAL_T11_DEFAULT (1024)
-#define ELLIPSE_CAL_X0_DEFAULT  (2048)
-#define ELLIPSE_CAL_Y0_DEFAULT  (2048)
+//------------------------------------------------------------------------------
+//                         AB GENERATION PARAMETERS
+//------------------------------------------------------------------------------
 
+#define SPEED_THR_HI_ONESHOT_MODE   (10)
+#define SPEED_THR_LO_ONESHOT_MODE   (5)
+
+#define CNT_THR_ONESHOT             (700)
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//                            CALIBRATION PARAMETERS
+//------------------------------------------------------------------------------
+
+#define CAL_CIRCLE_R                (10000.0f)  //circle radius
+
+//calibration parameters used during debug for manual calibration
+#define ELLIPSE_CAL_X0              (SINEWAVE_MID_VAL -219)
+#define ELLIPSE_CAL_Y0              (SINEWAVE_MID_VAL -11) 
+#define ELLIPSE_CAL_T00             (4355)
+#define ELLIPSE_CAL_T01             (-375)
+#define ELLIPSE_CAL_T10             (368)
+#define ELLIPSE_CAL_T11             (4277)
+
+//EEPROM addresses of calibration parameters
+#define ELLIPSE_CAL_T00_ADDR        (0x0001)
+#define ELLIPSE_CAL_T01_ADDR        (0x0002)
+#define ELLIPSE_CAL_T10_ADDR        (0x0003)
+#define ELLIPSE_CAL_T11_ADDR        (0x0004)
+#define ELLIPSE_CAL_X0_ADDR         (0x0005)
+#define ELLIPSE_CAL_Y0_ADDR         (0x0006)
+
+//default values of calibration parameters
+#define ELLIPSE_CAL_T00_DEFAULT     (1024)
+#define ELLIPSE_CAL_T01_DEFAULT     (0)
+#define ELLIPSE_CAL_T10_DEFAULT     (0)
+#define ELLIPSE_CAL_T11_DEFAULT     (1024)
+#define ELLIPSE_CAL_X0_DEFAULT      (2048)
+#define ELLIPSE_CAL_Y0_DEFAULT      (2048)
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//                    CALIBRATION PARAMETERS STRUCTURE
+//------------------------------------------------------------------------------
 typedef struct cal_coeff_s
 {
     int32_t t00;
@@ -58,5 +104,7 @@ typedef struct cal_coeff_s
     int32_t y0;
 
 }cal_coeff_t;
+
+//------------------------------------------------------------------------------
 
 #endif //DEFINES_H

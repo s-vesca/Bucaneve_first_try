@@ -111,8 +111,8 @@ void read_adcs_calibration()
 
     if((ADC1->ISR & ADC_ISR_JEOC_Msk) && (ADC2->ISR & ADC_ISR_JEOC_Msk))
     {
-        adc_data_reg_cos = (int16_t)((ADC1->JDR1)) - ANALOG_MID_VAL;
-        adc_data_reg_sin = (int16_t)((ADC2->JDR1)) - ANALOG_MID_VAL;
+        adc_data_reg_cos = (int16_t)((ADC1->JDR1)) - SINEWAVE_MID_VAL;
+        adc_data_reg_sin = (int16_t)((ADC2->JDR1)) - SINEWAVE_MID_VAL;
 
         #if DBG == 1
         adc_cos_dbg_cal = (int16_t)(adc_data_reg_cos);
@@ -497,13 +497,13 @@ uint8_t input_calibration_calculate_comp_coeff(float* solutions)
                     r10 = sinf(th);
                     r11 = cosf(th);
 
-                    t00 = CAL_CIRCLE_R * r00 / a;
-                    t01 = CAL_CIRCLE_R * r10 / a;
-                    t10 = CAL_CIRCLE_R * r01 / b;
-                    t11 = CAL_CIRCLE_R * r11 / b;
+                    t00 = 512.0f * CAL_CIRCLE_R * r00 / a;
+                    t01 = 512.0f * CAL_CIRCLE_R * r10 / a;
+                    t10 = 512.0f * CAL_CIRCLE_R * r01 / b;
+                    t11 = 512.0f * CAL_CIRCLE_R * r11 / b;
 
-                    input_calibration_private_vars_v.cal_coeff.x0 = x0 + ANALOG_MID_VAL;
-                    input_calibration_private_vars_v.cal_coeff.y0 = y0 + ANALOG_MID_VAL;
+                    input_calibration_private_vars_v.cal_coeff.x0 = x0 + SINEWAVE_MID_VAL;
+                    input_calibration_private_vars_v.cal_coeff.y0 = y0 + SINEWAVE_MID_VAL;
                     input_calibration_private_vars_v.cal_coeff.t00 = t00;
                     input_calibration_private_vars_v.cal_coeff.t01 = t01;
                     input_calibration_private_vars_v.cal_coeff.t10 = t10;

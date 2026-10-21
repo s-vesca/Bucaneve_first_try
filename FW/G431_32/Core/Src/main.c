@@ -544,17 +544,6 @@ void set_adc_irq_ptr(uint8_t calibration)
 
 void adcs_init_normal_mode()
 {
-  //offset correction (board with gnd plane)
-  //ADC1->OFR1 -= 818;
-  //ADC2->OFR1 += 132;
-
-  //offset correction (board without gnd plane)
-  //ADC1->OFR1 -= 205;
-  //ADC2->OFR1 += 8;  //pulpito
-  //ADC2->OFR1 -= 13;   //banchetto
-
-  //0 center offset
-
   //calibrate ADC1
   if(LL_ADC_IsEnabled(ADC1) != RESET)
   {
@@ -705,7 +694,7 @@ void adc_sync_timer_start(uint8_t _calibration)
   if(_calibration)
   {
     //10kHz
-    LL_TIM_SetAutoReload(TIM2, 17000-1);
+    LL_TIM_SetAutoReload(TIM2, SYNC_TIM_ARR_CAL);
   }
   else 
   {
@@ -713,9 +702,8 @@ void adc_sync_timer_start(uint8_t _calibration)
     //50kHz
     LL_TIM_SetAutoReload(TIM2, 3400);
     #else
-    //150kHz
-    LL_TIM_SetAutoReload(TIM2, 1132);
-    LL_TIM_SetAutoReload(TIM2, 1700);
+    //300kHz
+    LL_TIM_SetAutoReload(TIM2, SYNC_TIM_ARR_RUN);
     #endif
   }
   LL_TIM_EnableCounter(TIM2);
