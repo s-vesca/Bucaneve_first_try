@@ -9,8 +9,7 @@
 #include "lin_sys5_solver.h"
 #include "sync_timer.h"
 
-#define     ARRAY_SIZE      (1000)
-
+//ellipse equation parameters
 typedef enum ellipse_par_e
 {
     ELLIPSE_PAR_A = 0,
@@ -29,8 +28,8 @@ volatile int16_t adc_sin_dbg_cal;
 struct input_calibration_private_vars_s
 {
     //parameters
-    uint16_t revolutions_pre_acq;
-    uint16_t revolutions_todo;
+    uint16_t revolutions_pre_acq;   //sine periods before starting acquisition
+    uint16_t revolutions_acq;       //sine periods acquired for calibration
 
     //variables
     int16_t turns_cnt;
@@ -71,16 +70,18 @@ struct input_calibration_private_vars_s
 struct input_calibration_private_vars_s input_calibration_private_vars_v;
 
 //------------------------------------------------------------------------------
-//                              Prototypes
+//                     Private functions prototypes
 //------------------------------------------------------------------------------
 uint8_t input_calibration_calculate_comp_coeff(float* solutions);
 
 //------------------------------------------------------------------------------
 
-void input_calibration_init(struct input_calibration_private_vars_init_s input_calibration_private_vars_init_v)
+void input_calibration_init(struct input_calibration_private_vars_init_s _input_calibration_private_vars_init_v)
 {
-    input_calibration_private_vars_v.revolutions_pre_acq    = input_calibration_private_vars_init_v.revolutions_pre_acq;
-    input_calibration_private_vars_v.revolutions_todo       = input_calibration_private_vars_init_v.revolutions_todo;
+    uint8_t ii;
+
+    input_calibration_private_vars_v.revolutions_pre_acq    = _input_calibration_private_vars_init_v.revolutions_pre_acq;
+    input_calibration_private_vars_v.revolutions_acq        = _input_calibration_private_vars_init_v.revolutions_acq;
 
     input_calibration_private_vars_v.turns_cnt              = 0;
 
@@ -107,27 +108,23 @@ void input_calibration_init(struct input_calibration_private_vars_init_s input_c
 
     for(ii = 0; ii < CAL_COEFF_MAX_NUM; ii++)
     {
-        input_calibration_private_vars_v.cal_coeff = 0;
+        input_calibration_private_vars_v.cal_coeff[ii] = _input_calibration_private_vars_init_v.calib_coeff[ii];
     }
     
     return;
 }
 
-uint8_t input_calibration_get_acquisition_done()
-{
-    return input_calibration_private_vars_v.acquisition_done;
-}
-
 void read_adcs_calibration()
 {
-    extern uint16_t cnt;
     int16_t     adc_data_reg_cos;
     int16_t     adc_data_reg_sin;
     int64_t     tmp;
     int64_t     acc_prev;
 
+    //check that both ADC1 and ADC2 have finished injected conversion
     if((ADC1->ISR & ADC_ISR_JEOC_Msk) && (ADC2->ISR & ADC_ISR_JEOC_Msk))
     {
+        //read adc values
         adc_data_reg_cos = (int16_t)((ADC1->JDR1)) - SINEWAVE_MID_VAL;
         adc_data_reg_sin = (int16_t)((ADC2->JDR1)) - SINEWAVE_MID_VAL;
 
@@ -139,8 +136,13 @@ void read_adcs_calibration()
         //start acquiring after 10 turns
         if(ABS(input_calibration_private_vars_v.turns_cnt) > 10)
         {
-            //update data accumulators
+            //------------------------------------------------------------------
+            //                   Update data accumulators
+            //                      cos = x; sin = y
+            //------------------------------------------------------------------
 
+            //---------------------------- x^4 ---------------------------------
+            
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_cos;
             acc_prev = input_calibration_private_vars_v.acc.x4;
             input_calibration_private_vars_v.acc.x4   = tmp + acc_prev;
@@ -155,6 +157,8 @@ void read_adcs_calibration()
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
+
+            //---------------------------- x^3 ---------------------------------
 
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_cos;
             acc_prev = input_calibration_private_vars_v.acc.x3;
@@ -171,6 +175,8 @@ void read_adcs_calibration()
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
 
+            //---------------------------- x^2 ---------------------------------
+
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_cos;
             acc_prev = input_calibration_private_vars_v.acc.x2;
             input_calibration_private_vars_v.acc.x2   = tmp + acc_prev;
@@ -185,6 +191,8 @@ void read_adcs_calibration()
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
+
+            //----------------------------- x ----------------------------------
 
             tmp = (int64_t)adc_data_reg_cos;
             acc_prev = input_calibration_private_vars_v.acc.x;
@@ -201,6 +209,7 @@ void read_adcs_calibration()
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
 
+            //---------------------------- y^4 ---------------------------------
             tmp = (int64_t)adc_data_reg_sin * adc_data_reg_sin * adc_data_reg_sin * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.y4;
             input_calibration_private_vars_v.acc.y4    = tmp + acc_prev;
@@ -215,6 +224,8 @@ void read_adcs_calibration()
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
+
+            //---------------------------- y^3 ---------------------------------
 
             tmp = (int64_t)adc_data_reg_sin * adc_data_reg_sin * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.y3;
@@ -231,6 +242,8 @@ void read_adcs_calibration()
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
 
+            //---------------------------- y^2 ---------------------------------
+
             tmp = (int64_t)adc_data_reg_sin * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.y2;
             input_calibration_private_vars_v.acc.y2    = tmp + acc_prev;
@@ -245,6 +258,8 @@ void read_adcs_calibration()
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
+
+            //----------------------------- y ----------------------------------
 
             tmp = (int64_t)adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.y;
@@ -261,6 +276,8 @@ void read_adcs_calibration()
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
 
+            //--------------------------- x^3*y --------------------------------
+
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.x3y;
             input_calibration_private_vars_v.acc.x3y    = tmp + acc_prev;
@@ -275,6 +292,8 @@ void read_adcs_calibration()
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
+
+            //-------------------------- x^2*y^2 -------------------------------
 
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_sin * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.x2y2;
@@ -291,6 +310,8 @@ void read_adcs_calibration()
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
 
+            //--------------------------- x^2*y --------------------------------
+
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_cos * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.x2y;
             input_calibration_private_vars_v.acc.x2y    = tmp + acc_prev;
@@ -305,6 +326,8 @@ void read_adcs_calibration()
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
+
+            //--------------------------- x*y^3 --------------------------------
 
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_sin * adc_data_reg_sin * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.xy3;
@@ -321,6 +344,8 @@ void read_adcs_calibration()
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
 
+            //--------------------------- x*y^2 --------------------------------
+
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_sin * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.xy2;
             input_calibration_private_vars_v.acc.xy2    = tmp + acc_prev;
@@ -335,6 +360,8 @@ void read_adcs_calibration()
                 //error state
                 set_system_status(SYSTEM_STATUS_ERROR);
             }
+
+            //---------------------------- x*y ---------------------------------
 
             tmp = (int64_t)adc_data_reg_cos * adc_data_reg_sin;
             acc_prev = input_calibration_private_vars_v.acc.xy;
@@ -353,7 +380,16 @@ void read_adcs_calibration()
 
         }
 
-        //check current quadrant and current dir
+        //----------------------------------------------------------------------
+        //                       Find current quadrant
+        //----------------------------------------------------------------------
+        //
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //                    An assumption has been made:
+        // "Sin and Cos signals are centered around approx. 0V differential"
+        // Otherwise the parameter SINEWAVE_MID_VAL should be tuned
+        //----------------------------------------------------------------------
+
         if((adc_data_reg_cos > 0) && (adc_data_reg_sin > 0))
         {
             input_calibration_private_vars_v.quadrant.current = 0;
@@ -371,7 +407,9 @@ void read_adcs_calibration()
             input_calibration_private_vars_v.quadrant.current = 3;
         }
 
-        //count turns
+        //----------------------------------------------------------------------
+        //                            Count turns
+        //----------------------------------------------------------------------
         if(input_calibration_private_vars_v.quadrant.current == 0 && 
            input_calibration_private_vars_v.quadrant.prev == 3)
         {
@@ -386,7 +424,7 @@ void read_adcs_calibration()
         input_calibration_private_vars_v.quadrant.prev = input_calibration_private_vars_v.quadrant.current;
 
         //if turns completed
-        if(ABS(input_calibration_private_vars_v.turns_cnt) >= input_calibration_private_vars_v.revolutions_todo + input_calibration_private_vars_v.revolutions_pre_acq)
+        if(ABS(input_calibration_private_vars_v.turns_cnt) >= input_calibration_private_vars_v.revolutions_acq + input_calibration_private_vars_v.revolutions_pre_acq)
         {
             //stop sampling timer
             sync_timer_stop();
@@ -396,9 +434,13 @@ void read_adcs_calibration()
         }
 
         //JEOC flag is cleared by Hardware when data is read
-        //cnt = TIM6->CNT;
     }
     return;
+}
+
+uint8_t input_calibration_get_acquisition_done()
+{
+    return input_calibration_private_vars_v.acquisition_done;
 }
 
 uint8_t input_calibration_calculate_coefficients()
@@ -469,10 +511,10 @@ uint8_t input_calibration_calculate_coefficients()
     return retVal;
 }
 
-cal_coeff_t input_calibration_get_cal_coeff()
-{
-    return input_calibration_private_vars_v.cal_coeff;
-}
+
+//------------------------------------------------------------------------------
+//                            Private functions
+//------------------------------------------------------------------------------
 
 uint8_t input_calibration_calculate_comp_coeff(float* solutions)
 {
@@ -482,8 +524,7 @@ uint8_t input_calibration_calculate_comp_coeff(float* solutions)
     if((NULL != solutions))
     {
         if(0.0f != solutions[ELLIPSE_PAR_A] && 0.0f != solutions[ELLIPSE_PAR_B] && 
-           0.0f != solutions[ELLIPSE_PAR_B] * solutions[ELLIPSE_PAR_B] - 
-           4.0f * solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_C])
+           0.0f != (solutions[ELLIPSE_PAR_B] * solutions[ELLIPSE_PAR_B] - 4.0f * solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_C]))
         {
             x0 = (2.0f * solutions[ELLIPSE_PAR_C] * solutions[ELLIPSE_PAR_D] - solutions[ELLIPSE_PAR_B] * solutions[ELLIPSE_PAR_E]) / 
                  (solutions[ELLIPSE_PAR_B] * solutions[ELLIPSE_PAR_B] - 4.0f * solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_C]);
@@ -491,44 +532,55 @@ uint8_t input_calibration_calculate_comp_coeff(float* solutions)
             y0 = (2.0f * solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_E] - solutions[ELLIPSE_PAR_B] * solutions[ELLIPSE_PAR_D]) / 
                  (solutions[ELLIPSE_PAR_B] * solutions[ELLIPSE_PAR_B] - 4.0f * solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_C]);
 
-            //termine noto ellisse
+            //Ellipse known term (F)
             fn = solutions[ELLIPSE_PAR_A] * x0 * x0 + solutions[ELLIPSE_PAR_B] * x0 * y0 + solutions[ELLIPSE_PAR_C] * y0 * y0 + 
                  solutions[ELLIPSE_PAR_D] * x0 + solutions[ELLIPSE_PAR_E] * y0 + 1.0f;
 
-            //Autovalori 
+            //Eigenvalues 
             delta = solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_A] - 2 * solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_C] +
                     solutions[ELLIPSE_PAR_C] * solutions[ELLIPSE_PAR_C] + solutions[ELLIPSE_PAR_B] * solutions[ELLIPSE_PAR_B];
-            if(delta > 0)
+            if(delta > 0.0f)
             {
                 s1 = - ((solutions[ELLIPSE_PAR_A] + solutions[ELLIPSE_PAR_C]) + sqrtf(delta)) / 2.0f;
                 s2 = - ((solutions[ELLIPSE_PAR_A] + solutions[ELLIPSE_PAR_C]) - sqrtf(delta)) / 2.0f;
-
-                if(((- fn / s1) > 0) && ((- fn / s2) > 0))
+                
+                if(0.0f != s1 && 0.0f != s2)
                 {
-                    a = sqrtf(- fn / s1);
-                    b = sqrtf(- fn / s2);
+                    if(((- fn / s1) > 0.0f) && ((- fn / s2) > 0.0f))
+                    {
+                        //ellipse axis half-length
+                        a = sqrtf(- fn / s1);
+                        b = sqrtf(- fn / s2);
 
-                    th = atan2f(solutions[ELLIPSE_PAR_B], solutions[ELLIPSE_PAR_A] - solutions[ELLIPSE_PAR_C]);
-                    r00 = cosf(th);
-                    r01 = -sinf(th);
-                    r10 = sinf(th);
-                    r11 = cosf(th);
+                        //ellipse orientation
+                        th = atan2f(solutions[ELLIPSE_PAR_B], solutions[ELLIPSE_PAR_A] - solutions[ELLIPSE_PAR_C]);
+                        r00 =  cosf(th);
+                        r01 = -sinf(th);
+                        r10 =  sinf(th);
+                        r11 =  cosf(th);
 
-                    t00 = 512.0f * CAL_CIRCLE_R * r00 / a;
-                    t01 = 512.0f * CAL_CIRCLE_R * r10 / a;
-                    t10 = 512.0f * CAL_CIRCLE_R * r01 / b;
-                    t11 = 512.0f * CAL_CIRCLE_R * r11 / b;
+                        //compensation parameters
+                        t00 = 512.0f * CAL_CIRCLE_R * r00 / a;
+                        t01 = 512.0f * CAL_CIRCLE_R * r10 / a;
+                        t10 = 512.0f * CAL_CIRCLE_R * r01 / b;
+                        t11 = 512.0f * CAL_CIRCLE_R * r11 / b;
 
-                    input_calibration_private_vars_v.cal_coeff.x0 = x0 + SINEWAVE_MID_VAL;
-                    input_calibration_private_vars_v.cal_coeff.y0 = y0 + SINEWAVE_MID_VAL;
-                    input_calibration_private_vars_v.cal_coeff.t00 = t00;
-                    input_calibration_private_vars_v.cal_coeff.t01 = t01;
-                    input_calibration_private_vars_v.cal_coeff.t10 = t10;
-                    input_calibration_private_vars_v.cal_coeff.t11 = t11;
-                    
-                    retVal = 1;
+                        //write compensation coefficients to structure
+                        input_calibration_private_vars_v.cal_coeff[CAL_COEFF_X0]  = x0 + SINEWAVE_MID_VAL;
+                        input_calibration_private_vars_v.cal_coeff[CAL_COEFF_Y0]  = y0 + SINEWAVE_MID_VAL;
+                        input_calibration_private_vars_v.cal_coeff[CAL_COEFF_T00] = t00;
+                        input_calibration_private_vars_v.cal_coeff[CAL_COEFF_T01] = t01;
+                        input_calibration_private_vars_v.cal_coeff[CAL_COEFF_T10] = t10;
+                        input_calibration_private_vars_v.cal_coeff[CAL_COEFF_T11] = t11;
+
+                        retVal = 1;
+                    }
+                    else 
+                    {
+                        retVal = 0;
+                    }
                 }
-                else 
+                else
                 {
                     retVal = 0;
                 }
@@ -540,5 +592,22 @@ uint8_t input_calibration_calculate_comp_coeff(float* solutions)
         }
     }
 
+    return retVal;
+}
+
+uint8_t input_calibration_copy_cal_coeff(int32_t* _cal_coeff_cpy)
+{
+    uint8_t retVal = 0;
+    uint8_t ii;
+
+    //check that array pointer is valid
+    if(NULL != _cal_coeff_cpy)
+    {
+        for(ii = 0; ii < CAL_COEFF_MAX_NUM; ii++)
+        {
+            _cal_coeff_cpy[ii] = input_calibration_private_vars_v.cal_coeff[ii];
+        }
+        retVal = 1;
+    }
     return retVal;
 }

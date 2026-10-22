@@ -1,4 +1,5 @@
 #include "calib_coeffs.h"
+#include <sys/types.h>
 
 //EEPROM addresses of calibration parameters
 #define CALIB_COEFF_T00_ADDR        (0x0001)
@@ -16,7 +17,7 @@
 #define CALIB_COEFF_X0_DEFAULT      (2048)
 #define CALIB_COEFF_Y0_DEFAULT      (2048)
 
-int32_t calib_coeffs_eeprom_addr[CAL_COEFF_MAX_NUM] = 
+uint16_t calib_coeffs_eeprom_addr[CAL_COEFF_MAX_NUM] = 
 {
     CALIB_COEFF_T00_ADDR,
     CALIB_COEFF_T01_ADDR,
@@ -73,6 +74,7 @@ uint8_t calib_coeff_set(int32_t* _new_calib_coeffs)
 uint8_t calib_coeff_copy(int32_t* _calib_coeffs_cpy)
 {
     uint8_t retVal = 0;
+    uint8_t ii;
 
     if(NULL != _calib_coeffs_cpy)
     {
@@ -83,4 +85,19 @@ uint8_t calib_coeff_copy(int32_t* _calib_coeffs_cpy)
         retVal = 1;
     }
     return retVal;
+}
+
+uint16_t calib_coeff_get_start_eeprom_addr()
+{
+    return calib_coeffs_eeprom_addr[0];
+}
+
+uint16_t calib_coeff_get_eeprom_addr(uint8_t _index)
+{
+    return calib_coeffs_eeprom_addr[_index];
+}
+
+int32_t  calib_coeff_get_default(uint8_t _index)
+{
+    return calib_coeffs_defaults[_index];
 }

@@ -7,6 +7,6 @@ void output_generator_init(uint16_t _factor);
 void read_adcs_output();
 void calculate_outputs();
 void update_out_pins();
-void output_generator_set_cal_coeff(int32_t* _cal_coeff);
+uint8_t output_generator_set_cal_coeff(int32_t* _cal_coeff);
 
 #endif //OUTPUT_GENERATOR_H

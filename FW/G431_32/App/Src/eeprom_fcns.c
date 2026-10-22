@@ -1,6 +1,8 @@
 #include "eeprom_fcns.h"
 #include "eeprom_emul.h"
+#include "calib_coeffs.h"
 #include "defines.h"
+#include "eeprom_emul_types.h"
 #include <stdint.h>
 
 void eeprom_unlock()
@@ -12,6 +14,7 @@ void eeprom_unlock()
 uint8_t eeprom_erase()
 {
     uint8_t retVal = 1;
+    uint8_t ii;
 
     EE_Status eeprom_status = EE_Init(EE_FORCED_ERASE);
     if (eeprom_status != EE_OK)
@@ -20,58 +23,16 @@ uint8_t eeprom_erase()
     }
 
     //write default values to NVM variables
-    if(retVal)
+    for(ii = 0; ii < CAL_COEFF_MAX_NUM; ii++)
     {
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T00_ADDR, ELLIPSE_CAL_T00_DEFAULT);
+        if(retVal)
+    {
+        eeprom_status = EE_WriteVariable32bits(calib_coeff_get_eeprom_addr(ii), calib_coeff_get_default(ii));
         if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
         {
           retVal = 0;
         }
     }
-    
-    if(retVal)
-    {
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T01_ADDR, ELLIPSE_CAL_T01_DEFAULT);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          retVal = 0;
-        }
-    }
-
-    if(retVal)
-    {
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T10_ADDR, ELLIPSE_CAL_T10_DEFAULT);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          retVal = 0;
-        }
-    }
-
-    if(retVal)
-    {
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T11_ADDR, ELLIPSE_CAL_T11_DEFAULT);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          retVal = 0;
-        }
-    }
-
-    if(retVal)
-    {
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_X0_ADDR, ELLIPSE_CAL_X0_DEFAULT);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          retVal = 0;
-        }
-    }
-
-    if(retVal)
-    {
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_Y0_ADDR, ELLIPSE_CAL_Y0_DEFAULT);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          retVal = 0;
-        }
     }
 
     if(retVal)
@@ -120,7 +81,7 @@ uint8_t eeprom_write_params(uint32_t* _eeprom_params, uint8_t _n_params, uint16_
 {
     uint8_t retVal = 1;
     uint8_t ii;
-    EE_Status eeprom_status;
+    EE_Status eeprom_status = EE_OK;
     
     //store coefficients inside NVM parameters
     for(ii = 0; ii < _n_params; ii++)

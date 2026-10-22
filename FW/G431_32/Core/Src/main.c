@@ -76,16 +76,6 @@ __attribute__((aligned(0x200)))
 volatile uint32_t isr_vec[NVIC_ISR_NUMBER];
 
 float vcc;
-
-uint32_t eeprom_init_vals[6] = 
-{
-  ELLIPSE_CAL_T00_DEFAULT,
-  ELLIPSE_CAL_T01_DEFAULT,
-  ELLIPSE_CAL_T10_DEFAULT,
-  ELLIPSE_CAL_T11_DEFAULT,
-  ELLIPSE_CAL_X0_DEFAULT,
-  ELLIPSE_CAL_T00_DEFAULT
-};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -111,8 +101,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
   uint16_t ii;
-  uint8_t eeprom_stat;
-  uint8_t cal_status;
+  uint8_t stat;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -160,6 +149,9 @@ int main(void)
 
   led_handler_init(LED_TIM_FCNT_KHZ);
 
+  //----------- Initialize calibration coefficients to default -----------------
+  calib_coeff_reset_to_defaults();
+
   //----------------------------------------------------------------------------
   //                             EEPROM init
   //----------------------------------------------------------------------------
@@ -167,15 +159,15 @@ int main(void)
 
   #if EEPROM_ERASE
 
-  eeprom_stat = eeprom_erase();
+  stat = eeprom_erase();
 
   #else
 
-  eeprom_stat = eeprom_read_params(eeprom_init_vals,CAL_COEFF_MAX_NUM,ELLIPSE_CAL_T00_ADDR);
+  stat = eeprom_read_params((uint32_t*)calib_coeff_get_ptr(),CAL_COEFF_MAX_NUM,calib_coeff_get_start_eeprom_addr());
 
   #endif
 
-  if(!eeprom_stat)
+  if(!stat)
   {
     set_system_status(SYSTEM_STATUS_ERROR);
   }
@@ -199,23 +191,37 @@ int main(void)
   //----------------------------------------------------------------------------
   //                              Code init
   //----------------------------------------------------------------------------
-    
     //output generator module init
     output_generator_init(PPR_OUT/POLE_PAIRS);
 
     //load calibration parameters inside output generator module    
-    output_generator_set_cal_coeff(eeprom_init_vals);
+    stat = output_generator_set_cal_coeff(calib_coeff_get_ptr());
   
+    if(!stat)
+    {
+      set_system_status(SYSTEM_STATUS_ERROR);
+    }
     //input calibration module init
     struct input_calibration_private_vars_init_s input_calibration_private_vars_init_v = 
     {
       .revolutions_pre_acq  = N_TURNS_WAIT_CAL,
-      .revolutions_todo     = N_TURNS_CAL
+      .revolutions_acq      = N_TURNS_CAL
     };
 
-    calib_coeff_copy(&input_calibration_private_vars_init_v.calib_coeff);
+    if(stat)
+    {
+      stat = calib_coeff_copy(input_calibration_private_vars_init_v.calib_coeff);
+    }
 
-    input_calibration_init(input_calibration_private_vars_init_v);
+    if(stat)
+    {
+      input_calibration_init(input_calibration_private_vars_init_v);
+    }
+    else 
+    {
+      set_system_status(SYSTEM_STATUS_ERROR);
+    }
+
   }
   //----------------------------------------------------------------------------
   //                          Read supply voltage
@@ -272,19 +278,39 @@ int main(void)
     if(SYSTEM_STATUS_CALIBRATION == get_system_status() && input_calibration_get_acquisition_done())
     {
       //calculate compensation coefficients
-      cal_status = input_calibration_calculate_coefficients();
-      if(cal_status)
+      stat = input_calibration_calculate_coefficients();
+      if(stat)
       {
-#if (EEPROM_WRITE && EEPROM_ERASE == 0)
-        ee
-#endif
+        //copy calculated coefficients to the structure
+        stat = input_calibration_copy_cal_coeff(calib_coeff_get_ptr());
+      }
+      else 
+      {
+        set_system_status(SYSTEM_STATUS_ERROR);
+      }
+
+      if(stat)
+      {
+        #if (EEPROM_WRITE && EEPROM_ERASE == 0)
+        stat = eeprom_write_params((uint32_t*)calib_coeff_get_ptr(), CAL_COEFF_MAX_NUM, calib_coeff_get_start_eeprom_addr());
+        #endif
+      }
+      else 
+      {
+        set_system_status(SYSTEM_STATUS_ERROR);
+      }
+
+      if(stat)
+      {
         set_system_status(SYSTEM_STATUS_CALIBRATION_DONE);
       }
       else 
       {
         set_system_status(SYSTEM_STATUS_ERROR);
       }
+      
     }
+    
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

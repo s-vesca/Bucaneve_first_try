@@ -63,15 +63,10 @@ __attribute__((section(".ccm_data"),aligned(32)))
 static int16_t speed;
 
 __attribute__((section(".ccm_data"),aligned(32)))
-static int32_t cal_coeff_v[CAL_COEFF_MAX_NUM] = 
-{
-    ELLIPSE_CAL_T00_DEFAULT,
-    ELLIPSE_CAL_T01_DEFAULT,
-    ELLIPSE_CAL_T10_DEFAULT,
-    ELLIPSE_CAL_T11_DEFAULT,
-    ELLIPSE_CAL_X0_DEFAULT,
-    ELLIPSE_CAL_Y0_DEFAULT,
-};
+static int32_t cal_coeff_v[CAL_COEFF_MAX_NUM];
+
+__attribute__((section(".ccm_data"),aligned(32)))
+static uint8_t cal_coeff_written = 0;
 
 //------------------------------------------------------------------------------
 //                              Lookup Tables
@@ -156,7 +151,6 @@ void output_generator_init(uint16_t _factor)
     return;
 }
 
-
 void read_adcs_output()
 {
     //--------- Static Vars (CCM_SRAM for constant access latency) -------------
@@ -192,7 +186,7 @@ void read_adcs_output()
 
     //--------------------------------------------------------------------------
     
-    GPIOA->BSRR |= GPIO_PIN_10;
+    //GPIOA->BSRR |= GPIO_PIN_10;
 
     //Check that both ADCs have finished their injected conversion
     if((ADC1->ISR & ADC_ISR_JEOC_Msk) && (ADC2->ISR & ADC_ISR_JEOC_Msk))
@@ -340,8 +334,9 @@ void calculate_outputs()
 
     //GPIOA->BSRR |= GPIO_PIN_10; //Pull GPIO UP for Debug 
 
-    //check that isr comes from cordic data ready flag and shift_pos variable has been initialized
-    if((CORDIC->CSR & CORDIC_CSR_RRDY_Msk) && (shift_pos < MAX_SHIFT))
+    //check that isr comes from cordic data ready flag, shift_pos variable has been
+    //initialized and calibration coefficients have been written
+    if((CORDIC->CSR & CORDIC_CSR_RRDY_Msk) && (shift_pos < MAX_SHIFT) && cal_coeff_written)
     {       
         //------------------ Read Phase -----------------------
         rdata_reg = CORDIC->RDATA;
@@ -434,19 +429,27 @@ void calculate_outputs()
         
         //----- RRDY flag is cleared by HW when reading RDATA register ---------     
     }
-    GPIOA->BSRR |= GPIO_PIN_10 << 16;
+    //GPIOA->BSRR |= GPIO_PIN_10 << 16;
     return;
 }
 
-void output_generator_set_cal_coeff(int32_t* _cal_coeff)
+uint8_t output_generator_set_cal_coeff(int32_t* _cal_coeff)
 {
     uint8_t ii;
+    uint8_t retVal = 0;
 
-    for(ii = 0; ii < CAL_COEFF_MAX_NUM; ii++)
+    if(NULL != _cal_coeff)
     {
-        cal_coeff_v[ii] = _cal_coeff[ii];
+        for(ii = 0; ii < CAL_COEFF_MAX_NUM; ii++)
+        {
+            cal_coeff_v[ii] = _cal_coeff[ii];
+        }
+
+        cal_coeff_written = 1;
+        retVal = 1;
     }
-    return;
+
+    return retVal;
 }
 
 void update_out_pins()
