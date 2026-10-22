@@ -1,11 +1,14 @@
 #include "led_handler.h"
 #include "main.h"
+#include "defines.h"
 #include "stm32g4xx_ll_gpio.h"
+#include "stm32g4xx_ll_tim.h"
 #include "system_status.h"
 #include "system_status.h"
 
 static uint16_t led_state_ton_ms[SYSTEM_STATUS_MAX_NUM] = 
 {
+    1000,       //    SYSTEM_STATUS_INIT,
     125,        //    SYSTEM_STATUS_CALIBRATION,
     250,        //    SYSTEM_STATUS_CALIBRATION_DONE,
     500,        //    SYSTEM_STATUS_RUNNING,
@@ -19,6 +22,11 @@ uint8_t led_handler_init(uint32_t _freq_khz)
     uint8_t retVal = 0;
 
     call_freq_khz = _freq_khz;
+    
+    TIM7->ARR   = LED_TIM_ARR_VAL;
+    TIM7->DIER |= TIM_DIER_UIE_Msk; //enable tim7 update interrupt
+    TIM7->CR1  |= TIM_CR1_CEN_Msk;  //enable tim7 count
+
     retVal = 1;
 
     return retVal;
@@ -73,8 +81,7 @@ void blink_led()
             LL_GPIO_ResetOutputPin(DBG_LED2_GPIO_Port, DBG_LED2_Pin);
             LL_GPIO_SetOutputPin(ERR_LED_GPIO_Port, ERR_LED_Pin);
         }
-         
-
+        
         sys_stat_prev = sys_stat;
 
         LL_TIM_ClearFlag_UPDATE(TIM7);

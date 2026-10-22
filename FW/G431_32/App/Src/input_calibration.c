@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdint.h>
 #include "adc.h"
+#include "calib_coeffs.h"
 #include "stm32g431xx.h"
 #include "input_calibration.h"
 #include "system_status.h"
@@ -8,7 +9,17 @@
 #include "lin_sys5_solver.h"
 #include "sync_timer.h"
 
-#define     ARRAY_SIZE      (1000)        
+#define     ARRAY_SIZE      (1000)
+
+typedef enum ellipse_par_e
+{
+    ELLIPSE_PAR_A = 0,
+    ELLIPSE_PAR_B,
+    ELLIPSE_PAR_C,
+    ELLIPSE_PAR_D,
+    ELLIPSE_PAR_E,
+    ELLIPSE_PAR_MAX_NUM
+}ellipse_par_t;
 
 __attribute__((section(".ccm_data"),aligned(32)))
 volatile int16_t adc_cos_dbg_cal;
@@ -45,7 +56,7 @@ struct input_calibration_private_vars_s
     }acc;
 
     //calibration coefficients
-    cal_coeff_t cal_coeff;
+    int32_t cal_coeff[CAL_COEFF_MAX_NUM];
 
     struct
     {
@@ -94,14 +105,11 @@ void input_calibration_init(struct input_calibration_private_vars_init_s input_c
     input_calibration_private_vars_v.quadrant.current       = 0;
     input_calibration_private_vars_v.quadrant.prev          = 0;
 
-    input_calibration_private_vars_v.cal_coeff.t00          = ELLIPSE_CAL_T00_DEFAULT;
-    input_calibration_private_vars_v.cal_coeff.t01          = ELLIPSE_CAL_T01_DEFAULT;
-    input_calibration_private_vars_v.cal_coeff.t10          = ELLIPSE_CAL_T10_DEFAULT;
-    input_calibration_private_vars_v.cal_coeff.t11          = ELLIPSE_CAL_T11_DEFAULT;
-
-    input_calibration_private_vars_v.cal_coeff.x0           = ELLIPSE_CAL_X0_DEFAULT;
-    input_calibration_private_vars_v.cal_coeff.y0           = ELLIPSE_CAL_Y0_DEFAULT;
-
+    for(ii = 0; ii < CAL_COEFF_MAX_NUM; ii++)
+    {
+        input_calibration_private_vars_v.cal_coeff = 0;
+    }
+    
     return;
 }
 
@@ -388,7 +396,7 @@ void read_adcs_calibration()
         }
 
         //JEOC flag is cleared by Hardware when data is read
-        cnt = TIM6->CNT;
+        //cnt = TIM6->CNT;
     }
     return;
 }

@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "calib_coeffs.h"
 #include "cordic.h"
 #include "crc.h"
 #include "tim.h"
@@ -36,6 +37,7 @@
 #include "sync_timer.h"
 #include "cordic_fcns.h"
 #include "adc_fcns.h"
+#include "eeprom_fcns.h"
 
 #include "system_status.h"
 #include "led_handler.h"
@@ -61,8 +63,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern uint16_t cnt;
-float exec_time_us;
 
 //extern used because variables are declared in the linker script
 extern uint32_t Reset_Handler;
@@ -75,12 +75,17 @@ __attribute__((section(".ccm_data")))
 __attribute__((aligned(0x200)))
 volatile uint32_t isr_vec[NVIC_ISR_NUMBER];
 
-uint16_t adc_vcc_val;
-uint16_t adc_vcc_cnt;
-uint32_t adc_vcc_acc;
 float vcc;
 
-uint32_t eeprom_init_vals[6];
+uint32_t eeprom_init_vals[6] = 
+{
+  ELLIPSE_CAL_T00_DEFAULT,
+  ELLIPSE_CAL_T01_DEFAULT,
+  ELLIPSE_CAL_T10_DEFAULT,
+  ELLIPSE_CAL_T11_DEFAULT,
+  ELLIPSE_CAL_X0_DEFAULT,
+  ELLIPSE_CAL_T00_DEFAULT
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,6 +111,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
   uint16_t ii;
+  uint8_t eeprom_stat;
   uint8_t cal_status;
   /* USER CODE END 1 */
 
@@ -149,182 +155,111 @@ int main(void)
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
+  //led handler timer
+  set_system_status(SYSTEM_STATUS_INIT);
+
+  led_handler_init(LED_TIM_FCNT_KHZ);
+
   //----------------------------------------------------------------------------
   //                             EEPROM init
   //----------------------------------------------------------------------------
-  HAL_FLASH_Unlock();
+  eeprom_unlock();
 
   #if EEPROM_ERASE
-  EE_Status eeprom_status = EE_Init(EE_FORCED_ERASE);
-  if (eeprom_status != EE_OK)
-  {
-  	Error_Handler();
-  }
-  
-  //write default values to NVM variables
-  eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T00_ADDR, ELLIPSE_CAL_T00_DEFAULT);
-  if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-  {
-    Error_Handler();
-  }
-  eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T01_ADDR, ELLIPSE_CAL_T01_DEFAULT);
-  if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-  {
-    Error_Handler();
-  }
-  eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T10_ADDR, ELLIPSE_CAL_T10_DEFAULT);
-  if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-  {
-    Error_Handler();
-  }
-  eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T11_ADDR, ELLIPSE_CAL_T11_DEFAULT);
-  if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-  {
-    Error_Handler();
-  }
-  eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_X0_ADDR, ELLIPSE_CAL_X0_DEFAULT);
-  if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-  {
-    Error_Handler();
-  }
-  eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_Y0_ADDR, ELLIPSE_CAL_Y0_DEFAULT);
-  if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-  {
-    Error_Handler();
-  }
 
-  if(EE_CLEANUP_REQUIRED == eeprom_status)
-  {
-    eeprom_status = EE_CleanUp();
-    if(EE_OK != eeprom_status)
-    {
-      Error_Handler();
-    }
-  }
+  eeprom_stat = eeprom_erase();
 
   #else
 
-  EE_Status eeprom_status = EE_Init(EE_CONDITIONAL_ERASE);
-  if (eeprom_status != EE_OK)
-  {
-  	Error_Handler();
-  }
-
-  for(ii = 0; ii < 6; ii++)
-  {
-    eeprom_status = EE_ReadVariable32bits(ELLIPSE_CAL_T00_ADDR + ii, &eeprom_init_vals[ii]);
-    if(EE_OK != eeprom_status)
-    {
-      Error_Handler();
-    }
-  }
+  eeprom_stat = eeprom_read_params(eeprom_init_vals,CAL_COEFF_MAX_NUM,ELLIPSE_CAL_T00_ADDR);
 
   #endif
-  
+
+  if(!eeprom_stat)
+  {
+    set_system_status(SYSTEM_STATUS_ERROR);
+  }
+
+  //init peripherals if init status
+  if(SYSTEM_STATUS_INIT == get_system_status())
+  {
   //----------------------------------------------------------------------------
   //                          Peripherals init
   //----------------------------------------------------------------------------
   
-  //led handler timer
-  led_handler_init(10);
-
   //-------------------------------- ADCs --------------------------------------
-  adcs_init();
+    adcs_init();
 
   //------------------------------- CORDIC -------------------------------------
-  cordic_init();
+    cordic_init();
 
   //---------------------------- ADC sync timer --------------------------------
-  sync_timer_init(1);
+    sync_timer_init(1);
 
   //----------------------------------------------------------------------------
   //                              Code init
   //----------------------------------------------------------------------------
-  output_generator_init(PPR_OUT/POLE_PAIRS);
+    
+    //output generator module init
+    output_generator_init(PPR_OUT/POLE_PAIRS);
+
+    //load calibration parameters inside output generator module    
+    output_generator_set_cal_coeff(eeprom_init_vals);
   
-  struct input_calibration_private_vars_init_s input_calibration_private_vars_init_v = 
-  {
-    .revolutions_pre_acq  = N_TURNS_WAIT_CAL,
-    .revolutions_todo     = N_TURNS_CAL
-  };
+    //input calibration module init
+    struct input_calibration_private_vars_init_s input_calibration_private_vars_init_v = 
+    {
+      .revolutions_pre_acq  = N_TURNS_WAIT_CAL,
+      .revolutions_todo     = N_TURNS_CAL
+    };
 
-  input_calibration_init(input_calibration_private_vars_init_v);
+    calib_coeff_copy(&input_calibration_private_vars_init_v.calib_coeff);
 
+    input_calibration_init(input_calibration_private_vars_init_v);
+  }
   //----------------------------------------------------------------------------
   //                          Read supply voltage
   //----------------------------------------------------------------------------
 
-  //wait for voltage to settle (200ms)
-  HAL_Delay(200);
-
-  adc_vcc_acc = 0;
-  for(ii = 0; ii < VCC_ADC_N_AVG; ii++)
+  if(SYSTEM_STATUS_INIT == get_system_status())
   {
-    ADC1->CR |= ADC_CR_ADEN_Msk;
-    ADC1->CR |= ADC_CR_ADSTART_Msk;
-    while(!(ADC1->ISR & ADC_ISR_EOC_Msk));
-    adc_vcc_acc += (uint16_t)(ADC1->DR & 0x0FFF);
-    HAL_Delay(1);
-  }
+    //wait for voltage to settle (500ms)
+    HAL_Delay(500);
 
-  adc_vcc_cnt = (uint16_t)(adc_vcc_acc / VCC_ADC_N_AVG);
-  vcc = (float)adc_vcc_cnt * 3.3f / 4096.0f / 0.0909f;
-
-  //if supply voltage under the threshold
-  if(vcc < VCC_CAL_THR)
-  {
-    //--------------------- begin normal operation -----------------------------
-    cal_coeff_t tmp =
-    {
-      eeprom_init_vals[0],
-      eeprom_init_vals[1],
-      eeprom_init_vals[2],
-      eeprom_init_vals[3],
-      eeprom_init_vals[4],
-      eeprom_init_vals[5],
-    };
-
-    output_generator_set_cal_coeff(tmp);
-
-    set_system_status(SYSTEM_STATUS_RUNNING);
-    
-    //point ADC_IRQ to "read_adcs_output" function
-    set_adc_irq_ptr(0);
-
-    //start sampling
-    sync_timer_start(0);
-
-    //enable TIM4 CH1
-    TIM4->CCER |= TIM_CCER_CC1E;
-
-    //enable TIM4 CH1 ISR
-    TIM4->DIER |= TIM_DIER_CC1IE_Msk;
-  }
-  else 
-  {
-    //-------------------- begin calibration operation -------------------------
-
-    set_system_status(SYSTEM_STATUS_CALIBRATION);
-
-    //point ADC_IRQ to "read_adcs_calibration" function
-    set_adc_irq_ptr(1);
-
-    //start sampling
-    sync_timer_start(1);
-  }
-
-  adcs_en_injected_conversion();
-
-  //----------------------------------------------------------------------------
-  //                            Enable Led Timer
-  //----------------------------------------------------------------------------
-  TIM7->DIER |= TIM_DIER_UIE_Msk;
-  TIM7->CR1  |= TIM_CR1_CEN_Msk;
+    //read supply voltage (polling)
+    vcc = adc_read_supply_voltage();
   
-  //----------------------------------------------------------------------------
+    //if supply voltage under the threshold
+    if(vcc < VCC_CAL_THR)
+    {
+      //--------------------- begin normal operation -----------------------------
+    
+      set_system_status(SYSTEM_STATUS_RUNNING);
 
-  TIM6->CR1 |= TIM_CR1_CEN_Msk;
+      //point ADC_IRQ to "read_adcs_output" function
+      set_adc_irq_ptr(0);
 
+      //start sampling
+      sync_timer_start(0);
+    }
+    else 
+    {
+      //-------------------- begin calibration operation -------------------------
+
+      set_system_status(SYSTEM_STATUS_CALIBRATION);
+
+      //point ADC_IRQ to "read_adcs_calibration" function
+      set_adc_irq_ptr(1);
+
+      //start sampling
+      sync_timer_start(1);
+    }
+
+    adcs_en_injected_conversion();  
+
+    //start TIM6 for profiling
+    TIM6->CR1 |= TIM_CR1_CEN_Msk;
+  }
   //----------------------------------------------------------------------------
   
   /* USER CODE END 2 */
@@ -334,8 +269,6 @@ int main(void)
   
   while (1)
   {
-    exec_time_us = (float)(cnt)/(170.0f);
-
     if(SYSTEM_STATUS_CALIBRATION == get_system_status() && input_calibration_get_acquisition_done())
     {
       //calculate compensation coefficients
@@ -343,46 +276,7 @@ int main(void)
       if(cal_status)
       {
 #if (EEPROM_WRITE && EEPROM_ERASE == 0)
-        //store coefficients inside NVM parameters
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T00_ADDR, input_calibration_get_cal_coeff().t00);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          Error_Handler();
-        }
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T01_ADDR, input_calibration_get_cal_coeff().t01);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          Error_Handler();
-        }
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T10_ADDR, input_calibration_get_cal_coeff().t10);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          Error_Handler();
-        }
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_T11_ADDR, input_calibration_get_cal_coeff().t11);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          Error_Handler();
-        }
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_X0_ADDR, input_calibration_get_cal_coeff().x0);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          Error_Handler();
-        }
-        eeprom_status = EE_WriteVariable32bits(ELLIPSE_CAL_Y0_ADDR, input_calibration_get_cal_coeff().y0);
-        if(EE_OK != eeprom_status  && EE_CLEANUP_REQUIRED != eeprom_status)
-        {
-          Error_Handler();
-        }
-      
-        if(EE_CLEANUP_REQUIRED == eeprom_status)
-        {
-          eeprom_status = EE_CleanUp();
-          if(EE_OK != eeprom_status)
-          {
-            Error_Handler();
-          }
-        }
+        ee
 #endif
         set_system_status(SYSTEM_STATUS_CALIBRATION_DONE);
       }

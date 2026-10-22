@@ -29,10 +29,18 @@
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+//                          STATUS LED IRQ FREQ
+//------------------------------------------------------------------------------
+#define LED_TIM_FCNT_KHZ            (10)        //led timer freq (10kHz)
+#define LED_TIM_ARR_VAL             (17000-1)   //led timer period (10kHz)
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 //                         SUPPLY VOLTAGE MEASURE
 //------------------------------------------------------------------------------
 #define VCC_ADC_N_AVG               (100)       //number of averaged samples
 #define VCC_CAL_THR                 (30.0f)     //Threshold for calibration mode
+#define ADC_CNT_TO_SUPPLY_VOLT      (0.0088623046875f) //3.3 / 4096 / 0.0909
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -74,37 +82,18 @@
 #define ELLIPSE_CAL_T10             (368)
 #define ELLIPSE_CAL_T11             (4277)
 
-//EEPROM addresses of calibration parameters
-#define ELLIPSE_CAL_T00_ADDR        (0x0001)
-#define ELLIPSE_CAL_T01_ADDR        (0x0002)
-#define ELLIPSE_CAL_T10_ADDR        (0x0003)
-#define ELLIPSE_CAL_T11_ADDR        (0x0004)
-#define ELLIPSE_CAL_X0_ADDR         (0x0005)
-#define ELLIPSE_CAL_Y0_ADDR         (0x0006)
-
-//default values of calibration parameters
-#define ELLIPSE_CAL_T00_DEFAULT     (1024)
-#define ELLIPSE_CAL_T01_DEFAULT     (0)
-#define ELLIPSE_CAL_T10_DEFAULT     (0)
-#define ELLIPSE_CAL_T11_DEFAULT     (1024)
-#define ELLIPSE_CAL_X0_DEFAULT      (2048)
-#define ELLIPSE_CAL_Y0_DEFAULT      (2048)
-
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-//                    CALIBRATION PARAMETERS STRUCTURE
-//------------------------------------------------------------------------------
-typedef struct cal_coeff_s
-{
-    int32_t t00;
-    int32_t t01;
-    int32_t t10;
-    int32_t t11;
-    int32_t x0;
-    int32_t y0;
-
-}cal_coeff_t;
+//typedef struct cal_coeff_s
+//{
+//    int32_t t00;
+//    int32_t t01;
+//    int32_t t10;
+//    int32_t t11;
+//    int32_t x0;
+//    int32_t y0;
+//
+//}cal_coeff_t;
 
 //------------------------------------------------------------------------------
 

@@ -1,5 +1,8 @@
+#include "stm32g4xx_hal.h"
 #include "stm32g4xx_ll_adc.h"
 #include "adc_fcns.h"
+#include "defines.h"
+#include <stdint.h>
 
 void adcs_init()
 {
@@ -57,4 +60,21 @@ void adcs_en_injected_conversion()
     ADC2->CR |= ADC_CR_JADSTART;
 
     return;
+}
+
+float adc_read_supply_voltage()
+{
+  uint16_t ii;
+  uint32_t adc_vcc_acc = 0;
+
+  for(ii = 0; ii < VCC_ADC_N_AVG; ii++)
+  {
+    ADC1->CR |= ADC_CR_ADEN_Msk;
+    ADC1->CR |= ADC_CR_ADSTART_Msk;
+    while(!(ADC1->ISR & ADC_ISR_EOC_Msk));
+    adc_vcc_acc += (uint16_t)(ADC1->DR & 0x0FFF);
+    HAL_Delay(1);
+  }
+
+  return (float)adc_vcc_acc / (float)(VCC_ADC_N_AVG) * ADC_CNT_TO_SUPPLY_VOLT;
 }

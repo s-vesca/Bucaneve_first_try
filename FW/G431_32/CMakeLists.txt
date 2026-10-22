@@ -53,6 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/sync_timer.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/cordic_fcns.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/adc_fcns.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/eeprom_fcns.c
     ${CMAKE_CURRENT_SOURCE_DIR}/App/Src/lin_sys5_solver.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Mid/Src/eeprom_emul.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Mid/Src/flash_interface.c

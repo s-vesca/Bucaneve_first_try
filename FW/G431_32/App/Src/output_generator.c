@@ -1,4 +1,5 @@
 #include "output_generator.h"
+#include "calib_coeffs.h"
 #include "stm32g431xx.h"
 #include "stm32g4xx_ll_adc.h"
 #include "stm32g4xx_ll_cordic.h"
@@ -62,13 +63,14 @@ __attribute__((section(".ccm_data"),aligned(32)))
 static int16_t speed;
 
 __attribute__((section(".ccm_data"),aligned(32)))
-static cal_coeff_t cal_coeff_v = {
-    .t00    = ELLIPSE_CAL_T00_DEFAULT,
-    .t01    = ELLIPSE_CAL_T01_DEFAULT,
-    .t10    = ELLIPSE_CAL_T10_DEFAULT,
-    .t11    = ELLIPSE_CAL_T11_DEFAULT,
-    .x0     = ELLIPSE_CAL_X0_DEFAULT,
-    .y0     = ELLIPSE_CAL_Y0_DEFAULT,
+static int32_t cal_coeff_v[CAL_COEFF_MAX_NUM] = 
+{
+    ELLIPSE_CAL_T00_DEFAULT,
+    ELLIPSE_CAL_T01_DEFAULT,
+    ELLIPSE_CAL_T10_DEFAULT,
+    ELLIPSE_CAL_T11_DEFAULT,
+    ELLIPSE_CAL_X0_DEFAULT,
+    ELLIPSE_CAL_Y0_DEFAULT,
 };
 
 //------------------------------------------------------------------------------
@@ -138,6 +140,19 @@ void output_generator_init(uint16_t _factor)
         shift_pos = MAX_SHIFT - shift_pos;
     }
 
+    //------------------------- Init Oneshot timer -----------------------------
+    
+    //enable TIM4 CH1
+    TIM4->CCER |= TIM_CCER_CC1E;
+
+    //enable TIM4 CH1 IRQ
+    TIM4->DIER |= TIM_DIER_CC1IE_Msk;
+
+    //configure TIM4 in One Pulse mode 
+    TIM4->CR1 |= TIM_CR1_OPM_Msk;
+
+    //--------------------------------------------------------------------------
+
     return;
 }
 
@@ -185,8 +200,8 @@ void read_adcs_output()
         //GPIOA->BSRR |= GPIO_PIN_10; //Pull GPIO UP for Debug 
 
         //read ADCs registers, remove offset and shift them to run 32 bits filters
-        adc_reg_cos = (int32_t)(ADC1->JDR1 - cal_coeff_v.x0) << 16;
-        adc_reg_sin = (int32_t)(ADC2->JDR1 - cal_coeff_v.y0) << 16;
+        adc_reg_cos = (int32_t)(ADC1->JDR1 - cal_coeff_v[CAL_COEFF_X0]) << 16;
+        adc_reg_sin = (int32_t)(ADC2->JDR1 - cal_coeff_v[CAL_COEFF_Y0]) << 16;
 
         //----------------------------------------------------------------------
         //          Ellipse compensation matrix multiplication
@@ -197,8 +212,8 @@ void read_adcs_output()
         //   [adc_sin_comp]   [cal_coeff_v.t10   cal_coeff_v.t11] [adc_reg_sin]
         //----------------------------------------------------------------------
 
-        adc_cos_comp = ((adc_reg_cos>>10) * cal_coeff_v.t00 + (adc_reg_sin>>10) * cal_coeff_v.t01);
-        adc_sin_comp = ((adc_reg_cos>>10) * cal_coeff_v.t10 + (adc_reg_sin>>10) * cal_coeff_v.t11);
+        adc_cos_comp = ((adc_reg_cos>>10) * cal_coeff_v[CAL_COEFF_T00] + (adc_reg_sin>>10) * cal_coeff_v[CAL_COEFF_T01]);
+        adc_sin_comp = ((adc_reg_cos>>10) * cal_coeff_v[CAL_COEFF_T10] + (adc_reg_sin>>10) * cal_coeff_v[CAL_COEFF_T11]);
 
         //----------------------------------------------------------------------
         //                          Sin Cos Filter
@@ -423,9 +438,14 @@ void calculate_outputs()
     return;
 }
 
-void output_generator_set_cal_coeff(cal_coeff_t _cal_coeff)
+void output_generator_set_cal_coeff(int32_t* _cal_coeff)
 {
-    cal_coeff_v = _cal_coeff;
+    uint8_t ii;
+
+    for(ii = 0; ii < CAL_COEFF_MAX_NUM; ii++)
+    {
+        cal_coeff_v[ii] = _cal_coeff[ii];
+    }
     return;
 }
 
