@@ -519,7 +519,7 @@ uint8_t input_calibration_calculate_coefficients()
 uint8_t input_calibration_calculate_comp_coeff(float* solutions)
 {
     uint8_t retVal = 0;
-    float x0,y0,fn,delta,s1,s2,a,b,th,r00,r01,r10,r11,t00,t01,t10,t11;
+    float x0,y0,fn,delta,s1,s2,sx,sy,a,b,th,r00,r01,r10,r11,t00,t01,t10,t11;
 
     if((NULL != solutions))
     {
@@ -534,26 +534,39 @@ uint8_t input_calibration_calculate_comp_coeff(float* solutions)
 
             //Ellipse known term (F)
             fn = solutions[ELLIPSE_PAR_A] * x0 * x0 + solutions[ELLIPSE_PAR_B] * x0 * y0 + solutions[ELLIPSE_PAR_C] * y0 * y0 + 
-                 solutions[ELLIPSE_PAR_D] * x0 + solutions[ELLIPSE_PAR_E] * y0 + 1.0f;
+                 solutions[ELLIPSE_PAR_D] * x0 + solutions[ELLIPSE_PAR_E] * y0 - 1.0f;
 
             //Eigenvalues 
             delta = solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_A] - 2 * solutions[ELLIPSE_PAR_A] * solutions[ELLIPSE_PAR_C] +
                     solutions[ELLIPSE_PAR_C] * solutions[ELLIPSE_PAR_C] + solutions[ELLIPSE_PAR_B] * solutions[ELLIPSE_PAR_B];
             if(delta > 0.0f)
             {
-                s1 = - ((solutions[ELLIPSE_PAR_A] + solutions[ELLIPSE_PAR_C]) + sqrtf(delta)) / 2.0f;
-                s2 = - ((solutions[ELLIPSE_PAR_A] + solutions[ELLIPSE_PAR_C]) - sqrtf(delta)) / 2.0f;
+                s1 = ((solutions[ELLIPSE_PAR_A] + solutions[ELLIPSE_PAR_C]) + sqrtf(delta)) / 2.0f; //greater eigenvalue
+                s2 = ((solutions[ELLIPSE_PAR_A] + solutions[ELLIPSE_PAR_C]) - sqrtf(delta)) / 2.0f; //smaller eigenvalue
+
+                if(solutions[ELLIPSE_PAR_A] > solutions[ELLIPSE_PAR_C])
+                {
+                    //x axis eigenvalue is bigger
+                    sx = s1;
+                    sy = s2;
+                }
+                else 
+                {
+                    //y axis eigenvalue is bigger
+                    sx = s2;
+                    sy = s1;
+                }
                 
                 if(0.0f != s1 && 0.0f != s2)
                 {
                     if(((- fn / s1) > 0.0f) && ((- fn / s2) > 0.0f))
                     {
                         //ellipse axis half-length
-                        a = sqrtf(- fn / s1);
-                        b = sqrtf(- fn / s2);
+                        a = sqrtf(- fn / sx);
+                        b = sqrtf(- fn / sy);
 
                         //ellipse orientation
-                        th = atan2f(solutions[ELLIPSE_PAR_B], solutions[ELLIPSE_PAR_A] - solutions[ELLIPSE_PAR_C]);
+                        th  = 0.5f*atan2f(solutions[ELLIPSE_PAR_B], solutions[ELLIPSE_PAR_A] - solutions[ELLIPSE_PAR_C]);
                         r00 =  cosf(th);
                         r01 = -sinf(th);
                         r10 =  sinf(th);
