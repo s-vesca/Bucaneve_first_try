@@ -1,0 +1,27 @@
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{draftwatermark}
+\usepackage{titling}
+\usepackage{graphicx}
+\usepackage{import}
+\usepackage{subfiles}
+\usepackage[section]{placeins}
+
+
+%evita indentazione a inizio paragrafo
+\setlength{\parindent}{0pt}
+
+%fa in modo che le immagini non vengano messe nella subsection successiva
+\makeatletter
+\AtBeginDocument{%
+  \expandafter\renewcommand\expandafter\subsection\expandafter{%
+    \expandafter\@fb@secFB\subsection
+  }%
+}
+\makeatother
+
+% Filigrana
+\SetWatermarkText{DRAFT}       % Testo della filigrana
+\SetWatermarkScale{8}          % Dimensione (scala)
+\SetWatermarkColor[gray]{0.9}  % Colore (0.9 è un grigio molto chiaro)
+\SetWatermarkAngle{60}       % Angolo (default è 45)

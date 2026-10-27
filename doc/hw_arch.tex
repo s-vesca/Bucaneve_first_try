@@ -1,0 +1,62 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+The complete encoder has been divided into some hardware blocks, that can be seen 
+in figure \ref{FIG_HW_BLOCKS}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img/HW_blocks.png}
+    \caption{Hardware block scheme}
+    \label{FIG_HW_BLOCKS}
+\end{figure}
+
+There is a power supply which takes the input voltage from $5 V$ to $32 V$, and 
+generates the $3.3 V$ supply rail for the whole board.
+
+The main block is the coil interface (figure \ref{HW_BLOCK_COIL_IF_IC}), which 
+is composed of the coil interface IC and some passive components around it.
+This IC just needs some capacitors to produce a resonant circuit with the TX coil.
+In this way the coil current becomes purely sinusoidal, and its amplitude is maximized.
+The IC is able to follow the resonance of the circuit, so the exiting frequency
+will always be the resonant frequency, and it can be chosen as 
+
+\begin{equation}
+    f_{ex} = \frac{1}{2\pi \sqrt{L_{TX}C_{p}}} 
+\end{equation}
+
+The other components are some filters to cope with high frequency noise.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img/hw_block_coil_if_ic.png}
+    \caption{Coil interface IC schematic}
+    \label{HW_BLOCK_COIL_IF_IC}
+\end{figure}
+
+The outputs of the coil interface IC are directly the demodulated sinewaves, that
+can be directly connected to the microcontroller ADC input if their amplitude is 
+high enough.
+
+The next block is infact composed of the MCU (figure \ref{HW_BLOCK_MCU}) which 
+acquires the analog signals, processes them and produce the incremental encoder 
+pulses.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img/hw_block_mcu.png}
+    \caption{MCU schematic}
+    \label{HW_BLOCK_MCU}
+\end{figure}
+
+Finally these pulses are used to drive some open collector output transistors
+to bring the signals on the sensor output pads (figure \ref{HW_BLOCK_OD}).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img/hw_block_od.png}
+    \caption{Output drivers schematic}
+    \label{HW_BLOCK_OD}
+\end{figure}
+
+\end{document}

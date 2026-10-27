@@ -1,0 +1,26 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/pcb_coil_bucaneve.png}
+    \caption{Pcb Coils}
+    \label{FIG_SENSOR_PCB_COILS}
+\end{figure}
+
+The coils have been realized on the lower internal layer and the bottom layer of
+the PCB, in order to minimize the distance between the 2 layers of the coils and
+to maximize the distance between the coils and other components on the PCB.
+A $2.8 mm$ board has been used to keep the logic circuit and the coils even more 
+spaced.
+
+In figure \ref{FIG_SENSOR_PCB_COILS} you can see that the TX Coil is made with a
+thicker trace ($0.45 mm$), in order to reduce the parasitic resistance, and it
+has 4 turns.
+The RX Coils are instead made with regular trace width, since they don't need to 
+carry any current.
+To amplify the received signal, the RX coil has been realized with 2 turns 
+connected in series.
+
+\end{document}

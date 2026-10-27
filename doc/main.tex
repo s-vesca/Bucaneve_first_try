@@ -1,0 +1,111 @@
+\documentclass[12pt,a4paper,twoside]{article}
+\input{include.tex}
+
+%Title page
+\title{AB Inductive Position Sensor}
+\author{Simone Vesca}
+\date{\today}
+
+\begin{document}
+
+    \begin{titlingpage}
+        \begin{center}
+
+            \vspace{2.5cm}
+
+            %Titolo
+            \rule{\linewidth}{0.4pt} \\[0.5cm]
+            { \huge \bfseries \thetitle }\\[0.4cm] 
+            \rule{\linewidth}{2pt} \\[0.8cm]
+
+            %Sottotitolo
+            {\large \textit{Design of a Quadrature Encoder, based on 
+                            an Eddy Current Inductive Position Sensor}} \\
+            %{\large \textit{Progetto di un encoder incrementale AB, basato su 
+            % sensore di posizione induttivo a correnti parassite}} \\
+
+            \vfill
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{img/biscuit.png}
+            \end{figure}
+
+            \vfill
+
+            %Autore E Data
+            \begin{minipage}{0.45\textwidth} 
+                \begin{flushleft} \large
+                    \emph{Autore:}\\
+                    \textbf{\theauthor}
+                \end{flushleft}
+            \end{minipage}
+            \begin{minipage}{0.45\textwidth}
+                \begin{flushright} \large
+                    \emph{Data:}\\
+                    \textbf{\thedate}
+                \end{flushright}
+            \end{minipage}
+
+        \end{center}
+
+    \end{titlingpage}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Intro
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    \section{Introduction}
+    The objective is to design a quadrature incremental position sensor, based on the 
+    acquisition of analog signals provided by an {\it IPS (Inductive Position Sensor)},
+    and subsequent numerical processing to obtain desired output signals.
+
+    The IPS is an absolute position sensor which outputs voltages proportional 
+    to {sine} and {cosine} of the shaft's angular position.
+    These signals can be acquired by a microcontroller via an {\it ADC} and 
+    processed to extract the position with {\it atan2} operation.
+
+    Finally, the state of the outputs can be obtained dividing the complete 
+    revolution into {\it N} angular sectors, corresponding to the desired 
+    output {\it PPR (Pulses Per Revolution)}.
+    
+    \newpage
+    \section{Working Principle}
+    \subfile{working_principle.tex}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Constraints
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \newpage
+    \section{Design Constraints}
+    %\subfile{working_principle.tex}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % HW
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \newpage
+    \section{Hardware Architecture}
+    \subfile{hw_arch.tex}
+
+    \subsection{Coil Design}
+    \subfile{hw_arch_coil_design.tex}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % FW
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \newpage
+    \section{Firmware Architecture}
+    \subfile{fw_arch.tex}
+
+    \subsection{Normal Mode}
+    \subfile{fw_arch_norm_mode.tex}
+
+    \subsection{Calibration Mode}
+    \subfile{fw_arch_cal_mode.tex}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Conclusions
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \section{Conclusions}
+
+\end{document}
