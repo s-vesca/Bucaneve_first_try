@@ -16,7 +16,7 @@ generates the $3.3 V$ supply rail for the whole board.
 
 The main block is the coil interface (figure \ref{HW_BLOCK_COIL_IF_IC}), which 
 is composed of the coil interface IC and some passive components around it.
-This IC just needs some capacitors to produce a resonant circuit with the TX coil.
+This IC needs some capacitors to produce a resonant circuit with the TX coil.
 In this way the coil current becomes purely sinusoidal, and its amplitude is maximized.
 The IC is able to follow the resonance of the circuit, so the exiting frequency
 will always be the resonant frequency, and it can be chosen as 
@@ -25,7 +25,7 @@ will always be the resonant frequency, and it can be chosen as
     f_{ex} = \frac{1}{2\pi \sqrt{L_{TX}C_{p}}} 
 \end{equation}
 
-The other components are some filters to cope with high frequency noise.
+The other components create some filters to cope with high frequency noise.
 
 \begin{figure}[h]
     \centering
