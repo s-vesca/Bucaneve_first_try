@@ -75,11 +75,11 @@ adc_sin_comp = ((adc_reg_cos>>10) *
 \end{lstlisting}
 \end{minipage}
 
-After that, the compensated values are passed through an IIR Low Pass filter
+After that, the compensated values are passed through an \ac{IIR} \ac{LPF}
 to remove some noise before phase calculation, and than they are loaded inside 
 the cordic input register.
 
-\begin{minipage}{\linewidth}
+\begin{minipage}[h]{\linewidth}
 \begin{lstlisting}[caption=sin and cos filtering code]
 //----------------------------------------------------------------
 //                          Sin Cos Filter
@@ -111,7 +111,7 @@ adc_sin_filt = (int32_t)(adc_sin_filt_state);
 \end{lstlisting}
 \end{minipage}
 
-The IIR filter is implemented with fixed point arithmetics, and using right 
+The \ac{IIR} filter is implemented with fixed point arithmetics, and using right 
 shifts instead of divisions to keep it fast.
 
 Considering that the developed sensor has
@@ -151,7 +151,7 @@ In this case for example we can write it like follows
     \label{EQ_ALPHA_DECOMP}
 \end{equation}
 
-Then recalling the first order IIR filter equation
+Then recalling the first order \ac{IIR} filter equation
 \begin{equation}
     Y(z) = \frac{1-\alpha}{1-\alpha z^{-1}}X(z)
 \end{equation}
@@ -185,10 +185,10 @@ signed 16 bit integer (S16) in the range $[-2^{15},2^{15}-1]$ or as an unsigned
 The computation has been carried out using the unsigned integer interpretation. 
 Looking at figure \ref{FIG_SIGNAL_FLOW}, you can see that after the phase 
 calculation, a gain is applied to the angle.
-This is to get period maximum value that matches $4$ times the output {\it PPR} 
-of the application divided by the input {\it PP} of the sensor, that create the 
+This is to get period maximum value that matches $4$ times the output \ac{PPR} 
+of the application divided by the input \ac{PP} of the sensor, that create the 
 number of periods per revolution of the sinewaves.
-In our case, since $PPR = 64$ and $PP = 4$, the scaling operation becomes
+In our case, substituting actual values in the gain expression you get
 
 \begin{equation}
     \vartheta_{scaled} = \vartheta \cdot \frac{4 \cdot PPR}{2^{16}PP} = 
@@ -197,9 +197,9 @@ In our case, since $PPR = 64$ and $PP = 4$, the scaling operation becomes
 
 After this operation, which can simply be implemented with a 10 bit shift to the
 right, $\vartheta_{scaled}$ will be in the range $[0, 63]$.
-Indeed since the input sinewaves have a $4x$ periodicity with respect to the mechanical
-one, it is sufficient to produce a $16 PPR$ output signal from the measured phase,
-to obtain a $64 PPR$ output signal with respect to the mechanical phase.
+Indeed since the input sinewaves have a periodicity which is $4$ times the mechanical
+one, it is sufficient to produce a $16$ \ac{PPR} output signal from the measured phase,
+to obtain a $64$ \ac{PPR} output signal with respect to the mechanical phase.
 The output state can finally be obtained from the rest of the integer division 
 by $4$ of $\vartheta_{scaled}$ value. 
 Since an integer division by $4$ is equivalent to a 2 bit right shift, and the 
@@ -235,13 +235,20 @@ while the most significant bit goes to signal {\it B}.
     \label{TAB_GRAY}
 \end{table}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{img/state_change_fsm.eps}
+    \caption{State change FSM}
+    \label{FIG_STATE_FSM}
+\end{figure}
+
 Since it is unavoidable to have noise on measures, it is necessary to implement 
 a deglitch operation, to avoid spurious commutations around the state switching 
 instant.
 To do so first the speed has been computed as filtered derivative of phase, and 
 then, its sign has been used as rotating direction.
 
-The filter applied to the speed, is similar to the {\it IIR} used for sampled 
+The filter applied to the speed, is similar to the \ac{IIR} used for sampled 
 values.
 Here for simplicity the filter constant is defined as 
 
@@ -266,22 +273,15 @@ The derivative is calculated as
     speed = IIR(\vartheta(n) - \vartheta(n-1))
 \end{equation}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.6\linewidth]{img/state_change_fsm.eps}
-    \caption{State change FSM}
-    \label{FIG_STATE_FSM}
-\end{figure}
-
 Since the derivative is not divided by the sampling time (for faster computation), 
-and since the angle is expressed to have $2^16-1$ matching the whole revolution,
+and since the angle is expressed to have $2^{16}-1$ matching the whole revolution,
 the speed (measured in $Hz$ or $RPS$) will be expressed as 
 
 \begin{equation}
     f_{mech} = \frac{speed}{2^{16}}f_s
 \end{equation}
 
-Then the deglitch action is carried out using a FSM like the one represented in 
+The deglitch action is then carried out using a \ac{FSM} like the one represented in 
 figure \ref{FIG_STATE_FSM}, where an output state change is completed only if the 
 calculated state is the state following the current one, considering the current 
 direction.
@@ -289,13 +289,13 @@ Doing this you avoid multiple commutations when the noisy measured phase
 oscillates around the boundary between 2 states.
 
 In order to avoid conditional statements and so have a lower and deterministic 
-code execution time, this finite state machine is implemented as a 3d lookup 
-table in the code (listing \ref{CODE_STATE_LUT}), where the inputs are direction, 
+code execution time, this finite state machine is implemented as a 3d \ac{LUT} 
+in the code (listing \ref{CODE_STATE_LUT}), where the inputs are direction, 
 current state and the proposed next state. 
 The output is the deglitched next state.
 
-\begin{minipage}{\linewidth}
-\begin{lstlisting}[caption=sin and cos filtering code,label=CODE_STATE_LUT]
+\begin{minipage}[h]{\linewidth}
+\begin{lstlisting}[caption=next state FSM,label=CODE_STATE_LUT]
     //state_lut[actual_dir][actual_state][proposed_next_state]
     __attribute__((section(".ccm_rodata")))
     const uint8_t state_lut[3][4][4] = 
@@ -326,19 +326,19 @@ The output is the deglitched next state.
 \end{minipage}
 
 The timings of the normal mode code execution, which are shown in figure 
-\ref{FIG_TIMEBASE_NORMAL_MODE}, are handled with some interrupts.
-Initially the ADCs are triggered by the {\it UIF (Update Interrupt)} of a hardware
+\ref{FIG_TIMEBASE_NORMAL_MODE}, are handled with some \ac{IRQ}.
+Initially the ADCs are triggered by the \ac{UIF} of a hardware
 timer at a frequency of $300 kHz$.
 After the conversion has been completed (about $1.86\mu s$), one of the ADCs 
 (both ADCs will finish their conversion at the same time, because they have same 
-settings), triggers an {\it IRQ (Interrupt Request)}. Inside the {\it ISR 
-(Interrupt Service Routine)}, the compensation and the filters are applied to the
-sampled signals. Than signals are loaded into the Cordic input register, and the 
-phase computation is automatically started.
-When the phase data is ready, the peripheral triggers another {\it IRQ}.
-Inside this {\it ISR}, the phase is read and all the computation to obtain 
+settings), triggers an \ac{IRQ}. Inside the \ac{ISR}, the compensation and the 
+filters are applied to the sampled signals. 
+Than signals are loaded into the Cordic input register, and the  phase computation 
+is automatically started.
+When the phase data is ready, the peripheral triggers another \ac{IRQ}.
+Inside this \ac{ISR}, the phase is read and all the computation to obtain 
 {\it A} and {\it B} signals are performed. Finally the GPIOs are updated with the 
-correct values, and the CPU goes in Idle state waiting for the next ADC {\it IRQ}.
+correct values, and the CPU goes in Idle state waiting for the next ADC \ac{IRQ}.
 
 The execution time of the whole algorithm is about
 
@@ -367,12 +367,76 @@ rate is given by
     \label{FIG_TIMEBASE_NORMAL_MODE}
 \end{figure}
 
-With an output update like this, the output signal can only switch their states at
+With an output update like this, the output signals can only change state during
 well defined discrete time instants, causing some jitter on the quadrature signals
 edges, which could introduce phase errors, especially at high angular speeds.
 
 To reduce the jitter, a {\it OneShot Mode} has been introduced.
-To do so, together with the state, also the difference with next state is computed.
-This value is then divided by the speed (already calculated), to obtain the time
+To do so, the angular distance from next state is also computed.
+This value is then divided by the speed (already computed), to obtain the time
+before next commutation.
+This time can be loaded into the compare register of an hardware timer (OneShot Timer),
+in order to trigger another \ac{IRQ} when the time has passed. Inside this 
+\ac{ISR}, the MCU just updates output pins, setting them to the following state.
+
+Due to noise and discretization, the minimum value of the angular distance from 
+next state, could be high in certain conditions.
+So, to ensure that the timer is launched for every state change, you may need to 
+chose a threshold on "next state time" variable which is higher then the sampling 
+time.
+
+For example it has been seen doing some tests that angular difference minimum value 
+for some state-periods is $100 CNTs$. So if you want to use 
+{\it OneShot Mode} starting from $4000 RPM$ which corresponds to a value of $58$ 
+inside the speed firmware variable, the minimum time threshold is calculated as 
+follows:
+
+\begin{equation}
+    \Delta t_{min} = T_s \cdot \frac{\Delta \theta_{cnt}}{f_{cnt}} = \frac{100}{58} T_s
+\end{equation}
+
+Then since the OneShot timer is clocked at the same frequency as the sampling timer,
+we have 
+
+\begin{equation}
+    T_s = PRD_{T_s} T_{ck} = 567 T_{ck}
+\end{equation}
+
+giving
+
+\begin{equation}
+    \Delta t_{min} = \frac{100}{58} PRD_{T_s} T_{ck} = 978
+\end{equation}
+
+Now since $\Delta t_{min} > T_s$ it could happen that after the OneShot Timer 
+\ac{ISR} has been executed, the measured state is still equal to the previous one 
+and that another oneshot timer is launched. Since the output pins are only updated 
+with the next state value, they just get updated twice with the same value.
+An hysteresis has to be applied to the speed threshold between 
+{\it Normal Mode} and {\it Oneshot Mode}.
+In listing \ref {CODE_ONESHOT_PARAM} are shown the parameters of oneshot mode 
+
+\begin{minipage}[h]{\linewidth}
+\begin{lstlisting}[caption=AB Generation Parameters,label=CODE_ONESHOT_PARAM]
+    //-------------------------------------------------------------
+    //                AB GENERATION PARAMETERS
+    //-------------------------------------------------------------
+    #define ONESHOT_MODE_ENABLE         (1)
+
+    //SPEED_THR_LO_ONESHOT_MODE should be chosen along with 
+    //CNT_THR_ONESHOT in order to have 
+    //max(delta_next_state) * SYNC_TIM_ARR_RUN / 
+    //SPEED_THR_LO_ONESHOT_MODE  < CNT_THR_ONESHOT
+    //where max(delta_next_state) is the higher measured value 
+    //of the lower peak of delta_next state and it is 
+    //dependant on noise
+
+    #define SPEED_THR_LO_ONESHOT_MODE   (60)    //about 4000 rpm
+    #define SPEED_THR_HI_ONESHOT_MODE   (65)    //about 4300 rpm
+
+    #define CNT_THR_ONESHOT             (1500)  
+
+\end{lstlisting}
+\end{minipage}
 
 \end{document}

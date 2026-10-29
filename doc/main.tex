@@ -57,35 +57,39 @@
 
     \section{Introduction}
     The objective is to design a quadrature incremental position sensor, based on the 
-    acquisition of analog signals provided by an {\it IPS (Inductive Position Sensor)},
+    acquisition of analog signals provided by an \ac{IPS},
     and subsequent numerical processing to obtain desired output signals.
 
-    The IPS is an absolute position sensor which outputs voltages proportional 
+    The \ac{IPS} is an absolute position sensor which outputs voltages proportional 
     to {\it sin} and {\it cos} of the shaft's angular position.
     These signals can be acquired by a microcontroller via an {\it ADC} and 
     processed to extract the position with {\it atan2} operation.
 
     Finally, the state of the outputs can be obtained dividing the complete 
     revolution into {\it N} angular sectors, corresponding to the desired 
-    output {\it PPR (Pulses Per Revolution)}.
-    
-    \newpage
+    output \ac{PPR}.
+
+    \FloatBarrier
     \section{Working Principle}
-    \subfile{working_principle.tex}
+    %\subfile{working_principle.tex}
+    \FloatBarrier
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Constraints
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \newpage
     \section{Design Constraints}
-    \subfile{design_constraints.tex}
+    %\subfile{design_constraints.tex}
+    
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % HW
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \newpage
+    
     \section{Hardware Architecture}
-    \subfile{hw_arch.tex}
+    %\subfile{hw_arch.tex}
+    \FloatBarrier
 
     \subsection{Coil Design}
     \subfile{hw_arch_coil_design.tex}
@@ -93,15 +97,18 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % FW
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \newpage
-    \section{Firmware Architecture}
-    \subfile{fw_arch.tex}
+    %\newpage
+    %\section{Firmware Architecture}
+    %\subfile{fw_arch.tex}
+    %\FloatBarrier
 
-    \subsection{Normal Mode}
-    \subfile{fw_arch_norm_mode.tex}
+    %\subsection{Normal Mode}
+    %\subfile{fw_arch_norm_mode.tex}
+    %\FloatBarrier
 
-    \subsection{Calibration Mode}
-    \subfile{fw_arch_cal_mode.tex}
+    %\subsection{Calibration Mode}
+    %\subfile{fw_arch_cal_mode.tex}
+    %\FloatBarrier
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Conclusions

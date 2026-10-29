@@ -1,5 +1,40 @@
 \documentclass[main]{subfiles}
 
 \begin{document}
-\null
+
+Design constraints for the sensor are reported in table \ref{TAB_CONSTRAINTS}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Parameter & Value & Measurement Unit\\
+        \hline
+        $Vcc$ & $5:24$ & $V$\\
+        $PPR$ & $64$ & $-$\\
+        \hline
+    \end{tabular}
+    \caption{Sensor Design Constraints}
+    \label{TAB_CONSTRAINTS}
+\end{table}
+
+The sensor should be a one to one replacement for a previous one, and so its 
+dimensions are constrained.
+
+The outline of stationary part is shown in figure \ref{FIG_MECH_DIM_PCB}, it has
+an outer diameter of $64 mm$, and an inner one of $36 mm$ to let the motor shaft 
+pass through it.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/coil_board_shape.png}
+    \caption{Mechanical drawing of the \ac{PCB}}
+    \label{FIG_MECH_DIM_PCB}
+\end{figure}
+
+The target outer diameter is constrained by mounting requirements to $50 mm$, 
+while the inner one has to be $27 mm$ to be mounted on the shaft.
+
+\FloatBarrier
+
 \end{document}

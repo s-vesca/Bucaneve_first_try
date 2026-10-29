@@ -7,6 +7,8 @@
 \usepackage{subfiles}
 \usepackage[section]{placeins}
 \usepackage{listings}
+\usepackage[nolist,nohyperlinks]{acronym}
+\usepackage{float}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -26,21 +28,25 @@
   stringstyle=\color{mauve},
   breaklines=false,
   breakatwhitespace=true,
-  tabsize=3
+  tabsize=3,
 }
 
+\acrodef{IPS}{Inductive Position Sensor}
+\acrodef{PPR}{Pulses Per Revolution}
+\acrodef{PP}{Pole Pairs Per Revolution}
+\acrodef{MCU}{MicroController Unit}
+\acrodef{IC}{Integrated Circuit}
+\acrodef{PCB}{Printed Circuit Board}
+\acrodef{IRQ}{Interrupt Request}
+\acrodef{ISR}{Interrupt Service Routine}
+\acrodef{IIR}{Infinite Impulse Response}
+\acrodef{LPF}{Low Pass Filter}
+\acrodef{FSM}{Finite State Machine}
+\acrodef{LUT}{LookUp Table}
+\acrodef{UIF}{Update Interrupt Flag}
 
 %evita indentazione a inizio paragrafo
 \setlength{\parindent}{0pt}
-
-%fa in modo che le immagini non vengano messe nella subsection successiva
-\makeatletter
-\AtBeginDocument{%
-  \expandafter\renewcommand\expandafter\subsection\expandafter{%
-    \expandafter\@fb@secFB\subsection
-  }%
-}
-\makeatother
 
 % Filigrana
 \SetWatermarkText{DRAFT}       % Testo della filigrana

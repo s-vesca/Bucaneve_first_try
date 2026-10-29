@@ -1,7 +1,30 @@
 \documentclass[main]{subfiles}
 
 \begin{document}
-The complete encoder has been divided into some hardware blocks, that can be seen 
+
+At the beginning, the number of \ac{PP} has been chosen to be 
+
+\begin{equation}
+    PP = 4
+\end{equation}
+
+Because it has been evaluated as a good tradeoff beetween sinewaves maximum 
+frequency and amplitude and mechanical robustness.
+The $4$ \ac{PP} target is solid enough to be realized using aluminium instead of 
+another \ac{PCB} and this has been another key factor for the choice.
+
+The target design is shown in figure \ref{FIG_AL_TARGET}.
+Its external diameter is constrained to $50 mm$ because of mounting constraints,
+and it is divided into $8$ sectors of $45^\circ$ amplitude.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\linewidth]{img/target_meas.png}
+    \caption{Aluminuim target}
+    \label{FIG_AL_TARGET}
+\end{figure}
+
+The encoder hardware has been divided into some hardware blocks, that can be seen 
 in figure \ref{FIG_HW_BLOCKS}.
 
 \begin{figure}[h]
@@ -11,14 +34,21 @@ in figure \ref{FIG_HW_BLOCKS}.
     \label{FIG_HW_BLOCKS}
 \end{figure}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img/HW_blocks_pwr.png}
+    \caption{Hardware block scheme}
+    \label{FIG_HW_BLOCKS_PWR}
+\end{figure}
+
 There is a power supply which takes the input voltage from $5 V$ to $32 V$, and 
-generates the $3.3 V$ supply rail for the whole board.
+generates the $3.3 V$ supply rail for the whole board (figure \ref{FIG_HW_BLOCKS_PWR}).
 
 The main block is the coil interface (figure \ref{HW_BLOCK_COIL_IF_IC}), which 
-is composed of the coil interface IC and some passive components around it.
-This IC needs some capacitors to produce a resonant circuit with the TX coil.
+is composed of the coil interface \ac{IC} and some passive components around it.
+This \ac{IC} needs some capacitors to produce a resonant circuit with the TX coil.
 In this way the coil current becomes purely sinusoidal, and its amplitude is maximized.
-The IC is able to follow the resonance of the circuit, so the exiting frequency
+The \ac{IC} is able to follow the resonance of the circuit, so the exiting frequency
 will always be the resonant frequency, and it can be chosen as 
 
 \begin{equation}
@@ -34,11 +64,11 @@ The other components create some filters to cope with high frequency noise.
     \label{HW_BLOCK_COIL_IF_IC}
 \end{figure}
 
-The outputs of the coil interface IC are directly the demodulated sinewaves, that
+The outputs of the coil interface \ac{IC} are directly the demodulated sinewaves, that
 can be directly connected to the microcontroller ADC input if their amplitude is 
 high enough.
 
-The next block is infact composed of the MCU (figure \ref{HW_BLOCK_MCU}) which 
+The next block is infact composed of the \ac{MCU} (figure \ref{HW_BLOCK_MCU}) which 
 acquires the analog signals, processes them and produce the incremental encoder 
 pulses.
 

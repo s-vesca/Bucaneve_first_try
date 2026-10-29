@@ -2,7 +2,7 @@
 
 \begin{document}
 
-The firmware of the MCU has 2 working modes, which can be selected at startup, 
+The firmware of the \ac{MCU} has 2 working modes, which can be selected at startup, 
 with the supply voltage (figure \ref{FIG_FW_STARTUP_FC}):
 \begin{itemize}
     \item Calibration Mode 
@@ -24,6 +24,37 @@ non-volatile memory, and it stays idle until a power cycle is performed.
 
 Powering the device at any voltage below $24 V$ makes it enter normal mode, it 
 samples analog signals, it applies compensation with previously saved parameters,
-calculates position and generates output signals.  
+calculates position and generates output signals.
+
+The firmware makes use of the following peripherals:
+\begin{itemize}
+    \item TIM2      $\rightarrow$ Sampling Timer
+    \item TIM4      $\rightarrow$ OneShot Timer
+    \item TIM6      $\rightarrow$ Function Profiling Timer (Debug)
+    \item TIM7      $\rightarrow$ Led Blinking Timer
+    \item ADC1      $\rightarrow$ Analog measure of {\it cos} signal
+    \item ADC2      $\rightarrow$ Analog measure of {\it sin} signal
+    \item GPIOx     $\rightarrow$ A,B output signals
+    \item CORDIC    $\rightarrow$ Phase computation
+\end{itemize}
+
+These peripherals make use of interrupts to synchronize code execution.
+In particular the following \ac{IRQ} have been enabled in the NVIC:
+
+\begin{itemize}
+    \item TIM2 Update Event $\rightarrow$ Sampling instant (Debug)
+    \item TIM4 CMP1 Event   $\rightarrow$ Oneshot timer output update
+    \item TIM7 Update Event $\rightarrow$ Update Led status
+    \item ADC1 JEOC Event   $\rightarrow$ Acquire data 
+    \item CORDIC RRDY Event $\rightarrow$ Calculate state output
+\end{itemize}
+
+To reduce \ac{ISR} call latency, while maintaining code readability, the vector 
+table has been relocated and pointed directly to customized \ac{ISR}.
+
+The different working modes ({\it Normal Mode},{\it Calibration Mode}) are then 
+selected changing the ADC1 \ac{ISR} pointer after startup, after having measured 
+supply voltage.
+
 
 \end{document}
