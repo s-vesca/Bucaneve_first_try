@@ -4,7 +4,7 @@
 
 \begin{figure}[h]
     \centering
-    %\includegraphics[width=0.6\linewidth]{img/pcb_coil_bucaneve.png}
+    \includegraphics[width=0.6\linewidth]{img/pcb_coil_bucaneve.png}
     \caption{Pcb Coils}
     \label{FIG_SENSOR_PCB_COILS}
 \end{figure}
@@ -38,12 +38,28 @@ which gives an electrical angle of
 \end{equation}
 
 Due to this displacement the sinewave amplitude will not simply be doubled, but 
-the 2 vectors will add with a vector sum (figure \ref{}).
+the 2 vectors will add with a vector sum. 
+As you can see in figure \ref{FIG_VECTOR_SUM_RX}, even if the 2 coils have the 
+same voltage module, the net voltage will not be twice the voltage of the single 
+coil.
+
+It will instead be 
+
+\begin{equation}
+    ||V_1 + V_2|| = \sqrt{||V_1||^2 + 2||V_1||||V_2||cos(\alpha) + ||V_2||^2}
+\end{equation}
+
+and since $||V_1|| = ||V_2|| = ||V||$ it becomes
+
+\begin{equation}
+    ||V_1 + V_2|| = 2 ||V|| cos\left(\frac{\alpha}{2}\right) \cong 1.88||V||
+\end{equation}
 
 \begin{figure}[h]
     \centering
-    %\includegraphics[width=0.5/linewidth]{}
+    \includegraphics[width=0.7\linewidth]{img/vector_sum_2turns_rx.eps}
     \caption{Vector sum of 2 coils voltages}
+    \label{FIG_VECTOR_SUM_RX}
 \end{figure}
 
 \end{document}
